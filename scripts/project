@@ -3,6 +3,6 @@
 #site="tell application \"Safari\" to open location \"$1\""
 #osascript -e "$site"
 
-/usr/bin/osascript /Users/DesignAndDevelopment/Projects/Sounds/applescripts/project.scpt "$@"
+/usr/bin/osascript /Users/DesignAndDevelopment/Sites/sounds/project.scpt "$@"
 
 echo "$@"

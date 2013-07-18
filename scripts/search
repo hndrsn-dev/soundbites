@@ -12,7 +12,7 @@ if [ -e "$PATH$1" ]; then
 	/usr/bin/afplay $PATH$1
 
 else
-	/usr/bin/say -v daniel $1
+	/usr/bin/say -v alex $1
 fi
 
 

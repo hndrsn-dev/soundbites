@@ -1,4 +1,4 @@
 <?php
-// exec('osascript -e \'tell application "iTunes" to pause\'');
-exec('/usr/bin/osascript /Users/DesignAndDevelopment/Projects/Sounds/applescripts/pausemusic.scpt');
+	// exec('osascript -e \'tell application "iTunes" to pause\'');
+//	exec('/usr/bin/osascript /Users/DesignAndDevelopment/Effects/pausemusic.scpt');
 ?>

@@ -13,14 +13,15 @@ $options[] = "<option selected='selected' value='random'>random</option>";
 
 //print each file name
 foreach ($sounds as $sound) {
+	
 	$sound = substr($sound, strlen($directory));
 	$fileName = preg_replace('/\.[a-z3]+/', '', $sound);
 	
 	// hide secret babyBaby replacement
 	if ($fileName == "bbBB") continue;
 	
-	$files[] = "<li data-name='$sound' class='soundItem'>			
-		<span class='soundName'>$fileName</span>
+	$files[] = "<li data-name='$sound'>			
+		$fileName
 	</li>";
 	
 	$soundValue = str_replace($directory, "", $sound);
@@ -44,7 +45,6 @@ foreach ($sounds as $sound) {
 	<link href="/css/style.css" rel="stylesheet" type='text/css'>
 	
 	<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
-	<script type="text/javascript" src="/js/list.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 	
 </head>
@@ -57,14 +57,10 @@ foreach ($sounds as $sound) {
 		<select>
 			<option selected="selected" value="fred">Fred</option>
 			<option value="alex">Alex</option>
-			<option value="albert">Albert</option>
 			<option value="bells">Bells</option>
-			<option value="bruce">Bruce</option>
-			<option value="bubbles">Bubbles</option>
 			<option value="cellos">Cello</option>
 			<option value="daniel">Daniel</option>
 			<option value="fiona">Fiona</option>
-			<option value="fred">Fred</option>
 			<option value="good">Good</option>
 			<option value="bad">Bad</option>
 			<option value="junior">Junior</option>
@@ -76,16 +72,14 @@ foreach ($sounds as $sound) {
 			<option value="siri">Siri</option>
 			<option value="sangeeta">Sangeeta</option>
 			<option value="steffi">Steffi</option>
-			<option value="trinoids">Trinoids</option>
 			<option value="victoria">Victoria</option>
 			<option value="whisper">Whisper</option>
-			<option value="zarvox">Zarvox</option>
 		</select>
 		<span id="sayIt">say it</span>
 	</form>
 	
 	<form id="searchForm">
-		<input type="search" id="search" name="search" type="text" autocapitalize="off" autocorrect="off" placeholder="enter search phrase and hit enter (choose optional reply)">
+		<input type="search" id="search" name="search" placeholder="enter search phrase and hit enter (choose optional reply)">
 		<select>
 			<?
 				$comma_separated = implode(" ", $options);
@@ -95,27 +89,28 @@ foreach ($sounds as $sound) {
 		<span id="searchIt">search it</span>
 	</form>
 	
-	<div id="soundsList">
-		<form id="filterForm">
-			<input id="filterSounds" type="search" class="search" placeholder="Filter sounds" />
-			<span class="sort" data-sort="soundName">Sort by name</span><br />
-		</form>
-		<ul class="list">
-			
-			<!-- <li id="playpause">play / pause</li> -->
-			
-			<?
-				$comma_separated = implode(" ", $files);
-				echo $comma_separated;
-			?>
-			
-			
-			<!-- one list item outside of the loop -->
-			
-			<li id="current">currently playing</li>
-			
-		</ul>
-	</div>
+	<form id="playForm">
+		<input type="search" id="play" name="play" placeholder="paste video url">
+		<span id="loadVideo">load it</span>
+		<span id="playPauseVideo">play/pause it</span>
+		<span id="stopVideo">stop it</span>
+	</form>
+	
+	<ul>
+		
+		<!-- <li id="playpause">play / pause</li> -->
+		
+		<?
+			$comma_separated = implode(" ", $files);
+			echo $comma_separated;
+		?>
+		
+		
+		<!-- one list item outside of the loop -->
+		
+		<li id="current">currently playing</li>
+		
+	</ul>
 </body>
 
 </html>

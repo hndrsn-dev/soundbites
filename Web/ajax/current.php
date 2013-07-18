@@ -19,7 +19,7 @@
 	}
 	
 	
-	$result = system("/Users/DesignAndDevelopment/Projects/Sounds/scripts/current " . $voice);
+	$result = system("/usr/local/bin/current " . $voice);
 	
-	// echo "result: " . $result;
+	echo "result: " . $result;
 ?>
