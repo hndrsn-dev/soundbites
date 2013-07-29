@@ -13,15 +13,14 @@ $options[] = "<option selected='selected' value='random'>random</option>";
 
 //print each file name
 foreach ($sounds as $sound) {
-	
 	$sound = substr($sound, strlen($directory));
 	$fileName = preg_replace('/\.[a-z3]+/', '', $sound);
 	
 	// hide secret babyBaby replacement
 	if ($fileName == "bbBB") continue;
 	
-	$files[] = "<li data-name='$sound'>			
-		$fileName
+	$files[] = "<li data-name='$sound' class='soundItem'>			
+		<span class='soundName'>$fileName</span>
 	</li>";
 	
 	$soundValue = str_replace($directory, "", $sound);
@@ -45,6 +44,7 @@ foreach ($sounds as $sound) {
 	<link href="/css/style.css" rel="stylesheet" type='text/css'>
 	
 	<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="/js/list.min.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 	
 </head>
@@ -102,21 +102,27 @@ foreach ($sounds as $sound) {
 		<span id="stopVideo">stop it</span>
 	</form>
 	
-	<ul>
-		
-		<!-- <li id="playpause">play / pause</li> -->
-		
-		<?
-			$comma_separated = implode(" ", $files);
-			echo $comma_separated;
-		?>
-		
-		
-		<!-- one list item outside of the loop -->
-		
-		<li id="current">currently playing</li>
-		
-	</ul>
+	<div id="soundsList">
+		<form id="filterForm">
+			<input id="filterSounds" type="search" class="search" placeholder="Filter sounds" />
+			<span class="sort" data-sort="soundName">Sort by name</span><br />
+		</form>
+		<ul class="list">
+			
+			<!-- <li id="playpause">play / pause</li> -->
+			
+			<?
+				$comma_separated = implode(" ", $files);
+				echo $comma_separated;
+			?>
+			
+			
+			<!-- one list item outside of the loop -->
+			
+			<li id="current">currently playing</li>
+			
+		</ul>
+	</div>
 </body>
 
 </html>

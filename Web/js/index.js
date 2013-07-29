@@ -16,6 +16,52 @@ $(document).ready(function() {
 	
 	$("#playpause").on('click', playPause);
 	
+	// Set up the list filtering and sorting
+	var options = {
+		valueNames: [ 'soundName' ]
+	}
+
+	var soundsList = new List('soundsList', options);
+	
+	// Focus on the filter view for easy access
+	$("#filterSounds").focus();
+	
+	// Add handlers to each li
+	// $(".soundItem").click()
+	$('#filterSounds').keyup(function(e) {
+		// If the key isn't right or left, handle normally
+		if (e.which != 37 && e.which != 39) {
+			//highlight first li
+			$('#soundsList>ul>.selected').removeClass('selected');
+			$('#soundsList>ul>li').first().addClass('selected');
+		}
+	});
+	// When enter is pressed from the filterSounds dialog, click the selected item
+	$('#filterSounds').keypress(function(e) {
+		if (e.which == 13) {
+			// Click the selected li (play the effect)
+			$('#soundsList>ul>li.selected').click();
+			return false;
+		}
+	});
+	
+	$("body").keydown(function(e) {
+		// Get the currently selected sound effect
+		cur = $('#soundsList>ul>.selected');
+		
+		if (cur.length != 1) { // no sound effect selected; pick the first
+			$('#soundsList>ul>li').first().addClass('selected');
+		} else if (e.which == 37) { // left was pressed
+			cur.removeClass('selected');
+			cur.prev().addClass('selected');
+			return false;
+		} else if (e.which == 39) { // right was pressed
+			cur.removeClass('selected');
+			cur.next().addClass('selected');
+			return false;
+		}
+	});
+	
 	$('li').on('click', function() {
 		
 		var $this = $(this);
@@ -42,7 +88,6 @@ $(document).ready(function() {
 				.done(function(data) {});
 		}
 	});
-	
 	
 	
 	function sayIt() {

@@ -77,3 +77,7 @@ li.selected {
 span {
 	cursor: pointer;
 }
+
+/*li.selected {
+	border: 1px solid #FFFF00;
+}*/
