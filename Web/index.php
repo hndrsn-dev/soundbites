@@ -57,10 +57,14 @@ foreach ($sounds as $sound) {
 		<select>
 			<option selected="selected" value="fred">Fred</option>
 			<option value="alex">Alex</option>
+			<option value="albert">Albert</option>
 			<option value="bells">Bells</option>
+			<option value="bruce">Bruce</option>
+			<option value="bubbles">Bubbles</option>
 			<option value="cellos">Cello</option>
 			<option value="daniel">Daniel</option>
 			<option value="fiona">Fiona</option>
+			<option value="fred">Fred</option>
 			<option value="good">Good</option>
 			<option value="bad">Bad</option>
 			<option value="junior">Junior</option>
@@ -72,8 +76,10 @@ foreach ($sounds as $sound) {
 			<option value="siri">Siri</option>
 			<option value="sangeeta">Sangeeta</option>
 			<option value="steffi">Steffi</option>
+			<option value="trinoids">Trinoids</option>
 			<option value="victoria">Victoria</option>
 			<option value="whisper">Whisper</option>
+			<option value="zarvox">Zarvox</option>
 		</select>
 		<span id="sayIt">say it</span>
 	</form>
