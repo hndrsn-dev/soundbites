@@ -88,6 +88,12 @@ $(document).ready(function() {
 		}
 	});
 	
+	// When the (x) is clicked, redo the search (this isn't triggered by default
+	//	in List.js)
+	$("#filterSounds").on('search', function(e) {
+		soundsList.search($("#filterSounds").val());
+	});
+	
 	// Any time the visible sounds change, reset the highlight to the first element
 	// (avoids having double highlight, which occurs when the handler above runs
 	//	before the view has finished showing)
