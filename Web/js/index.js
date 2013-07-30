@@ -16,52 +16,6 @@ $(document).ready(function() {
 	
 	$("#playpause").on('click', playPause);
 	
-	// Set up the list filtering and sorting
-	var options = {
-		valueNames: [ 'soundName' ]
-	}
-
-	var soundsList = new List('soundsList', options);
-	
-	// Focus on the filter view for easy access
-	$("#filterSounds").focus();
-	
-	// Add handlers to each li
-	// $(".soundItem").click()
-	$('#filterSounds').keyup(function(e) {
-		// If the key isn't right or left, handle normally
-		if (e.which != 37 && e.which != 39) {
-			//highlight first li
-			$('#soundsList>ul>.selected').removeClass('selected');
-			$('#soundsList>ul>li').first().addClass('selected');
-		}
-	});
-	// When enter is pressed from the filterSounds dialog, click the selected item
-	$('#filterSounds').keypress(function(e) {
-		if (e.which == 13) {
-			// Click the selected li (play the effect)
-			$('#soundsList>ul>li.selected').click();
-			return false;
-		}
-	});
-	
-	$("body").keydown(function(e) {
-		// Get the currently selected sound effect
-		cur = $('#soundsList>ul>.selected');
-		
-		if (cur.length != 1) { // no sound effect selected; pick the first
-			$('#soundsList>ul>li').first().addClass('selected');
-		} else if (e.which == 37) { // left was pressed
-			cur.removeClass('selected');
-			cur.prev().addClass('selected');
-			return false;
-		} else if (e.which == 39) { // right was pressed
-			cur.removeClass('selected');
-			cur.next().addClass('selected');
-			return false;
-		}
-	});
-	
 	$('li').on('click', function() {
 		
 		var $this = $(this);
@@ -88,6 +42,71 @@ $(document).ready(function() {
 				.done(function(data) {});
 		}
 	});
+
+
+	// Set up the list filtering and sorting
+	// NOTE 1000 max sound effects - change here
+	var options = {
+		valueNames: [ 'soundName' ],
+		page: 1000
+	}
+
+	var soundsList = new List('soundsList', options);
+	var numVisible = soundsList.visibleItems.length;
+
+	// Focus on the filter view for easy access
+	$("#filterSounds").focus();
+	
+	// Select the first sound
+	var selectedSound = $('#soundsList>ul>li').first();
+	selectedSound.addClass('selected');
+
+	// Add keydown handler for the body and filter/search view.
+	$('body, #filterSounds').on('keydown', function(e) {
+		console.log("keyHandler - " + e.which);
+		first = $('#soundsList>ul>li').first();
+		console.log("  selectedSound.len = " + selectedSound.length);
+				
+		// On enter, play effect
+		if (e.which == 13 && selectedSound.length == 1) {
+			selectedSound.click();
+			return false;
+		// If right/left were pressed, move selection
+		} else if (e.which == 37 && selectedSound.prev().length == 1) {
+			updatedSelectedSound(selectedSound.prev());
+			return false;
+		} else if (e.which == 39 && selectedSound.next().length == 1) {
+			updatedSelectedSound(selectedSound.next());
+			return false;
+		//If nothing is selected, choose the first and eat the key press
+		} else {
+			updatedSelectedSound(first);
+			// If right/left were pressed, eat the keypress
+			if (e.which == 37 || e.which == 39) {
+				return false;
+			}
+		}
+	});
+	
+	// Any time the visible sounds change, reset the highlight to the first element
+	// (avoids having double highlight, which occurs when the handler above runs
+	//	before the view has finished showing)
+	soundsList.on('updated', function() {
+		if (soundsList.visibleItems.length != numVisible) {
+			$('#soundsList>ul>li.selected').removeClass('selected');
+			selectedSound = $('#soundsList>ul>li').first();
+			selectedSound.addClass('selected');
+			numVisible = soundsList.visibleItems.length;
+		}
+	});
+	
+	// Updates the selectedSound variable.
+	// newSound is expected to exist!
+	function updatedSelectedSound(newSound) {
+		selectedSound.removeClass('selected');
+		selectedSound = newSound;
+		selectedSound.addClass('selected');
+	}
 	
 	
 	function sayIt() {
