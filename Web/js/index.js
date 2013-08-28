@@ -60,27 +60,39 @@ $(document).ready(function() {
 	// Select the first sound
 	var selectedSound = $('#soundsList>ul>li').first();
 	selectedSound.addClass('selected');
-
+	
+	
 	// Add keydown handler for the body and filter/search view.
 	$('body, #filterSounds').on('keydown', function(e) {
-		console.log("keyHandler - " + e.which);
+		
+		// console.log("keyHandler - " + e.which);
+		
 		first = $('#soundsList>ul>li').first();
-		console.log("  selectedSound.len = " + selectedSound.length);
-				
+		
+		// console.log("  selectedSound.len = " + selectedSound.length);
+		
+		var $focused = $(document.activeElement);
+		
 		// On enter, play effect
-		if (e.which == 13 && selectedSound.length == 1) {
+		if (e.which == 13 && selectedSound.length == 1 && $focused.attr('id') == "filterSounds" ) {
+			
 			selectedSound.click();
 			return false;
+		
 		// If right/left were pressed, move selection
 		} else if (e.which == 37 && selectedSound.prev().length == 1) {
 			updatedSelectedSound(selectedSound.prev());
 			return false;
+		
 		} else if (e.which == 39 && selectedSound.next().length == 1) {
 			updatedSelectedSound(selectedSound.next());
 			return false;
+		
 		//If nothing is selected, choose the first and eat the key press
 		} else {
+			
 			updatedSelectedSound(first);
+			
 			// If right/left were pressed, eat the keypress
 			if (e.which == 37 || e.which == 39) {
 				return false;
