@@ -65,7 +65,7 @@ $(document).ready(function() {
 	// Add keydown handler for the body and filter/search view.
 	$('body, #filterSounds').on('keydown', function(e) {
 		
-		var $focused = $(document.activeElement);
+		var focusedID = $(document.activeElement).attr('id');
 		
 		if (e.metaKey && e.which == 70) {
 			
@@ -75,7 +75,12 @@ $(document).ready(function() {
 		}
 		
 		
-		if ($focused.attr('id') == "speech" || $focused.attr('id') == "search" || $focused.attr('id') == "play") {
+		// if the other inputs are selected get out of this function
+		if (focusedID == "speech" || focusedID == "voices" || focusedID == "search" || focusedID == "play") {
+			
+			// if enter was pressed and the focus is on the select menu, submit the form
+			// I feel like there should have been a better way
+			if (e.which == 13 && focusedID == "voices") $("#sayForm").submit();
 			
 			return;
 		}
