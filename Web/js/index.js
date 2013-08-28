@@ -65,16 +65,29 @@ $(document).ready(function() {
 	// Add keydown handler for the body and filter/search view.
 	$('body, #filterSounds').on('keydown', function(e) {
 		
+		var $focused = $(document.activeElement);
+		
+		if (e.metaKey && e.which == 70) {
+			
+			$("#filterSounds").focus();
+			
+			return false;
+		}
+		
+		
+		if ($focused.attr('id') == "speech" || $focused.attr('id') == "search" || $focused.attr('id') == "play") {
+			
+			return;
+		}
+		
 		// console.log("keyHandler - " + e.which);
 		
 		first = $('#soundsList>ul>li').first();
 		
 		// console.log("  selectedSound.len = " + selectedSound.length);
 		
-		var $focused = $(document.activeElement);
-		
 		// On enter, play effect
-		if (e.which == 13 && selectedSound.length == 1 && $focused.attr('id') == "filterSounds" ) {
+		if (e.which == 13 && selectedSound.length == 1 ) {
 			
 			selectedSound.click();
 			return false;
