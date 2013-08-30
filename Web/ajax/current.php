@@ -21,5 +21,5 @@
 	
 	$result = system("/usr/local/bin/current " . $voice);
 	
-	echo "result: " . $result;
+	//echo "result: " . $result;
 ?>
