@@ -69,7 +69,7 @@ $(document).ready(function() {
 		
 		if (e.metaKey && e.which == 70) {
 			
-			$("#filterSounds").focus();
+			$("#filterSounds").focus().select();
 			
 			return false;
 		}
