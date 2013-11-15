@@ -28,7 +28,7 @@ if (!empty($_REQUEST['sounds'])) {
 	echo "sound of clover: " . $sound;
 	
 	// has some issues - would be good to use though since it ducks down the current music
-	// shell_exec('/usr/local/bin/fx ' . $sound);
+	// shell_exec('/Users/DesignAndDevelopment/Projects/scripts/fx ' . $sound);
 }
 
 ?>

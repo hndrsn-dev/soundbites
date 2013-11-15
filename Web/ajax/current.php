@@ -19,7 +19,7 @@
 	}
 	
 	
-	$result = system("/usr/local/bin/current " . $voice);
+	$result = system("/Users/DesignAndDevelopment/Projects/scripts/current " . $voice);
 	
 	//echo "result: " . $result;
 ?>
