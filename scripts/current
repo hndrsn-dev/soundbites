@@ -2,10 +2,10 @@
 
 # complements of @slaphost
 
-# /usr/bin/sudo -u DesignAndDevelopment /usr/bin/osascript "/Users/DesignAndDevelopment/Effects/currentlyplaying.scpt"
+# /usr/bin/sudo -u DesignAndDevelopment /usr/bin/osascript "/Users/DesignAndDevelopment/Projects/Sounds/applescripts/currentlyplaying.scpt"
 
 # echo "that's what's current"
 
-/usr/bin/osascript /Users/DesignAndDevelopment/Effects/currentlyplaying.scpt $1
+/usr/bin/osascript /Users/DesignAndDevelopment/Projects/Sounds/applescripts/currentlyplaying.scpt $1
 
 echo $1
