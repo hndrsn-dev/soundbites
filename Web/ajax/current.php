@@ -19,7 +19,7 @@
 	}
 	
 	
-	$result = system("/Users/DesignAndDevelopment/Projects/scripts/current " . $voice);
+	$result = system("/Users/DesignAndDevelopment/Projects/Sounds/scripts/current " . $voice);
 	
 	//echo "result: " . $result;
 ?>
