@@ -1,4 +1,5 @@
 <?php
+	
 	// my cousin jaffar started a shared working space for java developers called Java the Hut, free coffee and za and why fie for your internets, oh and skillers numb one hum hum of course
 	if (!empty($_REQUEST['speech'])) {
 		
@@ -20,6 +21,7 @@
 		system($command, $result);
 		
 		// log it
+		$conn = DB::getConn();
 		$stmt = $conn->prepare('INSERT INTO speeches (speech, voice, dateTime) VALUES(:speech, :voice, NOW())');
 		$stmt->bindParam(':speech', $speech);
 		$stmt->bindParam(':voice', $voice);

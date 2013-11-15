@@ -18,6 +18,8 @@ if (!empty($_REQUEST['sounds'])) {
 	system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/' . $sound);
 	
 	// log it
+	$conn = DB::getConn();
+	
 	$stmt = $conn->prepare('INSERT INTO soundsPlayed (sound, dateTime) VALUES(:sound, NOW())');
 	$stmt->bindParam(':sound', $sound);
 	$stmt->execute();
