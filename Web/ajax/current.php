@@ -21,5 +21,5 @@
 	
 	$result = system("/Users/DesignAndDevelopment/Projects/Sounds/scripts/current " . $voice);
 	
-	//echo "result: " . $result;
+	echo "result: " . $result;
 ?>

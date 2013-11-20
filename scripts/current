@@ -8,4 +8,4 @@
 
 /usr/bin/osascript /Users/DesignAndDevelopment/Projects/Sounds/applescripts/currentlyplaying.scpt $1
 
-echo $1
+# echo $1
