@@ -8,9 +8,7 @@ if (!empty($_REQUEST['sounds'])) {
 	
 	if ($sound == "earl-silence.mp3") {
 		system('killall afplay');
-	}
-	
-	if ($sound == "silence.mp3") {
+	} else if ($sound == "silence.mp3") {
 		system('ps -x'); // -x only pause (will not play music if none is playing)
 		system('killall afplay');
 	}

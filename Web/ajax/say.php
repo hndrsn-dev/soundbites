@@ -8,23 +8,37 @@
 		$voice = (!empty($_REQUEST["voice"])) ? $_REQUEST["voice"] : "albert";
 		$speech = mysql_escape_string(trim($_REQUEST['speech']));
 		
-		if ($voice == "siri") {
+		if ($speech == "#donuts#") {
+			// If this string is submitted, play a special sound...
+			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/hidden/donuts.mp3');
+	
+			// and log it
+			$conn = DB::getConn();
 			
-			// play siri sound
-			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/siri-start.mp3');
+			$stmt = $conn->prepare('INSERT INTO soundsPlayed (sound, dateTime) VALUES(:sound, NOW())');
+			$stmt->bindParam(':sound', $sound);
+			$stmt->execute();
+		} else {
+			// The normal case
+			if ($voice == "siri") {
 			
-			// set the voice to sam
-			$voice = "samantha";
+				// play siri sound
+				system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/siri-start.mp3');
+				
+				// set the voice to sam
+				$voice = "samantha";
+			}
+			
+			$command = '/usr/bin/say -v ' . $voice . ' ' . $speech;
+			
+			system($command, $result);
+		
+			// log it
+			$conn = DB::getConn();
+			$stmt = $conn->prepare('INSERT INTO speeches (speech, voice, dateTime) VALUES(:speech, :voice, NOW())');
+			$stmt->bindParam(':speech', $speech);
+			$stmt->bindParam(':voice', $voice);
+			$stmt->execute();
 		}
-		
-		$command = '/usr/bin/say -v ' . $voice . ' ' . $speech;
-		system($command, $result);
-		
-		// log it
-		$conn = DB::getConn();
-		$stmt = $conn->prepare('INSERT INTO speeches (speech, voice, dateTime) VALUES(:speech, :voice, NOW())');
-		$stmt->bindParam(':speech', $speech);
-		$stmt->bindParam(':voice', $voice);
-		$stmt->execute();
 	}
 ?>
