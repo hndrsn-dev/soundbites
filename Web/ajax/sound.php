@@ -7,10 +7,10 @@ if (!empty($_REQUEST['sounds'])) {
 	$sound = $_REQUEST['sounds'];
 	
 	if ($sound == "earl-silence.mp3") {
-		system('killall afplay');
+		//system('killall afplay');
 	} else if ($sound == "silence.mp3") {
-		system('ps -x'); // -x only pause (will not play music if none is playing)
-		system('killall afplay');
+		//system('ps -x'); // -x only pause (will not play music if none is playing)
+		//system('killall afplay');
 	}
 	
 	system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/' . $sound);
