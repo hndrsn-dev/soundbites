@@ -8,9 +8,11 @@
 		$voice = (!empty($_REQUEST["voice"])) ? $_REQUEST["voice"] : "albert";
 		$speech = mysql_escape_string(trim($_REQUEST['speech']));
 		
-		if ($speech == "#donuts#") {
+		# Play something in the hidden folder if it's name is surrounded by #'s
+		$matches = array();
+		if (preg_match('/^#(.*)#$/', $speech, $matches)) {
 			// If this string is submitted, play a special sound...
-			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/hidden/donuts.mp3');
+			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/hidden/' . $matches[1] .'.mp3');
 	
 			// and log it
 			$conn = DB::getConn();
