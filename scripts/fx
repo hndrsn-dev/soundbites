@@ -1,0 +1,72 @@
+#!/bin/sh
+
+#slaphost
+
+# usage fx file1.mp3 file2.mp3 etc, etc
+
+
+# store the path
+PATH="/Users/DesignAndDevelopment/Effects/"
+
+
+# store the current system volume
+SYS_VOL=`/usr/bin/osascript -e 'output volume of (get volume settings)'`
+
+IS_ITUNES=`/usr/bin/osascript -e 'tell application "System Events"' -e 'get (name of processes) contains "iTunes"' -e 'end tell'`
+IS_RDIO=`/usr/bin/osascript -e 'tell application "System Events"' -e 'get (name of processes) contains "Rdio"' -e 'end tell'`
+
+if $IS_RDIO ; then
+		
+	# store Rdio volume
+	RDIO_VOL=`/usr/bin/osascript -e 'tell application "Rdio"' -e 'get the sound volume' -e 'end tell'`
+	
+	# turn down Rdio
+	/usr/bin/osascript -e 'tell application "Rdio"' -e 'set the sound volume to 10' -e 'end tell'
+	
+fi
+
+if $IS_ITUNES ; then
+	
+	# store iTunes volume
+	ITUNES_VOL=`/usr/bin/osascript -e 'tell application "iTunes"' -e 'get the sound volume' -e 'end tell'`
+	
+	# turn down iTunes
+	/usr/bin/osascript -e 'tell application "iTunes"' -e 'set the sound volume to 10' -e 'end tell'
+	
+fi
+
+
+# turn up the system
+/usr/bin/osascript -e 'set volume output volume 55'
+
+
+for file in "$@"
+do
+	
+	# if the file exists
+	if [ -e "$PATH$file" ]; then
+		
+		# play the sound
+		/usr/bin/afplay $PATH$file
+		
+	fi
+	
+done
+
+
+
+# return system volume
+/usr/bin/osascript -e 'set volume output volume '$SYS_VOL
+
+
+if $IS_RDIO ; then
+	
+	# return rdio volume
+	/usr/bin/osascript -e 'tell application "Rdio"' -e 'set the sound volume to '$RDIO_VOL -e 'end tell'
+fi
+
+if $IS_ITUNES ; then
+	
+	# return rdio volume
+	/usr/bin/osascript -e 'tell application "iTunes"' -e 'set the sound volume to '$ITUNES_VOL -e 'end tell'
+fi

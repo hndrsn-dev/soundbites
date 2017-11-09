@@ -1,0 +1,27 @@
+#! /bin/sh
+
+PATH="/Users/DesignAndDevelopment/Effects/"
+
+echo "searching the internet..."
+
+/usr/bin/afplay /Users/DesignAndDevelopment/Effects/siri-start.mp3
+/usr/bin/say -v samantha ok, i searched the internet for;
+
+if [ -e "$PATH$1" ]; then
+
+	/usr/bin/afplay $PATH$1
+
+else
+	/usr/bin/say -v daniel $1
+fi
+
+
+if [ -z "$2" ]; then
+
+	/usr/bin/say -v samantha would you like to see the results?
+
+else
+	
+	/usr/bin/say -v samantha here are the results; /usr/bin/afplay /Users/DesignAndDevelopment/Effects/$2
+
+fi

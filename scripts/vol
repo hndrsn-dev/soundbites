@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# author @slaphost
+# if no argument, it will return the current volume level
+# if an argument it will use it to set the volume level
+
+if [ $# -lt 1 ]; then
+	vol="get output volume of (get volume settings)";
+else
+	vol="set volume output volume $1";
+fi
+
+echo $vol
+
+osascript -e "$vol"
+

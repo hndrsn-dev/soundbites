@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3F9DB4F2161636A400CFCCED /* icons.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 3F9DB4F1161636A400CFCCED /* icons.iconset */; };
+		3FE958A515E8278900571CBE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FE958A415E8278900571CBE /* Cocoa.framework */; };
+		3FE958AF15E8278900571CBE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3FE958AD15E8278900571CBE /* InfoPlist.strings */; };
+		3FE958B115E8278900571CBE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE958B015E8278900571CBE /* main.m */; };
+		3FE958B515E8278900571CBE /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 3FE958B315E8278900571CBE /* Credits.rtf */; };
+		3FE958B815E8278900571CBE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FE958B715E8278900571CBE /* AppDelegate.m */; };
+		3FE958BB15E8278900571CBE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3FE958B915E8278900571CBE /* MainMenu.xib */; };
+		3FE958C215E8297000571CBE /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FE958C115E8297000571CBE /* WebKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3F9DB4F1161636A400CFCCED /* icons.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; name = icons.iconset; path = "Sounds of Clover/icons.iconset"; sourceTree = "<group>"; };
+		3FE958A015E8278900571CBE /* Sounds of Clover.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sounds of Clover.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3FE958A415E8278900571CBE /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		3FE958A715E8278900571CBE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		3FE958A815E8278900571CBE /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		3FE958A915E8278900571CBE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3FE958AC15E8278900571CBE /* Sounds of Clover-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sounds of Clover-Info.plist"; sourceTree = "<group>"; };
+		3FE958AE15E8278900571CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3FE958B015E8278900571CBE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3FE958B215E8278900571CBE /* Sounds of Clover-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Sounds of Clover-Prefix.pch"; sourceTree = "<group>"; };
+		3FE958B415E8278900571CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		3FE958B615E8278900571CBE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		3FE958B715E8278900571CBE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		3FE958BA15E8278900571CBE /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		3FE958C115E8297000571CBE /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3FE9589D15E8278900571CBE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3FE958C215E8297000571CBE /* WebKit.framework in Frameworks */,
+				3FE958A515E8278900571CBE /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3FE9589515E8278900571CBE = {
+			isa = PBXGroup;
+			children = (
+				3F9DB4F1161636A400CFCCED /* icons.iconset */,
+				3FE958AA15E8278900571CBE /* Sounds of Clover */,
+				3FE958A315E8278900571CBE /* Frameworks */,
+				3FE958A115E8278900571CBE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3FE958A115E8278900571CBE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3FE958A015E8278900571CBE /* Sounds of Clover.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3FE958A315E8278900571CBE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3FE958C115E8297000571CBE /* WebKit.framework */,
+				3FE958A415E8278900571CBE /* Cocoa.framework */,
+				3FE958A615E8278900571CBE /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3FE958A615E8278900571CBE /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3FE958A715E8278900571CBE /* AppKit.framework */,
+				3FE958A815E8278900571CBE /* CoreData.framework */,
+				3FE958A915E8278900571CBE /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		3FE958AA15E8278900571CBE /* Sounds of Clover */ = {
+			isa = PBXGroup;
+			children = (
+				3FE958B615E8278900571CBE /* AppDelegate.h */,
+				3FE958B715E8278900571CBE /* AppDelegate.m */,
+				3FE958B915E8278900571CBE /* MainMenu.xib */,
+				3FE958AB15E8278900571CBE /* Supporting Files */,
+			);
+			path = "Sounds of Clover";
+			sourceTree = "<group>";
+		};
+		3FE958AB15E8278900571CBE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3FE958AC15E8278900571CBE /* Sounds of Clover-Info.plist */,
+				3FE958AD15E8278900571CBE /* InfoPlist.strings */,
+				3FE958B015E8278900571CBE /* main.m */,
+				3FE958B215E8278900571CBE /* Sounds of Clover-Prefix.pch */,
+				3FE958B315E8278900571CBE /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3FE9589F15E8278900571CBE /* Sounds of Clover */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3FE958BE15E8278900571CBE /* Build configuration list for PBXNativeTarget "Sounds of Clover" */;
+			buildPhases = (
+				3FE9589C15E8278900571CBE /* Sources */,
+				3FE9589D15E8278900571CBE /* Frameworks */,
+				3FE9589E15E8278900571CBE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Sounds of Clover";
+			productName = "Sounds of Clover";
+			productReference = 3FE958A015E8278900571CBE /* Sounds of Clover.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3FE9589715E8278900571CBE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "Jeremy Hicks";
+			};
+			buildConfigurationList = 3FE9589A15E8278900571CBE /* Build configuration list for PBXProject "Sounds of Clover" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3FE9589515E8278900571CBE;
+			productRefGroup = 3FE958A115E8278900571CBE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3FE9589F15E8278900571CBE /* Sounds of Clover */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3FE9589E15E8278900571CBE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3FE958AF15E8278900571CBE /* InfoPlist.strings in Resources */,
+				3FE958B515E8278900571CBE /* Credits.rtf in Resources */,
+				3FE958BB15E8278900571CBE /* MainMenu.xib in Resources */,
+				3F9DB4F2161636A400CFCCED /* icons.iconset in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3FE9589C15E8278900571CBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3FE958B115E8278900571CBE /* main.m in Sources */,
+				3FE958B815E8278900571CBE /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		3FE958AD15E8278900571CBE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3FE958AE15E8278900571CBE /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		3FE958B315E8278900571CBE /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3FE958B415E8278900571CBE /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		3FE958B915E8278900571CBE /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3FE958BA15E8278900571CBE /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3FE958BC15E8278900571CBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.7;
+			};
+			name = Debug;
+		};
+		3FE958BD15E8278900571CBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.7;
+			};
+			name = Release;
+		};
+		3FE958BF15E8278900571CBE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sounds of Clover/Sounds of Clover-Prefix.pch";
+				INFOPLIST_FILE = "Sounds of Clover/Sounds of Clover-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		3FE958C015E8278900571CBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Sounds of Clover/Sounds of Clover-Prefix.pch";
+				INFOPLIST_FILE = "Sounds of Clover/Sounds of Clover-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3FE9589A15E8278900571CBE /* Build configuration list for PBXProject "Sounds of Clover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3FE958BC15E8278900571CBE /* Debug */,
+				3FE958BD15E8278900571CBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3FE958BE15E8278900571CBE /* Build configuration list for PBXNativeTarget "Sounds of Clover" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3FE958BF15E8278900571CBE /* Debug */,
+				3FE958C015E8278900571CBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3FE9589715E8278900571CBE /* Project object */;
+}
