@@ -1,1 +1,11 @@
+node_modules
+coverage
+/.next
+/out
+
+/yarn-error.log
+
+*.crt
+*.key
+
 .DS_Store
