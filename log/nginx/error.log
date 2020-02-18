@@ -1,0 +1,5 @@
+<?php
+phpinfo();
+?>
+2020/02/13 11:09:02 [error] 84186#0: *1 kevent() reported that connect() failed (61: Connection refused) while connecting to upstream, client: 127.0.0.1, server: sounds.test, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9000", host: "sounds.test:3002"
+2020/02/13 11:09:03 [error] 84186#0: *1 kevent() reported that connect() failed (61: Connection refused) while connecting to upstream, client: 127.0.0.1, server: sounds.test, request: "GET / HTTP/1.1", upstream: "fastcgi://127.0.0.1:9000", host: "sounds.test:3002"

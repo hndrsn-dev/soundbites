@@ -1,0 +1,9 @@
+html
+  head
+    title= title
+  body
+    h1= message
+    div
+      each file in files
+        a(href=`/play/${file}`) #{file}
+        br

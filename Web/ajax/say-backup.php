@@ -11,7 +11,7 @@
 		if ($voice == "siri") {
 			
 			// play siri sound
-			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/siri-start.mp3');
+			system('/usr/bin/afplay /Users/jhicks/Projects/sounds/Effects/siri-start.mp3');
 			
 			// set the voice to sam
 			$voice = "samantha";

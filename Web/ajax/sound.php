@@ -12,7 +12,7 @@ if (!empty($_REQUEST['sounds'])) {
 		system('killall afplay');
 	}
 	
-	system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/' . $sound);
+	system('/usr/bin/afplay /Users/jhicks/Projects/sounds/Effects/' . $sound);
 	
 	// log it
 	$conn = DB::getConn();
@@ -25,7 +25,7 @@ if (!empty($_REQUEST['sounds'])) {
 	echo "sound of clover: " . $sound;
 	
 	// has some issues - would be good to use though since it ducks down the current music
-	// shell_exec('/Users/DesignAndDevelopment/Projects/Sounds/scripts/fx ' . $sound);
+	// shell_exec('/Users/jhicks/Projects/sounds/scripts/fx ' . $sound);
 }
 
 ?>

@@ -4,7 +4,7 @@
 	 */
 
 	//path to directory to scan
-	$directory = "/Users/DesignAndDevelopment/Effects/";
+	$directory = "/Users/jhicks/Projects/sounds/Effects/";
 	
 	//get all sound files.
 	$sounds = glob($directory . "{*.aiff,*.mp3,*.wav}", GLOB_BRACE);
@@ -14,5 +14,5 @@
 	
 	asort($sounds);
 	
-	system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/' . $sounds[rand(0, count($sounds) - 1)]);
+	system('/usr/bin/afplay /Users/jhicks/Projects/sounds/Effects/' . $sounds[rand(0, count($sounds) - 1)]);
 ?>

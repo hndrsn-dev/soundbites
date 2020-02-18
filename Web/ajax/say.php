@@ -12,7 +12,7 @@
 		$matches = array();
 		if (preg_match('/^#(.*)#$/', $speech, $matches)) {
 			// If this string is submitted, play a special sound...
-			system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/hidden/' . $matches[1] .'.mp3');
+			system('/usr/bin/afplay /Users/jhicks/Projects/sounds/Effects/hidden/' . $matches[1] .'.mp3');
 	
 			// and log it
 			$conn = DB::getConn();
@@ -25,7 +25,7 @@
 			if ($voice == "siri") {
 			
 				// play siri sound
-				system('/usr/bin/afplay /Users/DesignAndDevelopment/Effects/siri-start.mp3');
+				system('/usr/bin/afplay /Users/jhicks/Projects/sounds/Effects/siri-start.mp3');
 				
 				// set the voice to sam
 				$voice = "samantha";

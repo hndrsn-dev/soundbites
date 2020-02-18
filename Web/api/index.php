@@ -1,7 +1,7 @@
 <?php
 
 //path to directory to scan
-$directory = "/Users/DesignAndDevelopment/Effects/";
+$directory = "/Users/jhicks/Projects/sounds/Effects/";
  
 //get all sound files.
 $sounds = glob($directory . "{*.aiff,*.mp3,*.wav}", GLOB_BRACE);
