@@ -1,0 +1,17 @@
+{
+  "name": "sndbrd",
+  "version": "0.1.0",
+  "description": "Mac soundboard launcher — Option+Space to search and play",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron .",
+    "open": "open node_modules/electron/dist/Electron.app --args \"$PWD\"",
+    "generate": "node scripts/generate-metadata.js"
+  },
+  "dependencies": {
+    "fuse.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "electron": "^41.0.0"
+  }
+}
