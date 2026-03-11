@@ -111,7 +111,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   // ⌘\ — theme toggle
-  if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+  if ((e.metaKey || e.ctrlKey) && e.key === '/') {
     e.preventDefault();
     toggleTheme();
   }

@@ -25,7 +25,9 @@ const {
 } = _rawElectron;
 const path = require('path');
 
-const REPO_ROOT = path.resolve(__dirname, '..');
+const REPO_ROOT = app.isPackaged
+  ? process.resourcesPath
+  : path.resolve(__dirname, '..');
 const SOUNDS_JSON = path.join(REPO_ROOT, 'sounds.json');
 const EFFECTS_DIR = path.join(REPO_ROOT, 'Effects');
 

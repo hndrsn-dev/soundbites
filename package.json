@@ -6,12 +6,34 @@
   "scripts": {
     "start": "electron .",
     "open": "open node_modules/electron/dist/Electron.app --args \"$PWD\"",
-    "generate": "node scripts/generate-metadata.js"
+    "generate": "node scripts/generate-metadata.js",
+    "dist": "electron-builder --mac",
+    "dist-dir": "electron-builder --mac --dir"
   },
   "dependencies": {
     "fuse.js": "^7.0.0"
   },
   "devDependencies": {
-    "electron": "^41.0.0"
+    "electron": "^41.0.0",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.sndbrd.app",
+    "productName": "SNDBRD",
+    "files": [
+      "app/**",
+      "node_modules/fuse.js/dist/**"
+    ],
+    "extraResources": [
+      { "from": "Effects/", "to": "Effects/" },
+      { "from": "sounds.json", "to": "sounds.json" }
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }]
+    },
+    "dmg": {
+      "title": "SNDBRD"
+    }
   }
 }
