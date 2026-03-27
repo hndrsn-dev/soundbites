@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "figma": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/eron/Library/Application Support/Claude/Claude Extensions/ant.dir.ant.figma.figma/server/index.js"
+      ]
+    }
+  }
+}

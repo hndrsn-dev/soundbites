@@ -1,0 +1,201 @@
+/* ============================================================
+   SNDBTS Design Tokens — CSS Custom Properties
+   Source of truth: sndbts-tokens.json
+   Dark mode is default (:root). Light mode via [data-theme="light"].
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ── Primitives (resolved hex values) ─────────────────────── */
+:root {
+  /* Amber */
+  --amber-300: #F5C069;
+  --amber-400: #E8A030;
+  --amber-500: #D4821A;
+  --amber-550: #BF6E0C;
+  --amber-600: #A05A08;
+  --amber-alpha-10: rgba(212, 130, 26, 0.10);
+  --amber-alpha-18: rgba(212, 130, 26, 0.18);
+  --amber-alpha-30: rgba(212, 130, 26, 0.30);
+  --amber-alpha-40: rgba(212, 130, 26, 0.40);
+  --amber-light-alpha-09: rgba(191, 110, 12, 0.09);
+  --amber-light-alpha-14: rgba(191, 110, 12, 0.14);
+  --amber-light-alpha-28: rgba(191, 110, 12, 0.28);
+  --amber-light-alpha-38: rgba(191, 110, 12, 0.38);
+
+  /* Olive */
+  --olive-50: #F0EDE8;
+  --olive-100: #E8E4DC;
+  --olive-200: #4E4B46;
+  --olive-300: #2A2E27;
+  --olive-400: #323830;
+  --olive-500: #4E4B46;
+  --olive-700: #181B16;
+  --olive-850: #181B16;
+  --olive-880: #1E221B;
+  --olive-950: #10120E;
+
+  /* Sand */
+  --sand-100: #E8E4DC;
+  --sand-200: #E2DDD2;
+  --sand-300: #CBBCAA;
+  --sand-400: #C4BAAC;
+  --sand-500: #9A9288;
+  --sand-800: #E2DDD2;
+  --sand-850: #E0DAD0;
+  --sand-880: #EAE4D8;
+  --sand-950: #D8D2C6;
+
+  /* Sage */
+  --sage-200: #7B9E6B;
+  --sage-300: #6FA85C;
+  --sage-450: #4F6B42;
+  --sage-500: #7B9E6B;
+  --sage-600: #6FA85C;
+  --sage-700: #3E7030;
+  --sage-800: #4A7A3A;
+  --sage-850: #385E2C;
+  --sage-900: #385E2C;
+  --sage-alpha-10-dark: rgba(111, 168, 92, 0.10);
+  --sage-alpha-09-light: rgba(62, 112, 48, 0.09);
+  --sage-border-alpha-20-dark: rgba(111, 168, 92, 0.20);
+  --sage-border-alpha-18-light: rgba(62, 112, 48, 0.18);
+
+  /* Ink */
+  --ink-300: #8A857A;
+  --ink-500: #8A857A;
+  --ink-600: #5C5850;
+  --ink-900: #1C1F1A;
+
+  /* White/Black alphas */
+  --white-alpha-04: rgba(255, 255, 255, 0.04);
+  --white-alpha-05: rgba(255, 255, 255, 0.05);
+  --white-alpha-07: rgba(255, 255, 255, 0.07);
+  --black-alpha-04: rgba(0, 0, 0, 0.04);
+  --black-alpha-07: rgba(0, 0, 0, 0.07);
+  --black-alpha-15: rgba(0, 0, 0, 0.15);
+}
+
+/* ── Dark mode semantic tokens (default) ──────────────────── */
+:root {
+  /* Surfaces */
+  --surface-desktop:    #10120E;
+  --surface-card:       #1E221B;
+  --surface-input:      #181B16;
+  --surface-footer:     rgba(0, 0, 0, 0.15);
+  --surface-row-hover:  rgba(255, 255, 255, 0.07);
+  --surface-row-selected: rgba(212, 130, 26, 0.10);
+  --surface-row-playing:  rgba(111, 168, 92, 0.10);
+
+  /* Borders */
+  --border-default:  #2A2E27;
+  --border-light:    #323830;
+  --border-selected: rgba(212, 130, 26, 0.30);
+  --border-focus:    rgba(212, 130, 26, 0.40);
+  --border-playing:  rgba(111, 168, 92, 0.20);
+
+  /* Text */
+  --text-primary:   #E8E4DC;
+  --text-secondary: #8A857A;
+  --text-muted:     #4E4B46;
+  --text-playing:   #6FA85C;
+  --text-accent:    #E8A030;
+
+  /* Accent */
+  --accent-default: #D4821A;
+  --accent-text:    #E8A030;
+  --accent-glow:    rgba(212, 130, 26, 0.18);
+  --accent-border:  rgba(212, 130, 26, 0.40);
+
+  /* Status */
+  --status-playing:     #6FA85C;
+  --status-playing-dim: #4F6B42;
+  --status-sage:        #7B9E6B;
+
+  /* Shadows */
+  --shadow-launcher:     0 0 0 0.5px rgba(255,255,255,0.04) inset;
+  --shadow-input-default: inset 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-input-focus:  0 0 0 1px rgba(212,130,26,0.40), inset 0 1px 8px rgba(212,130,26,0.08), inset 0 0 24px rgba(212,130,26,0.04);
+
+  /* Interactive */
+  --interactive-hover-bg: rgba(255, 255, 255, 0.07);
+  --interactive-kbd-bg:   rgba(255, 255, 255, 0.05);
+  --interactive-tag-bg:   rgba(255, 255, 255, 0.04);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #2A2E27;
+}
+
+/* ── Light mode semantic tokens ───────────────────────────── */
+[data-theme="light"] {
+  /* Surfaces */
+  --surface-desktop:    #D8D2C6;
+  --surface-card:       #EAE4D8;
+  --surface-input:      #E0DAD0;
+  --surface-footer:     rgba(0, 0, 0, 0.04);
+  --surface-row-hover:  rgba(0, 0, 0, 0.07);
+  --surface-row-selected: rgba(191, 110, 12, 0.09);
+  --surface-row-playing:  rgba(62, 112, 48, 0.09);
+
+  /* Borders */
+  --border-default:  #CBBCAA;
+  --border-light:    #C4BAAC;
+  --border-selected: rgba(191, 110, 12, 0.28);
+  --border-focus:    rgba(191, 110, 12, 0.38);
+  --border-playing:  rgba(62, 112, 48, 0.18);
+
+  /* Text */
+  --text-primary:   #1C1F1A;
+  --text-secondary: #5C5850;
+  --text-muted:     #9A9288;
+  --text-playing:   #3E7030;
+  --text-accent:    #A05A08;
+
+  /* Accent */
+  --accent-default: #BF6E0C;
+  --accent-text:    #A05A08;
+  --accent-glow:    rgba(191, 110, 12, 0.14);
+  --accent-border:  rgba(191, 110, 12, 0.38);
+
+  /* Status */
+  --status-playing:     #3E7030;
+  --status-playing-dim: #385E2C;
+  --status-sage:        #4A7A3A;
+
+  /* Shadows */
+  --shadow-launcher:     0 0 0 0.5px rgba(255,255,255,0.55) inset;
+  --shadow-input-default: inset 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-input-focus:  0 0 0 1px rgba(191,110,12,0.38), inset 0 1px 8px rgba(191,110,12,0.08), inset 0 0 24px rgba(191,110,12,0.03);
+
+  /* Interactive */
+  --interactive-hover-bg: rgba(0, 0, 0, 0.07);
+  --interactive-kbd-bg:   rgba(0, 0, 0, 0.04);
+  --interactive-tag-bg:   rgba(0, 0, 0, 0.04);
+
+  /* Scrollbar */
+  --scrollbar-thumb: #C4BAAC;
+}
+
+/* ── Typography tokens ─────────────────────────────────────── */
+:root {
+  --font-mono: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+
+  --text-sound-name:     13px;
+  --text-search-input:   13px;
+  --text-tag-badge:      9px;
+  --text-category-meta:  10px;
+  --text-wordmark:       11px;
+  --text-column-header:  9px;
+  --text-kbd-hint:       9px;
+  --text-live-badge:     10px;
+
+  --ls-sound-name:    -0.02em;
+  --ls-search-input:  -0.01em;
+  --ls-tag-badge:      0.08em;
+  --ls-category-meta:  0.04em;  /* wide */
+  --ls-wordmark:       0.14em;
+  --ls-column-header:  0.10em;
+  --ls-kbd-hint:       0.04em;
+  --ls-live-badge:     0.06em;  /* wider */
+}

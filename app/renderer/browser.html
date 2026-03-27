@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNDBTS — browser preview</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Only for browser.html — page chrome around the launcher */
+    html, body {
+      min-height: 100%;
+      width: 100%;
+      max-width: none;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px 32px;
+      background: var(--surface-desktop);
+      gap: 12px;
+    }
+    .browser-demo-banner {
+      width: 100%;
+      max-width: 720px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.02em;
+      color: var(--text-secondary);
+      padding: 10px 14px;
+      background: var(--surface-input);
+      border: 1px solid var(--border-default);
+      border-radius: 8px;
+      line-height: 1.45;
+    }
+    .browser-demo-banner code {
+      font-size: 10px;
+      color: var(--accent-text);
+    }
+    .browser-demo-banner strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="browser-demo-banner">
+    <strong>Browser preview</strong> — same UI as the Electron app. Audio loads from <code>/Effects/…</code>.
+    Esc / close don’t hide the window; Import &amp; saving to disk are disabled (use the desktop app).
+    Run: <code>npm run browser</code> then open this page.
+  </div>
+
+<!-- ══════════════════════════════════════════════
+     Launcher (identical to index.html)
+══════════════════════════════════════════════ -->
+<div class="launcher" id="launcher">
+
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <div class="header">
+
+    <div class="top-row">
+
+      <div class="wordmark">
+        <div class="wordmark-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/>
+            <path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/>
+            <path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="wordmark-label">SNDBTS</span>
+      </div>
+
+      <div class="header-right">
+        <div class="live-badge" id="live-badge">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="live-count" id="live-count">0</span>
+          <span class="live-label">LIVE</span>
+        </div>
+
+        <span class="version-label">v0.1</span>
+
+        <div class="vertical-divider" aria-hidden="true"></div>
+
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme (⌘/)" aria-label="Toggle light/dark theme">
+          <svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/>
+          </svg>
+          <span class="kbd-hint-small">⌘/</span>
+        </button>
+
+        <div class="vertical-divider" aria-hidden="true"></div>
+
+        <button class="close-btn" id="close-btn" title="Close (Esc)" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-frame" id="search-frame">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+          <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          id="search-input"
+          placeholder="Search sounds…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <span class="search-kbd" aria-hidden="true">⌘K</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="gradient-divider" aria-hidden="true"></div>
+
+  <div class="column-headers" aria-hidden="true">
+    <span class="col-name">NAME</span>
+    <span class="col-meta">CAT · TAG · DUR</span>
+  </div>
+
+  <div class="results-list" id="results-list" role="listbox" aria-label="Sound results">
+    <div class="results-empty" id="results-empty" style="display:none;">
+      <span>No sounds found</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-hints">
+      <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+      <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+      <span class="kbd-hint"><kbd>⌘P</kbd> pin</span>
+      <span class="kbd-hint"><kbd>⌘/</kbd> theme</span>
+      <span class="kbd-hint"><kbd>⌘E</kbd> library</span>
+    </div>
+    <div class="footer-right">
+      <button type="button" class="footer-edit-btn" id="footer-edit-btn" title="Open library (⌘E)">Edit Library</button>
+    </div>
+    <div class="footer-playing" id="footer-playing" style="display:none;">
+      <div class="footer-waveform" aria-hidden="true">
+        <span class="wv-bar"></span>
+        <span class="wv-bar"></span>
+        <span class="wv-bar"></span>
+        <span class="wv-bar"></span>
+        <span class="wv-bar"></span>
+      </div>
+      <span class="footer-playing-name" id="footer-playing-name"></span>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../node_modules/fuse.js/dist/fuse.min.js"></script>
+<script src="browser-sndbts.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
