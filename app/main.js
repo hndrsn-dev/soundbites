@@ -5,7 +5,7 @@ if (typeof _rawElectron === 'string') {
   // This can happen when the Electron binary behaves as plain Node.
   // Print diagnostics and bail with a helpful message.
   process.stderr.write(
-    `[SNDBRD] ERROR: require('electron') returned a path string, not the Electron module.\n` +
+    `[SNDBTS] ERROR: require('electron') returned a path string, not the Electron module.\n` +
     `  process.type       = ${process.type}\n` +
     `  process.versions.electron = ${process.versions && process.versions.electron}\n` +
     `  Electron path = ${_rawElectron}\n`
@@ -16,6 +16,7 @@ if (typeof _rawElectron === 'string') {
 const {
   app,
   BrowserWindow,
+  dialog,
   globalShortcut,
   ipcMain,
   Tray,
@@ -24,6 +25,8 @@ const {
   shell,
 } = _rawElectron;
 const path = require('path');
+const fs = require('fs');
+const { importAudioFilesFromSourcePaths } = require('./lib/import-audio');
 
 const REPO_ROOT = app.isPackaged
   ? process.resourcesPath
@@ -32,7 +35,17 @@ const SOUNDS_JSON = path.join(REPO_ROOT, 'sounds.json');
 const EFFECTS_DIR = path.join(REPO_ROOT, 'Effects');
 
 let win = null;
+let libraryWin = null;
 let tray = null;
+
+function sendSoundsUpdated() {
+  if (win && !win.isDestroyed() && win.webContents) {
+    win.webContents.send('sounds-updated');
+  }
+  if (libraryWin && !libraryWin.isDestroyed() && libraryWin.webContents) {
+    libraryWin.webContents.send('sounds-updated');
+  }
+}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -55,11 +68,6 @@ function createWindow() {
   });
 
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
-
-  // Hide when focus is lost
-  win.on('blur', () => {
-    win.hide();
-  });
 
   win.on('closed', () => {
     win = null;
@@ -97,11 +105,11 @@ function createTray() {
   );
   tray = new Tray(icon);
   tray.setTitle('◉');
-  tray.setToolTip('SNDBRD');
+  tray.setToolTip('SNDBTS');
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show SNDBRD',
+      label: 'Show SNDBTS',
       click: toggleWindow,
     },
     { type: 'separator' },
@@ -121,6 +129,34 @@ function createTray() {
 
   tray.setContextMenu(contextMenu);
   tray.on('click', toggleWindow);
+}
+
+function createLibraryWindow() {
+  if (libraryWin && !libraryWin.isDestroyed()) {
+    libraryWin.show();
+    libraryWin.focus();
+    return;
+  }
+  libraryWin = new BrowserWindow({
+    width: 960,
+    height: 640,
+    minWidth: 640,
+    minHeight: 480,
+    show: false,
+    title: 'SNDBTS — Library',
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+  libraryWin.loadFile(path.join(__dirname, 'renderer', 'library.html'));
+  libraryWin.once('ready-to-show', () => {
+    if (libraryWin && !libraryWin.isDestroyed()) libraryWin.show();
+  });
+  libraryWin.on('closed', () => {
+    libraryWin = null;
+  });
 }
 
 app.whenReady().then(() => {
@@ -148,3 +184,48 @@ ipcMain.handle('get-effects-path', () => EFFECTS_DIR);
 ipcMain.on('hide-window', () => {
   if (win) win.hide();
 });
+
+ipcMain.handle('save-sounds', async (_, sounds) => {
+  const bakPath = SOUNDS_JSON + '.bak';
+  try {
+    if (fs.existsSync(SOUNDS_JSON)) {
+      fs.copyFileSync(SOUNDS_JSON, bakPath);
+    }
+    fs.writeFileSync(SOUNDS_JSON, JSON.stringify(sounds, null, 2));
+    sendSoundsUpdated();
+  } catch (err) {
+    console.error('save-sounds error:', err);
+    throw err;
+  }
+});
+
+ipcMain.handle('open-library-window', () => {
+  createLibraryWindow();
+});
+
+ipcMain.handle('import-sounds', async () => {
+  const parent = libraryWin && !libraryWin.isDestroyed() ? libraryWin : win;
+  const result = await dialog.showOpenDialog(parent || undefined, {
+    properties: ['openFile', 'multiSelections'],
+    filters: [{ name: 'Audio', extensions: ['mp3', 'wav'] }],
+  });
+  if (result.canceled || !result.filePaths.length) return { entries: [], paths: [] };
+  return importAudioFilesFromSourcePaths(result.filePaths, EFFECTS_DIR);
+});
+
+ipcMain.handle('import-sounds-from-paths', async (_, paths) => {
+  if (!Array.isArray(paths)) return { entries: [], paths: [] };
+  const abs = paths.filter((p) => typeof p === 'string' && path.isAbsolute(p));
+  return importAudioFilesFromSourcePaths(abs, EFFECTS_DIR);
+});
+
+ipcMain.handle('delete-imported-file', async (_, filename) => {
+  if (!filename || /[\\/]/.test(filename)) {
+    throw new Error('Invalid filename');
+  }
+  const filePath = path.join(EFFECTS_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+});
+

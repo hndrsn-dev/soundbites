@@ -20,12 +20,10 @@
     "source": "at",
     "category": "Adventure Time",
     "tags": [
-      "at",
-      "Lemongrab"
+      "at"
     ],
     "format": "mp3",
-    "duration": null,
-    "userEdited": true
+    "duration": null
   },
   {
     "id": "0003",
@@ -35,12 +33,10 @@
     "source": "at",
     "category": "Adventure Time",
     "tags": [
-      "at",
-      "Lemongrab"
+      "at"
     ],
     "format": "mp3",
-    "duration": null,
-    "userEdited": true
+    "duration": null
   },
   {
     "id": "0004",

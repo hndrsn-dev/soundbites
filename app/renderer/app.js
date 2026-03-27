@@ -13,6 +13,7 @@ let selectedIndex = 0;   // keyboard cursor position
 let playingId = null;    // id of currently playing sound
 let currentAudio = null; // HTMLAudioElement
 let effectsPath = '';    // absolute path to Effects/ dir
+let soundsPath = '';     // path to sounds.json (for re-load)
 let fuse = null;         // Fuse.js instance
 
 // ── DOM refs ───────────────────────────────────────────────
@@ -23,25 +24,49 @@ const liveCount    = document.getElementById('live-count');
 const themeToggle  = document.getElementById('theme-toggle');
 const footerPlaying    = document.getElementById('footer-playing');
 const footerPlayingName = document.getElementById('footer-playing-name');
+const footerEditBtn    = document.getElementById('footer-edit-btn');
+
+/** Load sounds.json in Electron (file://) or browser (http same-origin). */
+function fetchUrlForSoundsJson(sp) {
+  if (typeof sp === 'string' && (sp.startsWith('http://') || sp.startsWith('https://'))) {
+    return sp;
+  }
+  if (typeof sp === 'string' && sp.startsWith('/')) {
+    return `${window.location.origin}${sp}`;
+  }
+  return `file://${sp}`;
+}
+
+/** Audio file URL: Electron disk path vs browser static /Effects/... */
+function audioSrcForSound(sound) {
+  const rel = sound.path.replace(/^Effects\//, '');
+  if (effectsPath === '__browser__') {
+    const parts = rel.split('/').map(encodeURIComponent).join('/');
+    return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+  }
+  const filePath = `${effectsPath}/${rel}`;
+  return encodeURI(`file://${filePath}`);
+}
 
 // ── Init ───────────────────────────────────────────────────
 async function init() {
   // Load theme preference
-  const savedTheme = localStorage.getItem('sndbrd-theme');
+  const savedTheme = localStorage.getItem('sndbts-theme');
   if (savedTheme === 'light') {
     document.documentElement.setAttribute('data-theme', 'light');
   }
 
   // Get paths from main process
-  const [soundsPath, ep] = await Promise.all([
-    window.sndbrd.getSoundsPath(),
-    window.sndbrd.getEffectsPath(),
+  const [sp, ep] = await Promise.all([
+    window.sndbts.getSoundsPath(),
+    window.sndbts.getEffectsPath(),
   ]);
+  soundsPath = sp;
   effectsPath = ep;
 
   // Load sounds.json
   try {
-    const resp = await fetch(`file://${soundsPath}`);
+    const resp = await fetch(fetchUrlForSoundsJson(soundsPath));
     sounds = await resp.json();
   } catch (err) {
     console.error('Could not load sounds.json. Run: npm run generate', err);
@@ -57,6 +82,24 @@ async function init() {
     threshold: 0.4,
     minMatchCharLength: 1,
     includeScore: true,
+  });
+
+  window.sndbts.onSoundsUpdated(() => {
+    fetch(fetchUrlForSoundsJson(soundsPath))
+      .then(r => r.json())
+      .then(data => {
+        sounds = data;
+        if (fuse) {
+          fuse.setCollection(sounds);
+          const query = searchInput.value.trim();
+          filtered = query ? fuse.search(query).map(r => r.item) : sounds;
+        } else {
+          filtered = sounds;
+        }
+        renderResults();
+        updateLiveBadge();
+      })
+      .catch(console.error);
   });
 
   // Initial render (show all)
@@ -106,14 +149,20 @@ document.addEventListener('keydown', (e) => {
 
     case 'Escape':
       e.preventDefault();
-      window.sndbrd.hideWindow();
+      window.sndbts.hideWindow();
       break;
   }
 
-  // ⌘\ — theme toggle
+  // ⌘/ — theme toggle
   if ((e.metaKey || e.ctrlKey) && e.key === '/') {
     e.preventDefault();
     toggleTheme();
+  }
+
+  // ⌘E — library window
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E')) {
+    e.preventDefault();
+    window.sndbts.openLibraryWindow();
   }
 });
 
@@ -132,7 +181,6 @@ function scrollSelectedIntoView() {
 
 // ── Render Results ─────────────────────────────────────────
 function renderResults() {
-  // Clear existing rows (keep empty state element)
   const rows = resultsList.querySelectorAll('.sound-row');
   rows.forEach(r => r.remove());
 
@@ -156,6 +204,7 @@ function renderResults() {
 function buildSoundRow(sound, idx) {
   const row = document.createElement('div');
   row.className = 'sound-row';
+  if (sound.userAdded) row.classList.add('sound-row--user-added');
   row.dataset.id = sound.id;
   row.setAttribute('role', 'option');
   row.setAttribute('aria-label', sound.name);
@@ -179,7 +228,7 @@ function buildSoundRow(sound, idx) {
     <span class="sound-name">${escapeHtml(sound.name)}</span>
     <div class="sound-meta">
       <span class="sound-category">${escapeHtml(sound.category || '')}</span>
-      ${sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : ''}
+      ${(sound.tags && sound.tags.length) ? sound.tags.map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('') : (sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : '')}
       ${sound.duration ? `<span class="sound-duration">${escapeHtml(sound.duration)}</span>` : ''}
     </div>
   `;
@@ -218,8 +267,8 @@ function togglePlay(sound) {
 function playSound(sound) {
   stopPlayback();
 
-  const filePath = `${effectsPath}/${sound.path.replace(/^Effects\//, '')}`;
-  const audio = new Audio(encodeURI(`file://${filePath}`));
+  const src = audioSrcForSound(sound);
+  const audio = new Audio(src);
 
   audio.addEventListener('ended', () => {
     if (playingId === sound.id) {
@@ -228,7 +277,7 @@ function playSound(sound) {
   });
 
   audio.addEventListener('error', (e) => {
-    console.error('Audio error:', e, filePath);
+    console.error('Audio error:', e, src);
     stopPlayback();
   });
 
@@ -253,11 +302,13 @@ function stopPlayback() {
   playingId = null;
   renderResults();
   footerPlaying.style.display = 'none';
+  document.querySelector('.footer').classList.remove('is-playing');
 }
 
 function updateFooterPlaying(sound) {
   footerPlayingName.textContent = sound.name;
   footerPlaying.style.display = 'flex';
+  document.querySelector('.footer').classList.add('is-playing');
 }
 
 // ── Live Badge ─────────────────────────────────────────────
@@ -270,17 +321,25 @@ function toggleTheme() {
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   if (isLight) {
     document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('sndbrd-theme', 'dark');
+    localStorage.setItem('sndbts-theme', 'dark');
   } else {
     document.documentElement.setAttribute('data-theme', 'light');
-    localStorage.setItem('sndbrd-theme', 'light');
+    localStorage.setItem('sndbts-theme', 'light');
   }
 }
 
 themeToggle.addEventListener('click', toggleTheme);
 
+document.getElementById('close-btn').addEventListener('click', () => {
+  window.sndbts.hideWindow();
+});
+
+footerEditBtn.addEventListener('click', () => {
+  window.sndbts.openLibraryWindow();
+});
+
 // ── Window shown (re-focus and reset) ─────────────────────
-window.sndbrd.onWindowShown(() => {
+window.sndbts.onWindowShown(() => {
   searchInput.focus();
   searchInput.select();
 });

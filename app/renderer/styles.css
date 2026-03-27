@@ -1,5 +1,5 @@
 /* ============================================================
-   SNDBRD — Component Styles
+   SNDBTS — Component Styles
    All values reference CSS custom properties from tokens.css
    ============================================================ */
 
@@ -12,6 +12,8 @@
 
 html, body {
   width: 560px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   background: transparent;
   font-family: var(--font-mono);
@@ -30,8 +32,10 @@ body {
 .launcher {
   position: relative;
   width: 560px;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
   -webkit-app-region: drag;
-  max-height: 520px;
   background: var(--surface-card);
   border-radius: 12px;
   border: 1px solid var(--border-default);
@@ -175,10 +179,34 @@ body {
   color: var(--text-muted);
 }
 
+/* Close Button */
+.close-btn {
+  -webkit-app-region: no-drag;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s, background 0.15s;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+  background: var(--interactive-hover-bg);
+}
+
 /* ── No-drag zones (interactive elements) ─────────────────── */
 .search-wrap,
 .search-frame,
 .search-input,
+.close-btn,
 .theme-toggle,
 .results-list,
 .sound-row,
@@ -287,10 +315,12 @@ body {
 }
 
 /* ── Results List ──────────────────────────────────────────── */
+/* Fills space between header and footer; scrolls inside. Footer stays flush to bottom of card. */
 .results-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  max-height: 322px;
-  flex-shrink: 0;
 }
 
 /* Custom scrollbar */
@@ -476,6 +506,11 @@ body {
   color: var(--text-playing);
 }
 
+/* User-added row: sage accent bar (Phase 4) */
+.sound-row--user-added .selected-bar {
+  background: var(--status-playing);
+}
+
 /* ── Category & Meta (right side of row) ──────────────────── */
 .sound-meta {
   display: flex;
@@ -535,6 +570,38 @@ body {
   background: var(--surface-footer);
   border-top: 1px solid var(--border-default);
   flex-shrink: 0;
+  margin-top: auto;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-edit-btn {
+  -webkit-app-region: no-drag;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  height: 24px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.footer-edit-btn:hover {
+  color: var(--text-secondary);
+}
+
+/* When showing currently playing, hide edit button so one right block */
+.footer.is-playing .footer-right {
+  display: none;
 }
 
 /* Footer keyboard hints */

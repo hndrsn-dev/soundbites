@@ -1,11 +1,12 @@
 {
-  "name": "sndbrd",
+  "name": "sndbts",
   "version": "0.1.0",
-  "description": "Mac soundboard launcher — Option+Space to search and play",
+  "description": "Mac SoundBites launcher — Option+Space to search and play",
   "main": "app/main.js",
   "scripts": {
     "start": "electron .",
     "open": "open node_modules/electron/dist/Electron.app --args \"$PWD\"",
+    "browser": "npx --yes serve . -p 3847",
     "generate": "node scripts/generate-metadata.js",
     "dist": "electron-builder --mac",
     "dist-dir": "electron-builder --mac --dir"
@@ -18,8 +19,8 @@
     "electron-builder": "^26.8.1"
   },
   "build": {
-    "appId": "com.sndbrd.app",
-    "productName": "SNDBRD",
+    "appId": "com.sndbts.app",
+    "productName": "SNDBTS",
     "files": [
       "app/**",
       "node_modules/fuse.js/dist/**"
@@ -33,7 +34,7 @@
       "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }]
     },
     "dmg": {
-      "title": "SNDBRD"
+      "title": "SNDBTS"
     }
   }
 }
