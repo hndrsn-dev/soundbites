@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SNDBTS · Proposed Primitive Palette</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #10120E;
+    color: #E8E4DC;
+    font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+    padding: 56px 48px 80px;
+    min-height: 100vh;
+  }
+
+  .header {
+    margin-bottom: 56px;
+  }
+
+  .wordmark {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #4E4B46;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: #E8E4DC;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: #4E4B46;
+  }
+
+  .subtitle em {
+    color: #E8A030;
+    font-style: normal;
+  }
+
+  /* ── Groups ── */
+  .palette {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .group-name {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8A857A;
+  }
+
+  .group-note {
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: #4E4B46;
+  }
+
+  /* ── Swatches ── */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+
+  .swatch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .swatch-box {
+    width: 100%;
+    aspect-ratio: 1 / 1.1;
+    border-radius: 5px;
+    position: relative;
+    min-width: 0;
+  }
+
+  .swatch-col.is-core .swatch-box {
+    outline: 1.5px solid #E8A030;
+    outline-offset: 3px;
+  }
+
+  .core-label {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 7px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #E8A030;
+    background: rgba(0,0,0,0.55);
+    padding: 2px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* dot: amber = new derived value, no dot = existing value kept */
+  .new-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+  }
+
+  .swatch-stop {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: #4E4B46;
+    text-align: center;
+  }
+
+  .swatch-col.is-core .swatch-stop {
+    color: #E8A030;
+  }
+
+  .swatch-hex {
+    font-size: 8px;
+    letter-spacing: 0.02em;
+    color: #4E4B46;
+    text-align: center;
+  }
+
+  .swatch-was {
+    font-size: 7px;
+    letter-spacing: 0.02em;
+    color: #2A2E27;
+    text-align: center;
+    margin-top: -4px;
+  }
+
+  /* ── Changes summary ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #1E221B;
+    margin: 8px 0 4px;
+  }
+
+  .changes {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 48px;
+  }
+
+  .change-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .change-group-title {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8A857A;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1E221B;
+  }
+
+  .change-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.02em;
+    color: #4E4B46;
+    line-height: 1.6;
+  }
+
+  .tag {
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .tag.drop  { background: #2A2E27; color: #8A857A; }
+  .tag.merge { background: #2A2E27; color: #E8A030; }
+  .tag.add   { background: #1E221B; color: #6FA85C; }
+  .tag.rename { background: #1E221B; color: #8A857A; }
+
+  /* legend */
+  .legend {
+    margin-top: 48px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    color: #4E4B46;
+    text-transform: uppercase;
+  }
+
+  .legend-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    flex-shrink: 0;
+  }
+
+  .legend-outline {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    border: 1.5px solid #E8A030;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wordmark">SNDBTS · Design System</div>
+  <div class="title">Proposed Primitive Palette</div>
+  <div class="subtitle">Review only — <em>no token changes have been made.</em> Confirm to apply.</div>
+</div>
+
+<div class="palette">
+
+  <!-- ── AMBER ────────────────────────────────── -->
+  <div class="group">
+    <div class="group-header">
+      <div class="group-name">Amber</div>
+      <div class="group-note">core #E8A030 · hsl(37°, 80%) · +2 new light stops · 550 renumbered → 600 · 600 → 700</div>
+    </div>
+    <div class="swatches">
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#F9F0E1">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">100</div>
+        <div class="swatch-hex">#F9F0E1</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#F2DBB5">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">200</div>
+        <div class="swatch-hex">#F2DBB5</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#F5C069"></div>
+        <div class="swatch-stop">300</div>
+        <div class="swatch-hex">#F5C069</div>
+        <div class="swatch-was">was 300</div>
+      </div>
+
+      <div class="swatch-col is-core">
+        <div class="swatch-box" style="background:#E8A030">
+          <div class="core-label">core</div>
+        </div>
+        <div class="swatch-stop">400</div>
+        <div class="swatch-hex">#E8A030</div>
+        <div class="swatch-was">was 400</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#D4821A"></div>
+        <div class="swatch-stop">500</div>
+        <div class="swatch-hex">#D4821A</div>
+        <div class="swatch-was">was 500</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#BF6E0C"></div>
+        <div class="swatch-stop">600</div>
+        <div class="swatch-hex">#BF6E0C</div>
+        <div class="swatch-was">was 550</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#A05A08"></div>
+        <div class="swatch-stop">700</div>
+        <div class="swatch-hex">#A05A08</div>
+        <div class="swatch-was">was 600</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── OLIVE ────────────────────────────────── -->
+  <div class="group">
+    <div class="group-header">
+      <div class="group-name">Olive</div>
+      <div class="group-note">core #454D42 · hsl(100°, 8%) · full rederive · existing semantics preserved within ~2 hex units</div>
+    </div>
+    <div class="swatches">
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#E5E8E3">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">100</div>
+        <div class="swatch-hex">#E5E8E3</div>
+        <div class="swatch-was">≈ old 100</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#B7BDB2">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">200</div>
+        <div class="swatch-hex">#B7BDB2</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#7E8877">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">300</div>
+        <div class="swatch-hex">#7E8877</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col is-core">
+        <div class="swatch-box" style="background:#454D42">
+          <div class="core-label">core</div>
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">400</div>
+        <div class="swatch-hex">#454D42</div>
+        <div class="swatch-was">≈ old 200/500</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#2D322A">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">500</div>
+        <div class="swatch-hex">#2D322A</div>
+        <div class="swatch-was">≈ old 300</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#1E211C">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">600</div>
+        <div class="swatch-hex">#1E211C</div>
+        <div class="swatch-was">≈ old 880</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#111311">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">700</div>
+        <div class="swatch-hex">#111311</div>
+        <div class="swatch-was">≈ old 950</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SAND ────────────────────────────────── -->
+  <div class="group">
+    <div class="group-header">
+      <div class="group-name">Sand</div>
+      <div class="group-note">core #CBBCAA · hsl(30°, 24%) · 300+400 condensed → 300 · backwards 800–950 range dropped</div>
+    </div>
+    <div class="swatches">
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#EBE6E0">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">100</div>
+        <div class="swatch-hex">#EBE6E0</div>
+        <div class="swatch-was">≈ old 880</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#E0D6CD">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">200</div>
+        <div class="swatch-hex">#E0D6CD</div>
+        <div class="swatch-was">≈ old 200/800</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#D4C7B9">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">300</div>
+        <div class="swatch-hex">#D4C7B9</div>
+        <div class="swatch-was">merge 300+400</div>
+      </div>
+
+      <div class="swatch-col is-core">
+        <div class="swatch-box" style="background:#CBBCAA">
+          <div class="core-label">core</div>
+        </div>
+        <div class="swatch-stop">400</div>
+        <div class="swatch-hex">#CBBCAA</div>
+        <div class="swatch-was">was 300</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#A8998A">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">500</div>
+        <div class="swatch-hex">#A8998A</div>
+        <div class="swatch-was">≈ old 500</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#837567">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">600</div>
+        <div class="swatch-hex">#837567</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#5A5249">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">700</div>
+        <div class="swatch-hex">#5A5249</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SAGE ────────────────────────────────── -->
+  <div class="group">
+    <div class="group-header">
+      <div class="group-name">Sage</div>
+      <div class="group-note">core #6FA85C · hsl(105°, 30%) · +3 new light stops · keep 450 → 500 · keep 700 → 600</div>
+    </div>
+    <div class="swatches">
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#E8F0E6">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">100</div>
+        <div class="swatch-hex">#E8F0E6</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#C1D5B8">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">200</div>
+        <div class="swatch-hex">#C1D5B8</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#9ABF8D">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">300</div>
+        <div class="swatch-hex">#9ABF8D</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+      <div class="swatch-col is-core">
+        <div class="swatch-box" style="background:#6FA85C">
+          <div class="core-label">core</div>
+        </div>
+        <div class="swatch-stop">400</div>
+        <div class="swatch-hex">#6FA85C</div>
+        <div class="swatch-was">was 300/600</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#4F6B42"></div>
+        <div class="swatch-stop">500</div>
+        <div class="swatch-hex">#4F6B42</div>
+        <div class="swatch-was">was 450</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#3E7030"></div>
+        <div class="swatch-stop">600</div>
+        <div class="swatch-hex">#3E7030</div>
+        <div class="swatch-was">was 700</div>
+      </div>
+
+      <div class="swatch-col">
+        <div class="swatch-box" style="background:#253D1F">
+          <div class="new-dot"></div>
+        </div>
+        <div class="swatch-stop">700</div>
+        <div class="swatch-hex">#253D1F</div>
+        <div class="swatch-was">new</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Changes Summary ───────────────────── -->
+<div class="changes">
+
+  <div class="change-group">
+    <div class="change-group-title">Amber changes</div>
+    <div class="change-row"><span class="tag add">add</span> amber-100 #F9F0E1 — new light stop</div>
+    <div class="change-row"><span class="tag add">add</span> amber-200 #F2DBB5 — new light stop</div>
+    <div class="change-row"><span class="tag rename">rename</span> amber-550 → amber-600 (same value #BF6E0C)</div>
+    <div class="change-row"><span class="tag rename">rename</span> amber-600 → amber-700 (same value #A05A08)</div>
+  </div>
+
+  <div class="change-group">
+    <div class="change-group-title">Olive changes</div>
+    <div class="change-row"><span class="tag drop">drop</span> olive-50 #F0EDE8 — unused</div>
+    <div class="change-row"><span class="tag drop">drop</span> olive-200/500 duplicate #4E4B46 — absorbed into new 400</div>
+    <div class="change-row"><span class="tag drop">drop</span> olive-700/850 duplicate #181B16</div>
+    <div class="change-row"><span class="tag drop">drop</span> olive-880 #1E221B · olive-950 #10120E — renumbered</div>
+    <div class="change-row"><span class="tag add">add</span> Full 7-stop ramp on hsl(100°, 8%) — all semantic values preserved within ±2 hex</div>
+  </div>
+
+  <div class="change-group">
+    <div class="change-group-title">Sand changes</div>
+    <div class="change-row"><span class="tag drop">drop</span> sand-200/800 duplicate #E2DDD2</div>
+    <div class="change-row"><span class="tag drop">drop</span> sand-850 #E0DAD0 · sand-880 #EAE4D8 · sand-950 #D8D2C6 — backwards numbering</div>
+    <div class="change-row"><span class="tag merge">merge</span> sand-300 #CBBCAA + sand-400 #C4BAAC → new sand-300 #D4C7B9</div>
+    <div class="change-row"><span class="tag rename">rename</span> old sand-300 #CBBCAA → new sand-400 (core)</div>
+    <div class="change-row"><span class="tag add">add</span> sand-600 #837567 · sand-700 #5A5249 — new dark stops</div>
+  </div>
+
+  <div class="change-group">
+    <div class="change-group-title">Sage changes</div>
+    <div class="change-row"><span class="tag drop">drop</span> sage-200/500 duplicate #7B9E6B</div>
+    <div class="change-row"><span class="tag drop">drop</span> sage-300/600 duplicate #6FA85C — kept as new 400 core</div>
+    <div class="change-row"><span class="tag drop">drop</span> sage-800 #4A7A3A — absorbed by new 500</div>
+    <div class="change-row"><span class="tag drop">drop</span> sage-850/900 duplicate #385E2C — absorbed by new 600/700</div>
+    <div class="change-row"><span class="tag rename">rename</span> sage-450 → sage-500 · sage-700 → sage-600</div>
+    <div class="change-row"><span class="tag add">add</span> sage-100 · 200 · 300 · 700 — new light + dark stops</div>
+  </div>
+
+</div>
+
+<!-- ── Legend ───────────────────────────── -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot"></div>
+    new / derived value
+  </div>
+  <div class="legend-item">
+    <div class="legend-outline"></div>
+    core (400) — base for scale
+  </div>
+  <div class="legend-item" style="color:#4E4B46">
+    no indicator = existing hex value kept unchanged
+  </div>
+</div>
+
+</body>
+</html>
