@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNDBTS — Design System</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="atoms.css" />
+  <link rel="stylesheet" href="molecules.css" />
+  <link rel="stylesheet" href="organisms.css" />
+  <link rel="stylesheet" href="library.css" />
+  <style>
+    /* ── Showcase page overrides ──────────────────────────────── */
+    html, body {
+      width: auto !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      overflow: auto !important;
+      background: var(--surface-desktop) !important;
+      display: block !important;
+      padding: 0 !important;
+    }
+
+    /* ── Page layout ──────────────────────────────────────────── */
+    .ds-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+
+    /* ── Page header ──────────────────────────────────────────── */
+    .ds-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 48px;
+      background: var(--surface-desktop);
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .ds-page-header-spacer {
+      height: 88px;
+      margin-bottom: 32px;
+    }
+
+    .ds-page-title {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin: 0 0 6px;
+    }
+
+    .ds-page-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .ds-theme-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border-default);
+      background: var(--surface-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .ds-theme-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-selected);
+    }
+
+    /* ── Section ──────────────────────────────────────────────── */
+    .ds-section {
+      margin-bottom: 64px;
+    }
+
+    .ds-section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-default);
+    }
+
+    .ds-section-title {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-accent);
+      margin: 0;
+    }
+
+    .ds-section-desc {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Component rows ───────────────────────────────────────── */
+    .ds-row {
+      margin-bottom: 32px;
+    }
+
+    .ds-row-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* ── Two-column dark/light comparison ─────────────────────── */
+    .ds-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-default);
+    }
+
+    .ds-preview {
+      padding: 20px;
+      background: var(--surface-card);
+    }
+
+    .ds-preview[data-theme="light"] {
+      background: var(--surface-card);
+    }
+
+    .ds-preview-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      opacity: 0.6;
+    }
+
+    /* ── Wide preview (full-width, no comparison) ─────────────── */
+    .ds-preview-wide {
+      padding: 20px;
+      background: var(--surface-card);
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+    }
+
+    /* ── Inline flex group for side-by-side atoms ─────────────── */
+    .ds-inline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ds-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .ds-item-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    /* ── Color primitives — inline-styled swatch spans ──────── */
+    #color-primitives span {
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Color swatches ───────────────────────────────────────── */
+    .ds-swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 72px);
+      gap: 8px;
+    }
+
+    .ds-swatch {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .ds-swatch-color {
+      width: 72px;
+      height: 36px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .ds-swatch-name {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      width: 72px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ds-swatch-value {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-secondary);
+      width: 72px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Typography scale ─────────────────────────────────────── */
+    .ds-type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .ds-type-row:last-child {
+      border-bottom: none;
+    }
+
+    .ds-type-meta {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      width: 180px;
+      flex-shrink: 0;
+    }
+
+    /* ── Organism framing ─────────────────────────────────────── */
+    .ds-organism-frame {
+      background: var(--surface-desktop);
+      border-radius: 10px;
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+    }
+
+    /* ── Template: launcher frame ─────────────────────────────── */
+    .ds-launcher-frame {
+      width: 560px;
+      height: 480px;
+      position: relative;
+    }
+
+    .ds-launcher-frame .launcher {
+      height: 480px;
+      max-height: 480px;
+    }
+
+    /* ── Template: library frame ──────────────────────────────── */
+    .ds-library-frame {
+      background: var(--surface-desktop);
+      border-radius: 8px;
+      border: 1px solid var(--border-default);
+      overflow: hidden;
+      padding: 16px 20px 12px;
+    }
+
+    /* ── State labels ─────────────────────────────────────────── */
+    .ds-states {
+      display: flex;
+      gap: 2px;
+    }
+
+    .ds-state {
+      flex: 1;
+    }
+
+    .ds-state-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 0 8px 12px;
+      opacity: 0.6;
+    }
+
+    /* ── Gap utility ──────────────────────────────────────────── */
+    .ds-gap-sm { margin-bottom: 12px; }
+    .ds-gap-md { margin-bottom: 20px; }
+
+    /* ── Color swatch labels ──────────────────────────────────── */
+    #color-primitives span[style*="font-size:9px"] {
+      display: block;
+      width: 80px;
+      text-align: center;
+      word-break: break-all;
+      line-height: 1.4;
+      letter-spacing: 0 !important;
+      white-space: normal;
+    }
+
+    /* ── Section divider between atom groups ──────────────────── */
+    .ds-group-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .ds-group-title:first-child {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="ds-page">
+
+  <!-- ══════════════════════════════════════════════
+       PAGE HEADER
+  ══════════════════════════════════════════════ -->
+  <div class="ds-page-header">
+    <div>
+      <h1 class="ds-page-title">SNDBTS Design System</h1>
+      <p class="ds-page-subtitle">Atoms → Molecules → Organisms → Templates &nbsp;·&nbsp; Dark / Light</p>
+    </div>
+    <button class="ds-theme-btn" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+  <div class="ds-page-header-spacer"></div>
+
+  <!-- ══════════════════════════════════════════════
+       COLOR PRIMITIVES
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="color-primitives">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Color Primitives</h2>
+      <span class="ds-section-desc">Resolved hex/rgba values. Semantic tokens reference these. Defined in <code style="font-size:10px;color:var(--text-secondary)">tokens.css</code>.</span>
+    </div>
+
+    <!-- Amber -->
+    <div class="ds-row">
+      <div class="ds-row-label">Amber</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-100);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-100</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#F9F0E1</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-200);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-200</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#F2DBB5</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-300);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#F5C069</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-400);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-400</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#E8A030</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-500);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-500</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#D4821A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-600);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#BF6E0C</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--amber-700);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--amber-700</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#A05A08</span></div>
+      </div>
+    </div>
+
+    <!-- Olive -->
+    <div class="ds-row">
+      <div class="ds-row-label">Olive</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-100);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-100</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#E5E8E3</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-200);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-200</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#B7BDB2</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-300);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#7E8877</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-400);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-400</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#454D42</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-500);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-500</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#2D322A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-600);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#1E211C</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--olive-700);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--olive-700</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#111311</span></div>
+      </div>
+    </div>
+
+    <!-- Sand -->
+    <div class="ds-row">
+      <div class="ds-row-label">Sand</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-100);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-100</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#EBE6E0</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-200);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-200</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#E0D6CD</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-300);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#D4C7B9</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-400);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-400</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#CBBCAA</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-500);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-500</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#A8998A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-600);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#837567</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sand-700);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sand-700</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#5A5249</span></div>
+      </div>
+    </div>
+
+    <!-- Sage -->
+    <div class="ds-row">
+      <div class="ds-row-label">Sage</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-100);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-100</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#E8F0E6</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-200);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-200</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#C1D5B8</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-300);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#9ABF8D</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-400);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-400</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#6FA85C</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-500);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-500</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#4F6B42</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-600);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#3E7030</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--sage-700);border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--sage-700</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#253D1F</span></div>
+      </div>
+    </div>
+
+    <!-- Ink -->
+    <div class="ds-row">
+      <div class="ds-row-label">Ink</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#8A857A;border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#8A857A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#5C5850;border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#5C5850</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#1C1F1A;border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-900</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#1C1F1A</span></div>
+      </div>
+    </div>
+
+    <!-- Alpha Scale -->
+    <div class="ds-row">
+      <div class="ds-row-label">Alpha Scale</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(212,130,26,0.10);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--amber-alpha-10</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(212,130,26,.10)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(212,130,26,0.20);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--amber-alpha-20</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(212,130,26,.20)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(212,130,26,0.30);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--amber-alpha-30</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(212,130,26,.30)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(212,130,26,0.40);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--amber-alpha-40</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(212,130,26,.40)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(111,168,92,0.10);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--sage-alpha-10</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(111,168,92,.10)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(111,168,92,0.20);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--sage-alpha-20</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(111,168,92,.20)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(0,0,0,0.04);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--black-alpha-04</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(0,0,0,.04)</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:rgba(0,0,0,0.15);border:1px solid var(--border-default)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary)">--black-alpha-15</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">rgba(0,0,0,.15)</span></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       SPACING
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="spacing">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Spacing</h2>
+      <span class="ds-section-desc">Base-4 grid. Prefer multiples of 8 for padding and gaps.</span>
+    </div>
+
+    <div class="ds-row">
+      <div class="ds-row-label">Rule</div>
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);line-height:1.6;max-width:640px;margin:0 0 8px">
+        All layout spacing — padding, margin, gap — must be a <strong style="color:var(--text-primary)">multiple of 4px</strong>.
+        Prefer <strong style="color:var(--text-primary)">multiples of 8px</strong> wherever possible.
+        Use 4px only in dense/compact contexts (icon padding, tight inline gaps).
+      </p>
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);line-height:1.6;max-width:640px;margin:0">
+        <strong style="color:var(--text-secondary)">Exceptions:</strong>
+        1px–2px values are acceptable for borders, hairlines, and purely decorative pixel elements
+        (waveform bar heights, indicator dot sizes). These are not layout spacing and are not subject to the grid.
+      </p>
+    </div>
+
+    <div class="ds-row">
+      <div class="ds-row-label">Scale</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap">
+        <!-- 4px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:4px;height:4px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">4</span>
+        </div>
+        <!-- 8px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:8px;height:8px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">8</span>
+        </div>
+        <!-- 12px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:12px;height:12px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">12</span>
+        </div>
+        <!-- 16px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:16px;height:16px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">16</span>
+        </div>
+        <!-- 24px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:24px;height:24px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">24</span>
+        </div>
+        <!-- 32px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">32</span>
+        </div>
+        <!-- 40px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:40px;height:40px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">40</span>
+        </div>
+        <!-- 48px -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="width:48px;height:48px;background:var(--accent-default);border-radius:1px"></div>
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.08em;color:var(--text-muted)">48</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-row">
+      <div class="ds-row-label">Usage examples</div>
+      <table style="border-collapse:collapse;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary)">
+        <thead>
+          <tr style="color:var(--text-muted);font-size:9px;letter-spacing:0.08em;text-transform:uppercase">
+            <th style="padding:4px 24px 4px 0;text-align:left;font-weight:400">Value</th>
+            <th style="padding:4px 24px 4px 0;text-align:left;font-weight:400">Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">4px</td><td style="padding:4px 0">Icon padding, badge inner padding, hairline gaps</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">8px</td><td style="padding:4px 0">Row padding (v), tight component gaps, small margins</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">12px</td><td style="padding:4px 0">Row padding (h), section inner gaps, panel padding (v)</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">16px</td><td style="padding:4px 0">Panel padding (h), card padding, comfortable component spacing</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">24px</td><td style="padding:4px 0">Section margins, drop-zone padding, page-level breathing room</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">32px</td><td style="padding:4px 0">Empty-state padding, large section gaps</td></tr>
+          <tr><td style="padding:4px 24px 4px 0;color:var(--accent-text)">40–48px</td><td style="padding:4px 0">Page-level outer padding</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
+       ATOMS
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="atoms">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Atoms</h2>
+      <span class="ds-section-desc">Smallest indivisible elements. No component dependencies.</span>
+    </div>
+
+    <!-- Color Palette -->
+    <div class="ds-row">
+      <div class="ds-row-label">Color Palette — Surfaces</div>
+      <div class="ds-preview-wide">
+        <p class="ds-group-title">Surfaces</p>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-desktop)"></div><div class="ds-swatch-name">Desktop</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-card)"></div><div class="ds-swatch-name">Card</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-input)"></div><div class="ds-swatch-name">Input</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-footer)"></div><div class="ds-swatch-name">Footer</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-row-hover)"></div><div class="ds-swatch-name">Row Hover</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-row-selected)"></div><div class="ds-swatch-name">Selected</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--surface-row-playing)"></div><div class="ds-swatch-name">Playing</div></div>
+        </div>
+        <p class="ds-group-title">Borders</p>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--border-default)"></div><div class="ds-swatch-name">Default</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--border-light)"></div><div class="ds-swatch-name">Light</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--border-selected)"></div><div class="ds-swatch-name">Selected</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--border-focus)"></div><div class="ds-swatch-name">Focus</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--border-playing)"></div><div class="ds-swatch-name">Playing</div></div>
+        </div>
+        <p class="ds-group-title">Text</p>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--text-primary)"></div><div class="ds-swatch-name">Primary</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--text-secondary)"></div><div class="ds-swatch-name">Secondary</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--text-muted)"></div><div class="ds-swatch-name">Muted</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--text-playing)"></div><div class="ds-swatch-name">Playing</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--text-accent)"></div><div class="ds-swatch-name">Accent</div></div>
+        </div>
+        <p class="ds-group-title">Accent &amp; Status</p>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-default)"></div><div class="ds-swatch-name">Accent</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-text)"></div><div class="ds-swatch-name">Accent Text</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-glow)"></div><div class="ds-swatch-name">Accent Glow</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-playing)"></div><div class="ds-swatch-name">Playing</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-playing-dim)"></div><div class="ds-swatch-name">Playing Dim</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-sage)"></div><div class="ds-swatch-name">Sage</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="ds-row">
+      <div class="ds-row-label">Typography Scale — JetBrains Mono</div>
+      <div class="ds-preview-wide">
+        <div class="ds-type-row">
+          <div class="ds-type-meta">sound-name · 13px · -0.02em</div>
+          <span style="font-size:var(--text-sound-name);letter-spacing:var(--ls-sound-name);color:var(--text-primary)">Kick Transient Heavy · Sound Name</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">search-input · 13px · -0.01em</div>
+          <span style="font-size:var(--text-search-input);letter-spacing:var(--ls-search-input);color:var(--text-primary)">Search sounds…</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">wordmark · 11px · 0.14em</div>
+          <span style="font-size:var(--text-wordmark);letter-spacing:var(--ls-wordmark);font-weight:500;text-transform:uppercase;color:var(--text-primary)">SNDBTS</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">live-badge · 10px · 0.06em</div>
+          <span style="font-size:var(--text-live-badge);letter-spacing:var(--ls-live-badge);color:var(--text-secondary)">42 LIVE</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">category-meta · 10px · 0.04em</div>
+          <span style="font-size:var(--text-category-meta);letter-spacing:var(--ls-category-meta);color:var(--text-secondary)">DRUMS · 0:03</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">kbd-hint · 9px · 0.04em</div>
+          <span style="font-size:var(--text-kbd-hint);letter-spacing:var(--ls-kbd-hint);color:var(--text-muted)">↵ play/stop</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">column-header · 9px · 0.10em</div>
+          <span style="font-size:var(--text-column-header);letter-spacing:var(--ls-column-header);text-transform:uppercase;color:var(--text-muted)">NAME &nbsp;&nbsp; CAT · TAG · DUR</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">tag-badge · 9px · 0.08em</div>
+          <span style="font-size:var(--text-tag-badge);letter-spacing:var(--ls-tag-badge);text-transform:uppercase;color:var(--text-muted)">808 · KICK · SFX</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Primitive elements -->
+    <div class="ds-row">
+      <div class="ds-row-label">Primitive Elements</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="ds-inline">
+            <div class="ds-item">
+              <div class="ds-item-label">live-dot</div>
+              <span class="live-dot"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">tag-badge</div>
+              <span class="tag-badge">Kick</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd</div>
+              <kbd>↵</kbd>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">vertical-divider</div>
+              <div style="display:flex;align-items:center;height:20px"><span class="vertical-divider"></span></div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">version-label</div>
+              <span class="version-label">v0.1</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">pi-dot</div>
+              <span class="pi-dot"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">pi-triangle</div>
+              <span class="pi-triangle"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">wv-bar</div>
+              <span class="wv-bar" style="height:12px"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">selected-bar</div>
+              <div style="position:relative;width:16px;height:20px;background:var(--surface-input);border-radius:2px">
+                <span class="selected-bar" style="opacity:1"></span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="ds-item-label" style="margin-bottom:8px">gradient-divider</div>
+            <div class="gradient-divider"></div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="ds-inline">
+            <div class="ds-item">
+              <div class="ds-item-label">live-dot</div>
+              <span class="live-dot"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">tag-badge</div>
+              <span class="tag-badge">Kick</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd</div>
+              <kbd>↵</kbd>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">vertical-divider</div>
+              <div style="display:flex;align-items:center;height:20px"><span class="vertical-divider"></span></div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">version-label</div>
+              <span class="version-label">v0.1</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">pi-dot</div>
+              <span class="pi-dot"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">pi-triangle</div>
+              <span class="pi-triangle"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">wv-bar</div>
+              <span class="wv-bar" style="height:12px"></span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">selected-bar</div>
+              <div style="position:relative;width:16px;height:20px;background:var(--surface-input);border-radius:2px">
+                <span class="selected-bar" style="opacity:1"></span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <div class="ds-item-label" style="margin-bottom:8px">gradient-divider</div>
+            <div class="gradient-divider"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       MOLECULES
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="molecules">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Molecules</h2>
+      <span class="ds-section-desc">Atoms composed into small, purposeful components.</span>
+    </div>
+
+    <!-- Play Indicator -->
+    <div class="ds-row">
+      <div class="ds-row-label">Play Indicator — 3 states</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="ds-states">
+            <div class="ds-state">
+              <div class="ds-state-label">Default</div>
+              <div style="display:flex;align-items:center">
+                <div class="sound-row" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                  <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="ds-state">
+              <div class="ds-state-label">Selected</div>
+              <div style="display:flex;align-items:center">
+                <div class="sound-row is-selected" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                  <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="ds-state">
+              <div class="ds-state-label">Playing</div>
+              <div style="display:flex;align-items:center">
+                <div class="sound-row is-playing" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                  <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="ds-states">
+            <div class="ds-state">
+              <div class="ds-state-label">Default</div>
+              <div class="sound-row" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              </div>
+            </div>
+            <div class="ds-state">
+              <div class="ds-state-label">Selected</div>
+              <div class="sound-row is-selected" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              </div>
+            </div>
+            <div class="ds-state">
+              <div class="ds-state-label">Playing</div>
+              <div class="sound-row is-playing" style="position:static;height:auto;padding:4px 8px;border:none;background:none;cursor:default">
+                <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Small molecules row -->
+    <div class="ds-row">
+      <div class="ds-row-label">Live Badge · Keyboard Hint · Wordmark · Version</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="ds-inline">
+            <div class="ds-item">
+              <div class="ds-item-label">live-badge</div>
+              <div class="live-badge"><span class="live-dot"></span><span class="live-count">42</span><span class="live-label">LIVE</span></div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd-hint</div>
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">wordmark</div>
+              <div class="wordmark">
+                <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                <span class="wordmark-label">SNDBTS</span>
+              </div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">theme-toggle</div>
+              <button class="theme-toggle">
+                <svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg>
+                <span class="kbd-hint-small">⌘/</span>
+              </button>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">close-btn</div>
+              <button class="close-btn">&#x2715;</button>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="ds-inline">
+            <div class="ds-item">
+              <div class="ds-item-label">live-badge</div>
+              <div class="live-badge"><span class="live-dot"></span><span class="live-count">42</span><span class="live-label">LIVE</span></div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd-hint</div>
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">wordmark</div>
+              <div class="wordmark">
+                <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                <span class="wordmark-label">SNDBTS</span>
+              </div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">theme-toggle</div>
+              <button class="theme-toggle">
+                <svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg>
+                <span class="kbd-hint-small">⌘/</span>
+              </button>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">close-btn</div>
+              <button class="close-btn">&#x2715;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Field -->
+    <div class="ds-row">
+      <div class="ds-row-label">Search Field</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark — Default</div>
+          <div class="search-wrap">
+            <div class="search-frame">
+              <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="search-input" placeholder="Search sounds…" />
+              <span class="search-kbd">⌘K</span>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light — Default</div>
+          <div class="search-wrap">
+            <div class="search-frame">
+              <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="search-input" placeholder="Search sounds…" />
+              <span class="search-kbd">⌘K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sound Meta -->
+    <div class="ds-row">
+      <div class="ds-row-label">Sound Meta · Column Headers · Footer Strip</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="ds-gap-sm">
+            <div class="ds-item-label" style="margin-bottom:8px">sound-meta</div>
+            <div class="sound-meta">
+              <span class="sound-category">DRUMS</span>
+              <span class="tag-badge">808</span>
+              <span class="tag-badge">Kick</span>
+              <span class="sound-duration">0:03</span>
+            </div>
+          </div>
+          <div class="ds-gap-md"></div>
+          <div class="ds-item-label" style="margin-bottom:8px">column-headers</div>
+          <div class="column-headers" style="padding-left:44px;background:var(--surface-input);border-radius:4px">
+            <span class="col-name">NAME</span>
+            <span class="col-meta">CAT · TAG · DUR</span>
+          </div>
+          <div class="ds-gap-md"></div>
+          <div class="ds-item-label" style="margin-bottom:8px">footer-waveform + footer-playing-name</div>
+          <div class="footer-playing">
+            <div class="footer-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div>
+            <span class="footer-playing-name">Kick Transient Heavy</span>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="ds-gap-sm">
+            <div class="ds-item-label" style="margin-bottom:8px">sound-meta</div>
+            <div class="sound-meta">
+              <span class="sound-category">DRUMS</span>
+              <span class="tag-badge">808</span>
+              <span class="tag-badge">Kick</span>
+              <span class="sound-duration">0:03</span>
+            </div>
+          </div>
+          <div class="ds-gap-md"></div>
+          <div class="ds-item-label" style="margin-bottom:8px">column-headers</div>
+          <div class="column-headers" style="padding-left:44px;background:var(--surface-input);border-radius:4px">
+            <span class="col-name">NAME</span>
+            <span class="col-meta">CAT · TAG · DUR</span>
+          </div>
+          <div class="ds-gap-md"></div>
+          <div class="ds-item-label" style="margin-bottom:8px">footer-waveform + footer-playing-name</div>
+          <div class="footer-playing">
+            <div class="footer-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div>
+            <span class="footer-playing-name">Kick Transient Heavy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Hints + Edit Button -->
+    <div class="ds-row">
+      <div class="ds-row-label">Footer Hints Row · Footer Edit Button</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="footer-hints" style="margin-bottom:16px">
+            <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+            <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+            <span class="kbd-hint"><kbd>⌘P</kbd> pin</span>
+            <span class="kbd-hint"><kbd>⌘/</kbd> theme</span>
+          </div>
+          <button class="footer-edit-btn">Edit Library</button>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="footer-hints" style="margin-bottom:16px">
+            <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+            <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+            <span class="kbd-hint"><kbd>⌘P</kbd> pin</span>
+            <span class="kbd-hint"><kbd>⌘/</kbd> theme</span>
+          </div>
+          <button class="footer-edit-btn">Edit Library</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Library molecules -->
+    <div class="ds-row">
+      <div class="ds-row-label">Library — Inputs, Buttons, Checkbox, Tag Chips</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="ds-item-label" style="margin-bottom:8px">lib-search-input</div>
+          <div class="lib-search-wrap" style="flex:none;width:240px;margin-bottom:16px">
+            <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">panel-field</div>
+          <div class="panel-field" style="margin-bottom:16px;max-width:200px">
+            <span class="panel-label">Category</span>
+            <input type="text" class="panel-input" value="Drums" />
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">buttons</div>
+          <div class="ds-inline" style="margin-bottom:16px">
+            <button class="lib-btn">Default</button>
+            <button class="lib-btn lib-btn-primary">Primary</button>
+            <button class="lib-btn lib-btn-save">Save Row</button>
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">checkboxes</div>
+          <div class="ds-inline" style="margin-bottom:16px">
+            <div class="ds-item"><div class="ds-item-label">Unchecked</div><input type="checkbox" /></div>
+            <div class="ds-item"><div class="ds-item-label">Checked</div><input type="checkbox" checked /></div>
+            <div class="ds-item"><div class="ds-item-label">Indeterminate</div><input type="checkbox" id="indet1" /></div>
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">tag chips</div>
+          <div>
+            <span class="lib-tag-chip">808</span>
+            <span class="lib-tag-chip">Kick</span>
+            <span class="lib-tag-chip">Heavy</span>
+            <span class="lib-tag-chip lib-tag-more">+2</span>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="ds-item-label" style="margin-bottom:8px">lib-search-input</div>
+          <div class="lib-search-wrap" style="flex:none;width:240px;margin-bottom:16px">
+            <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">panel-field</div>
+          <div class="panel-field" style="margin-bottom:16px;max-width:200px">
+            <span class="panel-label">Category</span>
+            <input type="text" class="panel-input" value="Drums" />
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">buttons</div>
+          <div class="ds-inline" style="margin-bottom:16px">
+            <button class="lib-btn">Default</button>
+            <button class="lib-btn lib-btn-primary">Primary</button>
+            <button class="lib-btn lib-btn-save">Save Row</button>
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">checkboxes</div>
+          <div class="ds-inline" style="margin-bottom:16px">
+            <div class="ds-item"><div class="ds-item-label">Unchecked</div><input type="checkbox" /></div>
+            <div class="ds-item"><div class="ds-item-label">Checked</div><input type="checkbox" checked /></div>
+            <div class="ds-item"><div class="ds-item-label">Indeterminate</div><input type="checkbox" id="indet2" /></div>
+          </div>
+          <div class="ds-item-label" style="margin-bottom:8px">tag chips</div>
+          <div>
+            <span class="lib-tag-chip">808</span>
+            <span class="lib-tag-chip">Kick</span>
+            <span class="lib-tag-chip">Heavy</span>
+            <span class="lib-tag-chip lib-tag-more">+2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       ORGANISMS
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="organisms">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Organisms</h2>
+      <span class="ds-section-desc">Molecules assembled into full UI sections.</span>
+    </div>
+
+    <!-- Header organism -->
+    <div class="ds-row">
+      <div class="ds-row-label">Header Organism</div>
+      <div class="ds-compare">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 0">Dark</div>
+          <div class="ds-organism-frame">
+            <div class="header">
+              <div class="top-row">
+                <div class="wordmark">
+                  <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                  <span class="wordmark-label">SNDBTS</span>
+                </div>
+                <div class="header-right">
+                  <div class="live-badge"><span class="live-dot"></span><span class="live-count">42</span><span class="live-label">LIVE</span></div>
+                  <span class="version-label">v0.1</span>
+                  <div class="vertical-divider"></div>
+                  <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                  <div class="vertical-divider"></div>
+                  <button class="close-btn">&#x2715;</button>
+                </div>
+              </div>
+              <div class="search-wrap">
+                <div class="search-frame">
+                  <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                  <input type="text" class="search-input" placeholder="Search sounds…" />
+                  <span class="search-kbd">⌘K</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 0">Light</div>
+          <div class="ds-organism-frame">
+            <div class="header">
+              <div class="top-row">
+                <div class="wordmark">
+                  <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                  <span class="wordmark-label">SNDBTS</span>
+                </div>
+                <div class="header-right">
+                  <div class="live-badge"><span class="live-dot"></span><span class="live-count">42</span><span class="live-label">LIVE</span></div>
+                  <span class="version-label">v0.1</span>
+                  <div class="vertical-divider"></div>
+                  <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                  <div class="vertical-divider"></div>
+                  <button class="close-btn">&#x2715;</button>
+                </div>
+              </div>
+              <div class="search-wrap">
+                <div class="search-frame">
+                  <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                  <input type="text" class="search-input" placeholder="Search sounds…" />
+                  <span class="search-kbd">⌘K</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sound Rows -->
+    <div class="ds-row">
+      <div class="ds-row-label">Sound Row — All States</div>
+      <div class="ds-compare">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Dark</div>
+          <div>
+            <div class="ds-state-label" style="padding-left:12px">Default</div>
+            <div class="sound-row">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Snare Crack Tight</span>
+              <div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Snare</span><span class="sound-duration">0:01</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">Selected</div>
+            <div class="sound-row is-selected">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Kick Transient Heavy</span>
+              <div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">808</span><span class="tag-badge">Kick</span><span class="sound-duration">0:03</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">Playing</div>
+            <div class="sound-row is-playing">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Hi Hat Open Long</span>
+              <div class="sound-meta"><span class="sound-category">CYMBALS</span><span class="tag-badge">Hat</span><span class="sound-duration">0:08</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">User Added</div>
+            <div class="sound-row sound-row--user-added is-selected">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Custom Sample Drop</span>
+              <div class="sound-meta"><span class="sound-category">SFX</span><span class="tag-badge">Custom</span><span class="sound-duration">0:05</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Light</div>
+          <div>
+            <div class="ds-state-label" style="padding-left:12px">Default</div>
+            <div class="sound-row">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Snare Crack Tight</span>
+              <div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Snare</span><span class="sound-duration">0:01</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">Selected</div>
+            <div class="sound-row is-selected">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Kick Transient Heavy</span>
+              <div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">808</span><span class="tag-badge">Kick</span><span class="sound-duration">0:03</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">Playing</div>
+            <div class="sound-row is-playing">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Hi Hat Open Long</span>
+              <div class="sound-meta"><span class="sound-category">CYMBALS</span><span class="tag-badge">Hat</span><span class="sound-duration">0:08</span></div>
+            </div>
+            <div class="ds-state-label" style="padding-left:12px">User Added</div>
+            <div class="sound-row sound-row--user-added is-selected">
+              <div class="selected-bar"></div>
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Custom Sample Drop</span>
+              <div class="sound-meta"><span class="sound-category">SFX</span><span class="tag-badge">Custom</span><span class="sound-duration">0:05</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer organisms -->
+    <div class="ds-row">
+      <div class="ds-row-label">Footer — Idle &amp; Playing States</div>
+      <div class="ds-compare">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:10px 20px 6px">Dark — Idle</div>
+          <div class="footer" style="margin-top:0">
+            <div class="footer-hints">
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+              <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+              <span class="kbd-hint"><kbd>⌘E</kbd> library</span>
+            </div>
+            <div class="footer-right">
+              <button class="footer-edit-btn">Edit Library</button>
+            </div>
+          </div>
+          <div class="ds-preview-label" style="padding:10px 20px 6px">Dark — Playing</div>
+          <div class="footer is-playing" style="margin-top:0">
+            <div class="footer-hints">
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+              <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+            </div>
+            <div class="footer-playing">
+              <div class="footer-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div>
+              <span class="footer-playing-name">Kick Transient Heavy</span>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:10px 20px 6px">Light — Idle</div>
+          <div class="footer" style="margin-top:0">
+            <div class="footer-hints">
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+              <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+              <span class="kbd-hint"><kbd>⌘E</kbd> library</span>
+            </div>
+            <div class="footer-right">
+              <button class="footer-edit-btn">Edit Library</button>
+            </div>
+          </div>
+          <div class="ds-preview-label" style="padding:10px 20px 6px">Light — Playing</div>
+          <div class="footer is-playing" style="margin-top:0">
+            <div class="footer-hints">
+              <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+              <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+            </div>
+            <div class="footer-playing">
+              <div class="footer-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div>
+              <span class="footer-playing-name">Kick Transient Heavy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="ds-row">
+      <div class="ds-row-label">Drop Zone — Default &amp; Drag Over</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark — Default</div>
+          <section class="drop-zone">
+            <div class="drop-zone-inner">
+              <span class="drop-zone-icon">⌁</span>
+              <p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p>
+              <p class="drop-zone-hint">Files are copied into Effects/ and merged into the library.</p>
+            </div>
+          </section>
+          <div class="ds-preview-label" style="margin-top:16px">Dark — Drag Over</div>
+          <section class="drop-zone is-dragover">
+            <div class="drop-zone-inner">
+              <span class="drop-zone-icon">⌁</span>
+              <p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p>
+              <p class="drop-zone-hint">Release to import.</p>
+            </div>
+          </section>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light — Default</div>
+          <section class="drop-zone">
+            <div class="drop-zone-inner">
+              <span class="drop-zone-icon">⌁</span>
+              <p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p>
+              <p class="drop-zone-hint">Files are copied into Effects/ and merged into the library.</p>
+            </div>
+          </section>
+          <div class="ds-preview-label" style="margin-top:16px">Light — Drag Over</div>
+          <section class="drop-zone is-dragover">
+            <div class="drop-zone-inner">
+              <span class="drop-zone-icon">⌁</span>
+              <p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p>
+              <p class="drop-zone-hint">Release to import.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Library Panel -->
+    <div class="ds-row">
+      <div class="ds-row-label">Library Panel — Single &amp; Multi Select</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark — Single Select</div>
+          <div class="library-panel" style="max-height:none">
+            <h2 class="panel-title">Edit Sound</h2>
+            <label class="panel-field"><span class="panel-label">Name</span><input type="text" class="panel-input" value="Kick Transient Heavy" /></label>
+            <label class="panel-field"><span class="panel-label">Category</span><input type="text" class="panel-input" value="Drums" /></label>
+            <label class="panel-field"><span class="panel-label">Tags</span><input type="text" class="panel-input" value="808, kick, heavy" /></label>
+            <button class="lib-btn lib-btn-save">Save row</button>
+          </div>
+          <div class="ds-preview-label" style="margin-top:16px">Dark — Multi Select</div>
+          <div class="library-panel" style="max-height:none">
+            <h2 class="panel-title">Batch Edit</h2>
+            <p class="panel-multi-count">5 sounds selected</p>
+            <label class="panel-field"><span class="panel-label">Set category (all selected)</span><input type="text" class="panel-input" placeholder="Leave empty to skip" /></label>
+            <label class="panel-field"><span class="panel-label">Add tags</span><input type="text" class="panel-input" placeholder="comma-separated" /></label>
+            <button class="lib-btn lib-btn-save">Apply to selection</button>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light — Single Select</div>
+          <div class="library-panel" style="max-height:none">
+            <h2 class="panel-title">Edit Sound</h2>
+            <label class="panel-field"><span class="panel-label">Name</span><input type="text" class="panel-input" value="Kick Transient Heavy" /></label>
+            <label class="panel-field"><span class="panel-label">Category</span><input type="text" class="panel-input" value="Drums" /></label>
+            <label class="panel-field"><span class="panel-label">Tags</span><input type="text" class="panel-input" value="808, kick, heavy" /></label>
+            <button class="lib-btn lib-btn-save">Save row</button>
+          </div>
+          <div class="ds-preview-label" style="margin-top:16px">Light — Multi Select</div>
+          <div class="library-panel" style="max-height:none">
+            <h2 class="panel-title">Batch Edit</h2>
+            <p class="panel-multi-count">5 sounds selected</p>
+            <label class="panel-field"><span class="panel-label">Set category (all selected)</span><input type="text" class="panel-input" placeholder="Leave empty to skip" /></label>
+            <label class="panel-field"><span class="panel-label">Add tags</span><input type="text" class="panel-input" placeholder="comma-separated" /></label>
+            <button class="lib-btn lib-btn-save">Apply to selection</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Library Table -->
+    <div class="ds-row">
+      <div class="ds-row-label">Library Table — All Row States</div>
+      <div class="ds-compare">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Dark</div>
+          <div class="library-table-wrap" style="max-height:none;border:none;border-radius:0">
+            <table class="lib-table">
+              <thead><tr><th class="col-check"><input type="checkbox" /></th><th class="col-name">Name</th><th class="col-cat">Category</th><th class="col-tags">Tags</th><th class="col-dur">Dur</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Kick Transient Heavy</span></div></td>
+                  <td class="col-cat">Drums</td><td><span class="lib-tag-chip">808</span><span class="lib-tag-chip">Kick</span></td><td class="col-dur">0:03</td>
+                </tr>
+                <tr class="is-selected">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" checked /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Snare Crack Tight</span></div></td>
+                  <td class="col-cat">Drums</td><td><span class="lib-tag-chip">Snare</span></td><td class="col-dur">0:01</td>
+                </tr>
+                <tr class="is-playing">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Hi Hat Open Long</span></div></td>
+                  <td class="col-cat">Cymbals</td><td><span class="lib-tag-chip">Hat</span><span class="lib-tag-chip">Open</span></td><td class="col-dur">0:08</td>
+                </tr>
+                <tr class="sound-row--user-added is-selected">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" checked /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Custom Drop Import</span></div></td>
+                  <td class="col-cat">SFX</td><td><span class="lib-tag-chip">Custom</span></td><td class="col-dur">0:05</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Light</div>
+          <div class="library-table-wrap" style="max-height:none;border:none;border-radius:0">
+            <table class="lib-table">
+              <thead><tr><th class="col-check"><input type="checkbox" /></th><th class="col-name">Name</th><th class="col-cat">Category</th><th class="col-tags">Tags</th><th class="col-dur">Dur</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Kick Transient Heavy</span></div></td>
+                  <td class="col-cat">Drums</td><td><span class="lib-tag-chip">808</span><span class="lib-tag-chip">Kick</span></td><td class="col-dur">0:03</td>
+                </tr>
+                <tr class="is-selected">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" checked /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Snare Crack Tight</span></div></td>
+                  <td class="col-cat">Drums</td><td><span class="lib-tag-chip">Snare</span></td><td class="col-dur">0:01</td>
+                </tr>
+                <tr class="is-playing">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Hi Hat Open Long</span></div></td>
+                  <td class="col-cat">Cymbals</td><td><span class="lib-tag-chip">Hat</span><span class="lib-tag-chip">Open</span></td><td class="col-dur">0:08</td>
+                </tr>
+                <tr class="sound-row--user-added is-selected">
+                  <td class="col-check"><div class="selected-bar" aria-hidden="true"></div><input type="checkbox" checked /></td>
+                  <td class="col-name"><div class="lib-name-inner"><div class="play-indicator" aria-hidden="true"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Custom Drop Import</span></div></td>
+                  <td class="col-cat">SFX</td><td><span class="lib-tag-chip">Custom</span></td><td class="col-dur">0:05</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════
+       TEMPLATES
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="templates">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Templates</h2>
+      <span class="ds-section-desc">Organisms assembled into full application windows.</span>
+    </div>
+
+    <!-- Launcher Window -->
+    <div class="ds-row">
+      <div class="ds-row-label">Launcher Window — Dark &amp; Light</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div>
+          <div class="ds-row-label" style="margin-bottom:8px">Dark</div>
+          <div class="ds-launcher-frame">
+            <div class="launcher" id="launcher-dark">
+              <div class="noise-overlay" aria-hidden="true"></div>
+              <div class="header">
+                <div class="top-row">
+                  <div class="wordmark">
+                    <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                    <span class="wordmark-label">SNDBTS</span>
+                  </div>
+                  <div class="header-right">
+                    <div class="live-badge"><span class="live-dot"></span><span class="live-count">5</span><span class="live-label">LIVE</span></div>
+                    <span class="version-label">v0.1</span>
+                    <div class="vertical-divider"></div>
+                    <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                    <div class="vertical-divider"></div>
+                    <button class="close-btn">&#x2715;</button>
+                  </div>
+                </div>
+                <div class="search-wrap">
+                  <div class="search-frame">
+                    <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    <input type="text" class="search-input" placeholder="Search sounds…" />
+                    <span class="search-kbd">⌘K</span>
+                  </div>
+                </div>
+              </div>
+              <div class="gradient-divider" aria-hidden="true"></div>
+              <div class="column-headers" aria-hidden="true"><span class="col-name">NAME</span><span class="col-meta">CAT · TAG · DUR</span></div>
+              <div class="results-list">
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Kick 808 Heavy</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">808</span><span class="sound-duration">0:03</span></div></div>
+                <div class="sound-row is-selected"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Snare Tight Crack</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Snare</span><span class="sound-duration">0:01</span></div></div>
+                <div class="sound-row is-playing"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Hi Hat Open</span><div class="sound-meta"><span class="sound-category">CYMBALS</span><span class="tag-badge">Hat</span><span class="sound-duration">0:08</span></div></div>
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Clap Room Natural</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Clap</span><span class="sound-duration">0:02</span></div></div>
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Rimshot Dry Tight</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="sound-duration">0:01</span></div></div>
+              </div>
+              <div class="footer">
+                <div class="footer-hints"><span class="kbd-hint"><kbd>↵</kbd> play/stop</span><span class="kbd-hint"><kbd>↑↓</kbd> navigate</span><span class="kbd-hint"><kbd>⌘E</kbd> library</span></div>
+                <div class="footer-right"><button class="footer-edit-btn">Edit Library</button></div>
+                <div class="footer-playing" style="display:none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-theme="light">
+          <div class="ds-row-label" style="margin-bottom:8px">Light</div>
+          <div class="ds-launcher-frame">
+            <div class="launcher">
+              <div class="noise-overlay" aria-hidden="true"></div>
+              <div class="header">
+                <div class="top-row">
+                  <div class="wordmark">
+                    <div class="wordmark-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/><path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/><path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/><path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                    <span class="wordmark-label">SNDBTS</span>
+                  </div>
+                  <div class="header-right">
+                    <div class="live-badge"><span class="live-dot"></span><span class="live-count">5</span><span class="live-label">LIVE</span></div>
+                    <span class="version-label">v0.1</span>
+                    <div class="vertical-divider"></div>
+                    <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                    <div class="vertical-divider"></div>
+                    <button class="close-btn">&#x2715;</button>
+                  </div>
+                </div>
+                <div class="search-wrap">
+                  <div class="search-frame">
+                    <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    <input type="text" class="search-input" placeholder="Search sounds…" />
+                    <span class="search-kbd">⌘K</span>
+                  </div>
+                </div>
+              </div>
+              <div class="gradient-divider" aria-hidden="true"></div>
+              <div class="column-headers" aria-hidden="true"><span class="col-name">NAME</span><span class="col-meta">CAT · TAG · DUR</span></div>
+              <div class="results-list">
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Kick 808 Heavy</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">808</span><span class="sound-duration">0:03</span></div></div>
+                <div class="sound-row is-selected"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Snare Tight Crack</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Snare</span><span class="sound-duration">0:01</span></div></div>
+                <div class="sound-row is-playing"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Hi Hat Open</span><div class="sound-meta"><span class="sound-category">CYMBALS</span><span class="tag-badge">Hat</span><span class="sound-duration">0:08</span></div></div>
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Clap Room Natural</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="tag-badge">Clap</span><span class="sound-duration">0:02</span></div></div>
+                <div class="sound-row"><div class="selected-bar"></div><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="sound-name">Rimshot Dry Tight</span><div class="sound-meta"><span class="sound-category">DRUMS</span><span class="sound-duration">0:01</span></div></div>
+              </div>
+              <div class="footer">
+                <div class="footer-hints"><span class="kbd-hint"><kbd>↵</kbd> play/stop</span><span class="kbd-hint"><kbd>↑↓</kbd> navigate</span><span class="kbd-hint"><kbd>⌘E</kbd> library</span></div>
+                <div class="footer-right"><button class="footer-edit-btn">Edit Library</button></div>
+                <div class="footer-playing" style="display:none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Library Editor Template -->
+    <div class="ds-row">
+      <div class="ds-row-label">Library Editor Window</div>
+      <div class="ds-compare" style="grid-template-columns:1fr;">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Dark</div>
+          <div class="ds-library-frame">
+            <header class="library-header">
+              <div class="library-header-title">
+                <h1 style="font-size:18px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-primary);margin:0 0 4px">Library</h1>
+                <p class="library-subtitle">Import, search, and edit sound metadata.</p>
+              </div>
+              <div class="library-header-actions">
+                <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                <button class="lib-btn lib-btn-primary">Browse to import…</button>
+              </div>
+            </header>
+            <section class="drop-zone"><div class="drop-zone-inner"><span class="drop-zone-icon">⌁</span><p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p><p class="drop-zone-hint">Files are copied into Effects/ and merged into the library.</p></div></section>
+            <div class="library-toolbar">
+              <label class="lib-search-wrap"><svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="search" class="lib-search-input" placeholder="Filter by name, category, tags…" /></label>
+              <label class="lib-filter-cat"><span class="lib-filter-label">Category</span><select class="lib-select"><option>All</option><option>Drums</option></select></label>
+            </div>
+            <div class="library-main" style="min-height:0">
+              <div class="library-table-wrap" style="max-height:280px">
+                <table class="lib-table">
+                  <thead><tr><th class="col-check"><input type="checkbox" /></th><th class="col-name">Name</th><th class="col-cat">Category</th><th class="col-tags">Tags</th><th class="col-dur">Dur</th></tr></thead>
+                  <tbody>
+                    <tr><td class="col-check"><div class="selected-bar"></div><input type="checkbox" /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Kick 808 Heavy</span></div></td><td class="col-cat">Drums</td><td><span class="lib-tag-chip">808</span></td><td class="col-dur">0:03</td></tr>
+                    <tr class="is-selected"><td class="col-check"><div class="selected-bar"></div><input type="checkbox" checked /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Snare Tight Crack</span></div></td><td class="col-cat">Drums</td><td><span class="lib-tag-chip">Snare</span></td><td class="col-dur">0:01</td></tr>
+                    <tr class="is-playing"><td class="col-check"><div class="selected-bar"></div><input type="checkbox" /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Hi Hat Open</span></div></td><td class="col-cat">Cymbals</td><td><span class="lib-tag-chip">Hat</span></td><td class="col-dur">0:08</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside class="library-panel" style="max-height:280px">
+                <h2 class="panel-title">Edit Sound</h2>
+                <label class="panel-field"><span class="panel-label">Name</span><input type="text" class="panel-input" value="Snare Tight Crack" /></label>
+                <label class="panel-field"><span class="panel-label">Category</span><input type="text" class="panel-input" value="Drums" /></label>
+                <button class="lib-btn lib-btn-save">Save row</button>
+              </aside>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Light</div>
+          <div class="ds-library-frame">
+            <header class="library-header">
+              <div class="library-header-title">
+                <h1 style="font-size:18px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-primary);margin:0 0 4px">Library</h1>
+                <p class="library-subtitle">Import, search, and edit sound metadata.</p>
+              </div>
+              <div class="library-header-actions">
+                <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
+                <button class="lib-btn lib-btn-primary">Browse to import…</button>
+              </div>
+            </header>
+            <section class="drop-zone"><div class="drop-zone-inner"><span class="drop-zone-icon">⌁</span><p class="drop-zone-text">Drop <strong>.mp3</strong> or <strong>.wav</strong> files here</p><p class="drop-zone-hint">Files are copied into Effects/ and merged into the library.</p></div></section>
+            <div class="library-toolbar">
+              <label class="lib-search-wrap"><svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><input type="search" class="lib-search-input" placeholder="Filter by name, category, tags…" /></label>
+              <label class="lib-filter-cat"><span class="lib-filter-label">Category</span><select class="lib-select"><option>All</option><option>Drums</option></select></label>
+            </div>
+            <div class="library-main" style="min-height:0">
+              <div class="library-table-wrap" style="max-height:280px">
+                <table class="lib-table">
+                  <thead><tr><th class="col-check"><input type="checkbox" /></th><th class="col-name">Name</th><th class="col-cat">Category</th><th class="col-tags">Tags</th><th class="col-dur">Dur</th></tr></thead>
+                  <tbody>
+                    <tr><td class="col-check"><div class="selected-bar"></div><input type="checkbox" /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Kick 808 Heavy</span></div></td><td class="col-cat">Drums</td><td><span class="lib-tag-chip">808</span></td><td class="col-dur">0:03</td></tr>
+                    <tr class="is-selected"><td class="col-check"><div class="selected-bar"></div><input type="checkbox" checked /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Snare Tight Crack</span></div></td><td class="col-cat">Drums</td><td><span class="lib-tag-chip">Snare</span></td><td class="col-dur">0:01</td></tr>
+                    <tr class="is-playing"><td class="col-check"><div class="selected-bar"></div><input type="checkbox" /></td><td class="col-name"><div class="lib-name-inner"><div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div><span class="lib-sound-name">Hi Hat Open</span></div></td><td class="col-cat">Cymbals</td><td><span class="lib-tag-chip">Hat</span></td><td class="col-dur">0:08</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <aside class="library-panel" style="max-height:280px">
+                <h2 class="panel-title">Edit Sound</h2>
+                <label class="panel-field"><span class="panel-label">Name</span><input type="text" class="panel-input" value="Snare Tight Crack" /></label>
+                <label class="panel-field"><span class="panel-label">Category</span><input type="text" class="panel-input" value="Drums" /></label>
+                <button class="lib-btn lib-btn-save">Save row</button>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /ds-page -->
+
+<script>
+  // Set indeterminate checkboxes
+  document.querySelectorAll('#indet1, #indet2').forEach(el => { el.indeterminate = true; });
+
+  // Global theme toggle (affects the page background/base)
+  function toggleTheme() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  }
+</script>
+</body>
+</html>
