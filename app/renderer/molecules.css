@@ -169,7 +169,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 12px 4px 44px;
+  /* Align with results-list inset (12px) + sound-row padding (16px) + play-indicator (20+8) */
+  padding: 4px 28px 4px 56px;
   flex-shrink: 0;
 }
 

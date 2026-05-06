@@ -342,6 +342,12 @@
     .ds-group-title:first-child {
       margin-top: 0;
     }
+
+    /* Matches .search-frame:focus-within — for static Figma reference */
+    .ds-search-focus-demo .search-frame {
+      border-color: var(--accent-border);
+      box-shadow: var(--shadow-input-focus);
+    }
   </style>
 </head>
 <body>
@@ -353,11 +359,35 @@
   <div class="ds-page-header">
     <div>
       <h1 class="ds-page-title">SNDBTS Design System</h1>
-      <p class="ds-page-subtitle">Atoms → Molecules → Organisms → Templates &nbsp;·&nbsp; Dark / Light</p>
+      <p class="ds-page-subtitle">Atoms → Molecules → Organisms → Templates &nbsp;·&nbsp; Dark (default) / Light (<code style="font-size:10px;opacity:0.85">data-theme=&quot;light&quot;</code>)</p>
     </div>
     <button class="ds-theme-btn" onclick="toggleTheme()">Toggle Theme</button>
   </div>
   <div class="ds-page-header-spacer"></div>
+
+  <!-- ══════════════════════════════════════════════
+       SOURCE OF TRUTH (CODE + FIGMA)
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="source">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Source Files</h2>
+      <span class="ds-section-desc">CSS layers and JSON mirror each other; keep Figma variables aligned with these.</span>
+    </div>
+    <div class="ds-preview-wide" style="padding:16px 20px">
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);line-height:1.65;margin:0 0 10px;max-width:720px">
+        <strong style="color:var(--text-primary)">Tokens:</strong>
+        <code style="font-size:10px;color:var(--accent-text)">tokens.css</code> (semantic + primitives) ·
+        <code style="font-size:10px;color:var(--accent-text)">sndbts-tokens.json</code> (DTCG-style — import into Figma via Tokens Studio, Variables, or Style Dictionary).
+      </p>
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);line-height:1.65;margin:0;max-width:720px">
+        <strong style="color:var(--text-primary)">Atomic CSS:</strong>
+        <code style="font-size:10px;color:var(--accent-text)">atoms.css</code> →
+        <code style="font-size:10px;color:var(--accent-text)">molecules.css</code> →
+        <code style="font-size:10px;color:var(--accent-text)">organisms.css</code> (launcher).
+        Library UI adds <code style="font-size:10px;color:var(--accent-text)">library.css</code> (imports atoms + molecules, then drop zone, table, panel).
+      </p>
+    </div>
+  </section>
 
   <!-- ══════════════════════════════════════════════
        COLOR PRIMITIVES
@@ -428,7 +458,8 @@
     <div class="ds-row">
       <div class="ds-row-label">Ink</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#8A857A;border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#8A857A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--ink-300);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-300</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#8A857A</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:var(--ink-500);border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-500</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#8A857A</span></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#5C5850;border:1px solid rgba(0,0,0,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-600</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#5C5850</span></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:center;width:80px"><div style="width:80px;height:40px;border-radius:4px;background:#1C1F1A;border:1px solid rgba(255,255,255,0.08)"></div><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-secondary);letter-spacing:0.04em">--ink-900</span><span style="font-family:var(--font-mono);font-size:9px;color:var(--text-muted)">#1C1F1A</span></div>
       </div>
@@ -543,6 +574,39 @@
   </section>
 
   <!-- ══════════════════════════════════════════════
+       SHADOWS & ELEVATION (semantic)
+  ══════════════════════════════════════════════ -->
+  <section class="ds-section" id="shadows">
+    <div class="ds-section-header">
+      <h2 class="ds-section-title">Shadows</h2>
+      <span class="ds-section-desc">From <code style="font-size:10px;color:var(--text-secondary)">tokens.css</code> — pair with <code style="font-size:10px;color:var(--text-secondary)">sndbts-tokens.json</code> → shadow.dark / shadow.light.</span>
+    </div>
+    <div class="ds-row">
+      <div class="ds-row-label">Launcher · Search field</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div style="display:flex;flex-direction:column;gap:14px;max-width:280px">
+            <div style="height:48px;border-radius:12px;background:var(--surface-card);box-shadow:var(--shadow-launcher);border:1px solid var(--border-default)"></div>
+            <div style="height:40px;border-radius:6px;background:var(--surface-input);border:1px solid var(--border-default);box-shadow:var(--shadow-input-default)"></div>
+            <div style="height:40px;border-radius:6px;background:var(--surface-input);border:1px solid var(--accent-border);box-shadow:var(--shadow-input-focus)"></div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:8px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-top:10px;line-height:1.5">shadow-launcher<br/>shadow-input-default<br/>shadow-input-focus</div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div style="display:flex;flex-direction:column;gap:14px;max-width:280px">
+            <div style="height:48px;border-radius:12px;background:var(--surface-card);box-shadow:var(--shadow-launcher);border:1px solid var(--border-default)"></div>
+            <div style="height:40px;border-radius:6px;background:var(--surface-input);border:1px solid var(--border-default);box-shadow:var(--shadow-input-default)"></div>
+            <div style="height:40px;border-radius:6px;background:var(--surface-input);border:1px solid var(--accent-border);box-shadow:var(--shadow-input-focus)"></div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:8px;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-top:10px;line-height:1.5">shadow-launcher<br/>shadow-input-default<br/>shadow-input-focus</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════
        ATOMS
   ══════════════════════════════════════════════ -->
   <section class="ds-section" id="atoms">
@@ -585,10 +649,18 @@
         <div class="ds-swatches">
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-default)"></div><div class="ds-swatch-name">Accent</div></div>
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-text)"></div><div class="ds-swatch-name">Accent Text</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-border)"></div><div class="ds-swatch-name">Accent Border</div></div>
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--accent-glow)"></div><div class="ds-swatch-name">Accent Glow</div></div>
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-playing)"></div><div class="ds-swatch-name">Playing</div></div>
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-playing-dim)"></div><div class="ds-swatch-name">Playing Dim</div></div>
           <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--status-sage)"></div><div class="ds-swatch-name">Sage</div></div>
+        </div>
+        <p class="ds-group-title">Interactive &amp; Scrollbar</p>
+        <div class="ds-swatches">
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--interactive-hover-bg)"></div><div class="ds-swatch-name">Hover BG</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--interactive-kbd-bg)"></div><div class="ds-swatch-name">Kbd BG</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--interactive-tag-bg)"></div><div class="ds-swatch-name">Tag BG</div></div>
+          <div class="ds-swatch"><div class="ds-swatch-color" style="background:var(--scrollbar-thumb)"></div><div class="ds-swatch-name">Scrollbar</div></div>
         </div>
       </div>
     </div>
@@ -620,6 +692,10 @@
         <div class="ds-type-row">
           <div class="ds-type-meta">kbd-hint · 9px · 0.04em</div>
           <span style="font-size:var(--text-kbd-hint);letter-spacing:var(--ls-kbd-hint);color:var(--text-muted)">↵ play/stop</span>
+        </div>
+        <div class="ds-type-row">
+          <div class="ds-type-meta">kbd-hint-small · 9px · 0.04em</div>
+          <span class="kbd-hint-small">⌘/</span>
         </div>
         <div class="ds-type-row">
           <div class="ds-type-meta">column-header · 9px · 0.10em</div>
@@ -677,6 +753,16 @@
                 <span class="selected-bar" style="opacity:1"></span>
               </div>
             </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd-hint-small</div>
+              <span class="kbd-hint-small">⌘/</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">noise-overlay</div>
+              <div style="position:relative;width:112px;height:56px;background:var(--surface-card);border-radius:12px;border:1px solid var(--border-default);overflow:hidden">
+                <div class="noise-overlay" aria-hidden="true"></div>
+              </div>
+            </div>
           </div>
           <div style="margin-top:16px">
             <div class="ds-item-label" style="margin-bottom:8px">gradient-divider</div>
@@ -722,6 +808,16 @@
               <div class="ds-item-label">selected-bar</div>
               <div style="position:relative;width:16px;height:20px;background:var(--surface-input);border-radius:2px">
                 <span class="selected-bar" style="opacity:1"></span>
+              </div>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">kbd-hint-small</div>
+              <span class="kbd-hint-small">⌘/</span>
+            </div>
+            <div class="ds-item">
+              <div class="ds-item-label">noise-overlay</div>
+              <div style="position:relative;width:112px;height:56px;background:var(--surface-card);border-radius:12px;border:1px solid var(--border-default);overflow:hidden">
+                <div class="noise-overlay" aria-hidden="true"></div>
               </div>
             </div>
           </div>
@@ -901,6 +997,33 @@
       </div>
     </div>
 
+    <!-- Search focus (static reference for Figma) -->
+    <div class="ds-row">
+      <div class="ds-row-label">Search Field — Focus (<code style="font-size:9px">:focus-within</code>)</div>
+      <div class="ds-compare">
+        <div class="ds-preview">
+          <div class="ds-preview-label">Dark</div>
+          <div class="search-wrap ds-search-focus-demo">
+            <div class="search-frame">
+              <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="search-input" placeholder="Search sounds…" value="Focused" readonly />
+              <span class="search-kbd">⌘K</span>
+            </div>
+          </div>
+        </div>
+        <div class="ds-preview" data-theme="light">
+          <div class="ds-preview-label">Light</div>
+          <div class="search-wrap ds-search-focus-demo">
+            <div class="search-frame">
+              <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="search-input" placeholder="Search sounds…" value="Focused" readonly />
+              <span class="search-kbd">⌘K</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Sound Meta -->
     <div class="ds-row">
       <div class="ds-row-label">Sound Meta · Column Headers · Footer Strip</div>
@@ -916,9 +1039,21 @@
               <span class="sound-duration">0:03</span>
             </div>
           </div>
+          <div class="ds-gap-sm">
+            <div class="ds-item-label" style="margin-bottom:8px">sound-row.is-playing · sound-category → --status-playing-dim</div>
+            <div class="sound-row is-playing" style="max-width:440px;border-radius:8px">
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Open Hat Long</span>
+              <div class="sound-meta">
+                <span class="sound-category">CYMBALS</span>
+                <span class="tag-badge">Hat</span>
+                <span class="sound-duration">0:08</span>
+              </div>
+            </div>
+          </div>
           <div class="ds-gap-md"></div>
           <div class="ds-item-label" style="margin-bottom:8px">column-headers</div>
-          <div class="column-headers" style="padding-left:44px;background:var(--surface-input);border-radius:4px">
+          <div class="column-headers" style="background:var(--surface-input);border-radius:4px">
             <span class="col-name">NAME</span>
             <span class="col-meta">CAT · TAG · DUR</span>
           </div>
@@ -940,9 +1075,21 @@
               <span class="sound-duration">0:03</span>
             </div>
           </div>
+          <div class="ds-gap-sm">
+            <div class="ds-item-label" style="margin-bottom:8px">sound-row.is-playing · sound-category → --status-playing-dim</div>
+            <div class="sound-row is-playing" style="max-width:440px;border-radius:8px">
+              <div class="play-indicator"><span class="pi-dot"></span><span class="pi-triangle"></span><div class="pi-waveform"><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span></div></div>
+              <span class="sound-name">Open Hat Long</span>
+              <div class="sound-meta">
+                <span class="sound-category">CYMBALS</span>
+                <span class="tag-badge">Hat</span>
+                <span class="sound-duration">0:08</span>
+              </div>
+            </div>
+          </div>
           <div class="ds-gap-md"></div>
           <div class="ds-item-label" style="margin-bottom:8px">column-headers</div>
-          <div class="column-headers" style="padding-left:44px;background:var(--surface-input);border-radius:4px">
+          <div class="column-headers" style="background:var(--surface-input);border-radius:4px">
             <span class="col-name">NAME</span>
             <span class="col-meta">CAT · TAG · DUR</span>
           </div>
@@ -985,14 +1132,20 @@
 
     <!-- Library molecules -->
     <div class="ds-row">
-      <div class="ds-row-label">Library — Inputs, Buttons, Checkbox, Tag Chips</div>
+      <div class="ds-row-label">Library — Toolbar, Inputs, Buttons, Checkbox, Tag Chips</div>
       <div class="ds-compare">
         <div class="ds-preview">
           <div class="ds-preview-label">Dark</div>
-          <div class="ds-item-label" style="margin-bottom:8px">lib-search-input</div>
-          <div class="lib-search-wrap" style="flex:none;width:240px;margin-bottom:16px">
-            <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+          <div class="ds-item-label" style="margin-bottom:8px">library-toolbar · lib-search-wrap · lib-filter-cat</div>
+          <div class="library-toolbar" style="margin-bottom:16px;max-width:100%">
+            <label class="lib-search-wrap" style="flex:1;min-width:180px;max-width:280px">
+              <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+            </label>
+            <label class="lib-filter-cat">
+              <span class="lib-filter-label">Category</span>
+              <select class="lib-select" aria-label="Category filter"><option>All</option><option>Drums</option><option>SFX</option></select>
+            </label>
           </div>
           <div class="ds-item-label" style="margin-bottom:8px">panel-field</div>
           <div class="panel-field" style="margin-bottom:16px;max-width:200px">
@@ -1021,10 +1174,16 @@
         </div>
         <div class="ds-preview" data-theme="light">
           <div class="ds-preview-label">Light</div>
-          <div class="ds-item-label" style="margin-bottom:8px">lib-search-input</div>
-          <div class="lib-search-wrap" style="flex:none;width:240px;margin-bottom:16px">
-            <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+          <div class="ds-item-label" style="margin-bottom:8px">library-toolbar · lib-search-wrap · lib-filter-cat</div>
+          <div class="library-toolbar" style="margin-bottom:16px;max-width:100%">
+            <label class="lib-search-wrap" style="flex:1;min-width:180px;max-width:280px">
+              <svg class="lib-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              <input type="text" class="lib-search-input" placeholder="Filter by name, category, tags…" />
+            </label>
+            <label class="lib-filter-cat">
+              <span class="lib-filter-label">Category</span>
+              <select class="lib-select" aria-label="Category filter"><option>All</option><option>Drums</option><option>SFX</option></select>
+            </label>
           </div>
           <div class="ds-item-label" style="margin-bottom:8px">panel-field</div>
           <div class="panel-field" style="margin-bottom:16px;max-width:200px">
@@ -1124,6 +1283,27 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty states -->
+    <div class="ds-row">
+      <div class="ds-row-label">Empty · results-empty · lib-empty</div>
+      <div class="ds-compare">
+        <div class="ds-preview" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Dark</div>
+          <div class="ds-item-label" style="padding:0 20px 8px">results-empty · organisms.css</div>
+          <div class="results-empty">No sounds match this filter.</div>
+          <div class="ds-item-label" style="padding:12px 20px 8px;border-top:1px solid var(--border-light);margin-top:4px">lib-empty · library.css</div>
+          <div class="lib-empty">No sounds match this filter.</div>
+        </div>
+        <div class="ds-preview" data-theme="light" style="padding:0">
+          <div class="ds-preview-label" style="padding:12px 20px 8px">Light</div>
+          <div class="ds-item-label" style="padding:0 20px 8px">results-empty · organisms.css</div>
+          <div class="results-empty">No sounds match this filter.</div>
+          <div class="ds-item-label" style="padding:12px 20px 8px;border-top:1px solid var(--border-light);margin-top:4px">lib-empty · library.css</div>
+          <div class="lib-empty">No sounds match this filter.</div>
         </div>
       </div>
     </div>
@@ -1527,7 +1707,7 @@
             <header class="library-header">
               <div class="library-header-title">
                 <h1 style="font-size:18px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-primary);margin:0 0 4px">Library</h1>
-                <p class="library-subtitle">Import, search, and edit sound metadata.</p>
+                <p class="library-subtitle">Import, search, and edit sound metadata. Multi-select for batch tags and category.</p>
               </div>
               <div class="library-header-actions">
                 <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>
@@ -1565,7 +1745,7 @@
             <header class="library-header">
               <div class="library-header-title">
                 <h1 style="font-size:18px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-primary);margin:0 0 4px">Library</h1>
-                <p class="library-subtitle">Import, search, and edit sound metadata.</p>
+                <p class="library-subtitle">Import, search, and edit sound metadata. Multi-select for batch tags and category.</p>
               </div>
               <div class="library-header-actions">
                 <button class="theme-toggle"><svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/></svg><span class="kbd-hint-small">⌘/</span></button>

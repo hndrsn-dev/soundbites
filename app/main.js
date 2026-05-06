@@ -67,6 +67,8 @@ function createWindow() {
     },
   });
 
+  win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
   win.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
   win.on('closed', () => {
@@ -88,7 +90,7 @@ function toggleWindow() {
 
 function centerWindow() {
   const { screen } = require('electron');
-  const display = screen.getPrimaryDisplay();
+  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
   const { width, height } = display.workAreaSize;
   const winBounds = win.getBounds();
   win.setPosition(
@@ -201,6 +203,7 @@ ipcMain.handle('save-sounds', async (_, sounds) => {
 
 ipcMain.handle('open-library-window', () => {
   createLibraryWindow();
+  if (win) win.hide();
 });
 
 ipcMain.handle('import-sounds', async () => {

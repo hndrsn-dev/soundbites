@@ -1,9 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+/* ============================================================
+   SNDBTS — Library Editor Styles
+   Imports shared atomic layers, then defines library-specific
+   organisms.
+   ============================================================ */
 
-* {
-  box-sizing: border-box;
-}
+@import 'atoms.css';
+@import 'molecules.css';
 
+/* ── Library-specific body ──────────────────────────────────── */
 html, body {
   margin: 0;
   min-height: 100%;
@@ -14,6 +18,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Library app shell ──────────────────────────────────────── */
 .library-app {
   display: flex;
   flex-direction: column;
@@ -23,6 +28,7 @@ html, body {
   padding: 16px 20px 12px;
 }
 
+/* ── Library header organism ────────────────────────────────── */
 .library-header {
   display: flex;
   flex-wrap: wrap;
@@ -51,9 +57,11 @@ html, body {
 
 .library-header-actions {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 16px;
 }
 
+/* ── Drop zone organism ─────────────────────────────────────── */
 .drop-zone {
   border: 2px dashed var(--border-default);
   border-radius: 8px;
@@ -90,72 +98,16 @@ html, body {
   color: var(--text-muted);
 }
 
+/* ── Library toolbar organism ───────────────────────────────── */
 .library-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.lib-search-wrap {
-  flex: 1;
-  min-width: 200px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.lib-search-icon {
-  position: absolute;
-  left: 10px;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.lib-search-input {
-  width: 100%;
-  height: 36px;
-  padding: 0 12px 0 32px;
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
-  background: var(--surface-card);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.lib-search-input:focus {
-  outline: none;
-  border-color: var(--accent-border);
-  box-shadow: var(--shadow-input-focus);
-}
-
-.lib-filter-cat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.lib-filter-label {
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.lib-select {
-  height: 36px;
-  padding: 0 8px;
-  border-radius: 6px;
-  border: 1px solid var(--border-default);
-  background: var(--surface-card);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  min-width: 160px;
-}
-
+/* ── Library main layout ────────────────────────────────────── */
 .library-main {
   display: flex;
   gap: 16px;
@@ -163,6 +115,7 @@ html, body {
   min-height: 0;
 }
 
+/* ── Library table organism ─────────────────────────────────── */
 .library-table-wrap {
   flex: 1;
   min-width: 0;
@@ -189,7 +142,7 @@ html, body {
 
 .lib-table th {
   text-align: left;
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: 9px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -198,108 +151,89 @@ html, body {
 }
 
 .lib-table td {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
 }
 
+/* ── Row states ─────────────────────────────────────────────── */
 .lib-table tbody tr {
+  position: relative;
   cursor: pointer;
   user-select: none;
+  transition: background 0.1s;
 }
 
-.lib-table tbody tr:hover {
-  background: var(--surface-row-hover);
+.lib-table tbody tr:hover       { background: var(--surface-row-hover); }
+.lib-table tbody tr.is-selected { background: var(--surface-row-selected); }
+.lib-table tbody tr.is-playing  { background: var(--surface-row-playing); }
+
+/* selected-bar: hidden by default, shown on selection */
+.lib-table tbody tr .selected-bar                       { opacity: 0; }
+.lib-table tbody tr.is-selected .selected-bar           { opacity: 1; }
+.lib-table tbody tr.sound-row--user-added .selected-bar { background: var(--status-playing); }
+
+/* ── Columns ────────────────────────────────────────────────── */
+.col-check { width: 36px; text-align: center; padding: 0; position: relative; }
+.col-name  { min-width: 160px; }
+.col-cat   { width: 140px; color: var(--text-secondary); }
+.col-tags  { min-width: 120px; }
+.col-dur   { width: 48px; text-align: right; color: var(--text-muted); }
+
+/* name cell: left padding creates breathing room between checkbox and play indicator */
+.lib-table td.col-name {
+  padding-left: 8px;
 }
 
-.lib-table tbody tr.is-selected {
-  background: var(--surface-row-selected);
+.lib-name-inner {
+  display: flex;
+  align-items: center;
 }
 
-.col-check { width: 36px; text-align: center; }
-
-input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 13px;
-  height: 13px;
-  min-width: 13px;
-  border: 1px solid var(--border-light);
-  border-radius: 2px;
-  background: var(--surface-card);
-  cursor: pointer;
-  position: relative;
-  vertical-align: middle;
-  transition: border-color 0.12s, background 0.12s;
+/* ── Play indicator size (larger than launcher default) ─────── */
+.lib-table .play-indicator {
+  width: 24px;
+  height: 24px;
 }
 
-input[type="checkbox"]:checked,
-input[type="checkbox"]:indeterminate {
-  background: var(--accent-default);
-  border-color: var(--accent-default);
+/* ── Play indicator states (lib-table rows) ─────────────────── */
+.lib-table tbody tr .pi-dot      { display: block; }
+.lib-table tbody tr .pi-triangle { display: none; }
+.lib-table tbody tr .pi-waveform { display: none; }
+
+.lib-table tbody tr:hover .pi-dot            { display: none; }
+.lib-table tbody tr:hover .pi-triangle       { display: block; }
+.lib-table tbody tr:hover .pi-waveform       { display: none; }
+
+.lib-table tbody tr.is-selected .pi-dot      { display: none; }
+.lib-table tbody tr.is-selected .pi-triangle { display: block; }
+.lib-table tbody tr.is-selected .pi-waveform { display: none; }
+
+.lib-table tbody tr.is-playing .pi-dot      { display: none; }
+.lib-table tbody tr.is-playing .pi-triangle { display: none; }
+.lib-table tbody tr.is-playing .pi-waveform { display: flex; }
+
+/* ── Waveform animation (mirrors .sound-row rules from molecules.css) */
+.lib-table tbody tr.is-playing .pi-waveform .wv-bar:nth-child(1) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0s; }
+.lib-table tbody tr.is-playing .pi-waveform .wv-bar:nth-child(2) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.15s; }
+.lib-table tbody tr.is-playing .pi-waveform .wv-bar:nth-child(3) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.05s; }
+.lib-table tbody tr.is-playing .pi-waveform .wv-bar:nth-child(4) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.2s; }
+.lib-table tbody tr.is-playing .pi-waveform .wv-bar:nth-child(5) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.1s; }
+
+/* ── Sound name in library rows ─────────────────────────────── */
+.lib-sound-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-sound-name);
+  letter-spacing: var(--ls-sound-name);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* checkmark */
-input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--text-primary);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 2.5 4.5-4.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  mask-size: 10px 10px;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5l2.5 2.5 4.5-4.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-  -webkit-mask-size: 10px 10px;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-}
-
-/* indeterminate dash */
-input[type="checkbox"]:indeterminate::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--text-primary);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='2' y1='5' x2='8' y2='5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  mask-size: 10px 10px;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cline x1='2' y1='5' x2='8' y2='5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  -webkit-mask-size: 10px 10px;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-}
-
-input[type="checkbox"]:hover:not(:checked):not(:indeterminate) {
-  border-color: var(--accent-border);
-}
-.col-name { min-width: 160px; }
-.col-cat { width: 140px; color: var(--text-secondary); }
-.col-tags { min-width: 120px; }
-.col-dur { width: 48px; text-align: right; color: var(--text-muted); }
-
-.tag-list {
-  display: block;
-}
-
-.lib-tag-chip {
-  display: inline-block;
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 1px 4px;
-  margin: 1px 2px 1px 0;
-  border-radius: 2px;
-  border: 1px solid var(--border-light);
-  background: var(--interactive-tag-bg);
-  color: var(--text-muted);
-}
-
-.lib-tag-more {
-  color: var(--text-secondary);
-  border-color: var(--border-default);
-}
+/* ── Playing/selected text colors ───────────────────────────── */
+.lib-table tbody tr.is-playing  .lib-sound-name { color: var(--text-playing); }
+.lib-table tbody tr.is-selected .lib-tag-chip   { border-color: var(--border-selected); color: var(--text-secondary); }
 
 .lib-empty {
   padding: 32px;
@@ -308,102 +242,22 @@ input[type="checkbox"]:hover:not(:checked):not(:indeterminate) {
   font-size: 12px;
 }
 
+/* ── Library panel organism ─────────────────────────────────── */
 .library-panel {
   width: 300px;
   flex-shrink: 0;
   border: 1px solid var(--border-default);
   border-radius: 8px;
   background: var(--surface-input);
-  padding: 12px 14px;
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   max-height: calc(100vh - 320px);
   overflow-y: auto;
 }
 
-.panel-title {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.panel-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.panel-label {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.panel-input {
-  height: 30px;
-  padding: 0 8px;
-  border: 1px solid var(--border-default);
-  border-radius: 4px;
-  background: var(--surface-card);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.panel-input:focus {
-  outline: none;
-  border-color: var(--accent-border);
-  box-shadow: var(--shadow-input-focus);
-}
-
-.panel-multi-count {
-  margin: 0 0 4px;
-  font-size: 12px;
-  color: var(--accent-text);
-}
-
-.lib-btn {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid var(--border-light);
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-
-.lib-btn:hover {
-  color: var(--text-primary);
-  background: var(--interactive-hover-bg);
-}
-
-.lib-btn-primary {
-  border-color: var(--accent-border);
-  color: var(--accent-text);
-}
-
-.lib-btn-save {
-  margin-top: 4px;
-  background: var(--accent-default);
-  border: none;
-  color: #10120E;
-  font-weight: 700;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.lib-btn-save:hover {
-  background: var(--amber-400);
-  color: #10120E;
-}
-
+/* ── Library footer organism ────────────────────────────────── */
 .library-footer {
   display: flex;
   align-items: center;
@@ -418,6 +272,7 @@ input[type="checkbox"]:hover:not(:checked):not(:indeterminate) {
   color: var(--text-muted);
 }
 
+/* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .library-main {
     flex-direction: column;

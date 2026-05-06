@@ -28,7 +28,7 @@ const footerEditBtn    = document.getElementById('footer-edit-btn');
 
 /** Load sounds.json in Electron (file://) or browser (http same-origin). */
 function fetchUrlForSoundsJson(sp) {
-  if (typeof sp === 'string' && (sp.startsWith('http://') || sp.startsWith('https://'))) {
+  if (typeof sp === 'string' && (sp.startsWith('http://') || sp.startsWith('https://') || sp.startsWith('file://'))) {
     return sp;
   }
   if (typeof sp === 'string' && sp.startsWith('/')) {
@@ -42,6 +42,9 @@ function audioSrcForSound(sound) {
   const rel = sound.path.replace(/^Effects\//, '');
   if (effectsPath === '__browser__') {
     const parts = rel.split('/').map(encodeURIComponent).join('/');
+    if (window.location.protocol === 'file:') {
+      return new URL(`../../Effects/${parts}`, window.location.href).href;
+    }
     return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
   }
   const filePath = `${effectsPath}/${rel}`;

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNDBTS — Launcher Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7/dist/fuse.min.js"></script>
+  <style>
+/* ============================================================
+   Design Tokens
+   ============================================================ */
+:root {
+  --amber-100: #F9F0E1; --amber-200: #F2DBB5; --amber-300: #F5C069;
+  --amber-400: #E8A030; --amber-500: #D4821A; --amber-600: #BF6E0C; --amber-700: #A05A08;
+  --olive-100: #E5E8E3; --olive-200: #B7BDB2; --olive-300: #7E8877;
+  --olive-400: #454D42; --olive-500: #2D322A; --olive-600: #1E211C; --olive-700: #111311;
+  --sand-100: #EBE6E0; --sand-200: #E0D6CD; --sand-300: #D4C7B9;
+  --sand-400: #CBBCAA; --sand-500: #A8998A; --sand-600: #837567; --sand-700: #5A5249;
+  --sage-100: #E8F0E6; --sage-200: #C1D5B8; --sage-300: #9ABF8D;
+  --sage-400: #6FA85C; --sage-500: #4F6B42; --sage-600: #3E7030; --sage-700: #253D1F;
+  --ink-300: #8A857A; --ink-500: #8A857A; --ink-600: #5C5850; --ink-900: #1C1F1A;
+  --amber-alpha-10: rgba(212,130,26,0.10); --amber-alpha-20: rgba(212,130,26,0.20);
+  --amber-alpha-30: rgba(212,130,26,0.30); --amber-alpha-40: rgba(212,130,26,0.40);
+  --sage-alpha-10:  rgba(111,168,92,0.10); --sage-alpha-20:  rgba(111,168,92,0.20);
+  --black-alpha-04: rgba(0,0,0,0.04); --black-alpha-15: rgba(0,0,0,0.15);
+  /* Dark semantic (default) */
+  --surface-desktop:    var(--olive-700);
+  --surface-card:       var(--olive-600);
+  --surface-input:      var(--olive-700);
+  --surface-footer:     var(--black-alpha-15);
+  --surface-row-hover:    var(--olive-500);
+  --surface-row-selected: var(--amber-alpha-10);
+  --surface-row-playing:  var(--sage-alpha-10);
+  --border-default:  var(--olive-500);
+  --border-light:    var(--olive-400);
+  --border-selected: var(--amber-alpha-30);
+  --border-focus:    var(--amber-alpha-40);
+  --border-playing:  var(--sage-alpha-20);
+  --text-primary:   var(--sand-100);
+  --text-secondary: var(--ink-500);
+  --text-muted:     var(--olive-400);
+  --text-playing:   var(--sage-400);
+  --text-accent:    var(--amber-400);
+  --accent-default: var(--amber-500);
+  --accent-text:    var(--amber-400);
+  --accent-glow:    var(--amber-alpha-20);
+  --accent-border:  var(--amber-alpha-40);
+  --status-playing:     var(--sage-400);
+  --status-playing-dim: var(--sage-500);
+  --status-sage:        var(--sage-300);
+  --shadow-launcher:      0 0 0 0.5px rgba(255,255,255,0.04) inset;
+  --shadow-input-default: inset 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-input-focus:   0 0 0 1px rgba(212,130,26,0.40), inset 0 1px 8px rgba(212,130,26,0.08), inset 0 0 24px rgba(212,130,26,0.04);
+  --interactive-hover-bg: var(--olive-500);
+  --interactive-kbd-bg:   var(--olive-600);
+  --interactive-tag-bg:   var(--olive-700);
+  --scrollbar-thumb: var(--olive-500);
+  /* Typography */
+  --font-mono: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --text-sound-name: 13px; --text-search-input: 13px; --text-tag-badge: 9px;
+  --text-category-meta: 10px; --text-wordmark: 11px; --text-column-header: 9px;
+  --text-kbd-hint: 9px; --text-live-badge: 10px;
+  --ls-sound-name: -0.02em; --ls-search-input: -0.01em; --ls-tag-badge: 0.08em;
+  --ls-category-meta: 0.04em; --ls-wordmark: 0.14em; --ls-column-header: 0.10em;
+  --ls-kbd-hint: 0.04em; --ls-live-badge: 0.06em;
+}
+
+[data-theme="light"] {
+  --surface-desktop:    var(--sand-300);
+  --surface-card:       var(--sand-100);
+  --surface-input:      var(--sand-200);
+  --surface-footer:     var(--black-alpha-04);
+  --surface-row-hover:    var(--sand-300);
+  --surface-row-selected: var(--amber-alpha-10);
+  --surface-row-playing:  var(--sage-alpha-10);
+  --border-default:  var(--sand-400);
+  --border-light:    var(--sand-300);
+  --border-selected: var(--amber-alpha-30);
+  --border-focus:    var(--amber-alpha-40);
+  --border-playing:  var(--sage-alpha-20);
+  --text-primary:   var(--ink-900);
+  --text-secondary: var(--ink-600);
+  --text-muted:     var(--sand-500);
+  --text-playing:   var(--sage-600);
+  --text-accent:    var(--amber-700);
+  --accent-default: var(--amber-600);
+  --accent-text:    var(--amber-700);
+  --accent-glow:    var(--amber-alpha-20);
+  --accent-border:  var(--amber-alpha-40);
+  --status-playing:     var(--sage-600);
+  --status-playing-dim: var(--sage-700);
+  --status-sage:        var(--sage-500);
+  --shadow-launcher:      0 0 0 0.5px rgba(255,255,255,0.55) inset;
+  --shadow-input-default: inset 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-input-focus:   0 0 0 1px rgba(191,110,12,0.38), inset 0 1px 8px rgba(191,110,12,0.08), inset 0 0 24px rgba(191,110,12,0.03);
+  --interactive-hover-bg: var(--sand-300);
+  --interactive-kbd-bg:   var(--sand-200);
+  --interactive-tag-bg:   var(--sand-200);
+  --scrollbar-thumb: var(--sand-300);
+}
+
+/* ============================================================
+   Atoms
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: var(--font-mono); -webkit-font-smoothing: antialiased; color: var(--text-primary); }
+
+.noise-overlay {
+  position: absolute; inset: 0; border-radius: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.035; pointer-events: none; z-index: 10; mix-blend-mode: overlay;
+}
+
+.wv-bar { display: block; width: 2px; background: var(--status-playing); border-radius: 1px; transform-origin: bottom; }
+@keyframes wv-dance { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--status-playing); flex-shrink: 0; }
+
+.tag-badge {
+  font-family: var(--font-mono); font-size: var(--text-tag-badge); letter-spacing: var(--ls-tag-badge);
+  color: var(--text-muted); background: var(--interactive-tag-bg); border: 1px solid var(--border-light);
+  border-radius: 2px; padding: 1px 4px; text-transform: uppercase; white-space: nowrap;
+}
+
+kbd {
+  font-family: var(--font-mono); font-size: var(--text-kbd-hint);
+  background: var(--interactive-kbd-bg); border: 1px solid var(--border-light);
+  border-radius: 2px; padding: 0 4px; color: var(--text-secondary);
+}
+
+.vertical-divider { width: 1px; height: 12px; background: var(--border-light); flex-shrink: 0; }
+
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent 0%, var(--border-default) 20%, var(--border-default) 80%, transparent 100%);
+  margin: 2px 0; flex-shrink: 0;
+}
+
+.selected-bar {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 2px; height: 55%; background: var(--accent-default);
+  border-radius: 0 1px 1px 0; opacity: 0; transition: opacity 0.1s;
+}
+
+.pi-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-muted); transition: opacity 0.1s; }
+.pi-triangle { width: 0; height: 0; border-left: 7px solid var(--accent-default); border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; }
+
+.version-label { font-family: var(--font-mono); font-size: var(--text-kbd-hint); color: var(--text-muted); letter-spacing: var(--ls-kbd-hint); }
+.kbd-hint-small { font-family: var(--font-mono); font-size: var(--text-kbd-hint); letter-spacing: var(--ls-kbd-hint); color: var(--text-muted); }
+
+.icon-sun, .icon-moon { width: 13px; height: 13px; flex-shrink: 0; }
+:root .icon-moon { display: none; }
+:root .icon-sun  { display: block; }
+[data-theme="light"] .icon-moon { display: block; }
+[data-theme="light"] .icon-sun  { display: none; }
+
+/* ============================================================
+   Molecules
+   ============================================================ */
+.play-indicator { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 8px; }
+.pi-waveform { display: none; align-items: flex-end; gap: 2px; height: 14px; }
+.sound-row .pi-dot      { display: block; }
+.sound-row .pi-triangle { display: none; }
+.sound-row .pi-waveform { display: none; }
+.sound-row.is-selected .pi-dot      { display: none; }
+.sound-row.is-selected .pi-triangle { display: block; }
+.sound-row.is-selected .pi-waveform { display: none; }
+.sound-row.is-playing .pi-dot      { display: none; }
+.sound-row.is-playing .pi-triangle { display: none; }
+.sound-row.is-playing .pi-waveform { display: flex; }
+.pi-waveform .wv-bar:nth-child(1) { height: 8px; }
+.pi-waveform .wv-bar:nth-child(2) { height: 12px; }
+.pi-waveform .wv-bar:nth-child(3) { height: 6px; }
+.pi-waveform .wv-bar:nth-child(4) { height: 14px; }
+.pi-waveform .wv-bar:nth-child(5) { height: 9px; }
+.sound-row.is-playing .pi-waveform .wv-bar:nth-child(1) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0s; }
+.sound-row.is-playing .pi-waveform .wv-bar:nth-child(2) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.15s; }
+.sound-row.is-playing .pi-waveform .wv-bar:nth-child(3) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.05s; }
+.sound-row.is-playing .pi-waveform .wv-bar:nth-child(4) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.2s; }
+.sound-row.is-playing .pi-waveform .wv-bar:nth-child(5) { animation: wv-dance 0.9s ease-in-out infinite; animation-delay: 0.1s; }
+
+.live-badge { display: flex; align-items: center; gap: 4px; }
+.live-count, .live-label { font-family: var(--font-mono); font-size: var(--text-live-badge); letter-spacing: var(--ls-live-badge); color: var(--text-secondary); }
+
+.kbd-hint { font-family: var(--font-mono); font-size: var(--text-kbd-hint); letter-spacing: var(--ls-kbd-hint); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+.wordmark { display: flex; align-items: center; gap: 8px; }
+.wordmark-icon { width: 22px; height: 22px; color: var(--accent-default); flex-shrink: 0; }
+.wordmark-label { font-family: var(--font-mono); font-size: var(--text-wordmark); font-weight: 500; letter-spacing: var(--ls-wordmark); color: var(--text-primary); text-transform: uppercase; }
+
+.search-wrap { position: relative; }
+.search-frame { position: relative; height: 40px; background: var(--surface-input); border-radius: 6px; border: 1px solid var(--border-default); box-shadow: var(--shadow-input-default); transition: border-color 0.15s, box-shadow 0.15s; }
+.search-frame:focus-within { border-color: var(--accent-border); box-shadow: var(--shadow-input-focus); }
+.search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; flex-shrink: 0; }
+.search-input { position: absolute; left: 38px; right: 60px; top: 0; bottom: 0; background: transparent; border: none; outline: none; font-family: var(--font-mono); font-size: var(--text-search-input); letter-spacing: var(--ls-search-input); color: var(--text-primary); caret-color: var(--accent-default); }
+.search-input::placeholder { color: var(--text-muted); }
+.search-kbd { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); font-size: var(--text-kbd-hint); letter-spacing: var(--ls-kbd-hint); color: var(--text-muted); background: var(--interactive-kbd-bg); padding: 2px 4px; border-radius: 3px; pointer-events: none; }
+
+.column-headers { display: flex; align-items: center; justify-content: space-between; padding: 4px 28px 4px 56px; flex-shrink: 0; }
+.col-name, .col-meta { font-family: var(--font-mono); font-size: var(--text-column-header); letter-spacing: var(--ls-column-header); color: var(--text-muted); text-transform: uppercase; }
+
+.sound-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: 8px; }
+.sound-category { font-family: var(--font-mono); font-size: var(--text-category-meta); letter-spacing: var(--ls-category-meta); color: var(--text-secondary); white-space: nowrap; }
+.sound-row.is-playing .sound-category { color: var(--status-playing-dim); }
+.sound-row.is-selected .tag-badge { border-color: var(--border-selected); color: var(--text-secondary); }
+.sound-duration { font-family: var(--font-mono); font-size: var(--text-category-meta); letter-spacing: var(--ls-category-meta); color: var(--text-muted); white-space: nowrap; min-width: 28px; text-align: right; }
+
+.footer-waveform { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+.footer-waveform .wv-bar { width: 2px; background: var(--status-playing); border-radius: 1px; animation: wv-dance 0.9s ease-in-out infinite; }
+.footer-waveform .wv-bar:nth-child(1) { animation-delay: 0s;    height: 6px; }
+.footer-waveform .wv-bar:nth-child(2) { animation-delay: 0.15s; height: 10px; }
+.footer-waveform .wv-bar:nth-child(3) { animation-delay: 0.05s; height: 5px; }
+.footer-waveform .wv-bar:nth-child(4) { animation-delay: 0.2s;  height: 12px; }
+.footer-waveform .wv-bar:nth-child(5) { animation-delay: 0.1s;  height: 7px; }
+
+.footer-playing { display: flex; align-items: center; gap: 8px; }
+.footer-playing-name { font-family: var(--font-mono); font-size: var(--text-category-meta); letter-spacing: var(--ls-category-meta); color: var(--text-playing); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.footer-hints { display: flex; align-items: center; gap: 12px; }
+
+.footer-edit-btn { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; height: 24px; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--border-light); background: transparent; color: var(--text-muted); cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s; }
+.footer-edit-btn:hover { color: var(--text-secondary); }
+.footer-right { display: flex; align-items: center; gap: 8px; }
+
+.theme-toggle { display: flex; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; color: var(--text-secondary); padding: 2px 4px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+.theme-toggle:hover { color: var(--text-primary); background: var(--interactive-hover-bg); }
+
+.close-btn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: none; border: none; border-radius: 4px; color: var(--text-muted); font-size: 11px; cursor: pointer; padding: 0; transition: color 0.15s, background 0.15s; }
+.close-btn:hover { color: var(--text-primary); background: var(--interactive-hover-bg); }
+
+/* ============================================================
+   Organisms
+   ============================================================ */
+.launcher { position: relative; width: 560px; height: 100%; max-height: 100%; min-height: 0; background: var(--surface-card); border-radius: 12px; border: 1px solid var(--border-default); box-shadow: var(--shadow-launcher); display: flex; flex-direction: column; overflow: hidden; }
+
+.header { padding: 12px; flex-shrink: 0; user-select: none; }
+.top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+.results-list { flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 4px; }
+.results-list::-webkit-scrollbar       { width: 4px; }
+.results-list::-webkit-scrollbar-track { background: transparent; }
+.results-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 2px; }
+.results-empty { padding: 24px; text-align: center; font-size: 12px; color: var(--text-muted); }
+
+.sound-row { position: relative; display: flex; align-items: center; gap: 0; min-height: 40px; padding: 12px 16px; cursor: pointer; border: 1px solid transparent; border-radius: 8px; transition: background 0.1s; overflow: hidden; flex-shrink: 0; }
+.sound-row:hover { background: var(--surface-row-hover); }
+.sound-row.is-selected { background: var(--surface-row-selected); border-color: var(--border-selected); }
+.sound-row.is-playing { background: var(--surface-row-playing); border-color: var(--border-playing); }
+.sound-row.is-selected .selected-bar { opacity: 1; }
+.sound-row--user-added .selected-bar { background: var(--status-playing); }
+
+.sound-name { font-family: var(--font-mono); font-size: var(--text-sound-name); letter-spacing: var(--ls-sound-name); color: var(--text-primary); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+.sound-row.is-playing .sound-name { color: var(--text-playing); }
+
+.footer { display: flex; align-items: center; justify-content: space-between; padding: 0 12px; height: 32px; background: var(--surface-footer); border-top: 1px solid var(--border-default); flex-shrink: 0; margin-top: auto; }
+.footer.is-playing .footer-right { display: none; }
+
+/* ============================================================
+   Page chrome (browser preview wrapper)
+   ============================================================ */
+html, body { min-height: 100%; width: 100%; max-width: none; }
+body { display: flex; flex-direction: column; align-items: center; padding: 16px 16px 32px; background: var(--surface-desktop); gap: 12px; }
+
+.browser-banner {
+  width: 100%; max-width: 560px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
+  color: var(--text-secondary); padding: 10px 14px;
+  background: var(--surface-input); border: 1px solid var(--border-default);
+  border-radius: 8px; line-height: 1.6;
+}
+.browser-banner code { font-size: 10px; color: var(--accent-text); }
+.browser-banner strong { color: var(--text-primary); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<div class="browser-banner">
+  <strong>Standalone preview</strong> — UI-only. Audio needs the desktop app or
+  <code>npx serve . -p 3847</code> + <code>/app/renderer/browser.html</code>.
+  Theme toggle and search work normally.
+</div>
+
+<div class="launcher" id="launcher">
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <div class="header">
+    <div class="top-row">
+      <div class="wordmark">
+        <div class="wordmark-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="22" height="22" rx="4" fill="currentColor" fill-opacity="0.08"/>
+            <path d="M6 8.5H8.5L12 6V16L8.5 13.5H6V8.5Z" fill="currentColor" fill-opacity="0.9"/>
+            <path d="M14 8.5C14.8 9.3 15.3 10.1 15.3 11C15.3 11.9 14.8 12.7 14 13.5" stroke="currentColor" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M15.5 7C16.8 8.2 17.5 9.6 17.5 11C17.5 12.4 16.8 13.8 15.5 15" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="wordmark-label">SNDBTS</span>
+      </div>
+
+      <div class="header-right">
+        <div class="live-badge" id="live-badge">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="live-count" id="live-count">0</span>
+          <span class="live-label">LIVE</span>
+        </div>
+        <span class="version-label">v0.1</span>
+        <div class="vertical-divider" aria-hidden="true"></div>
+        <button class="theme-toggle" id="theme-toggle" title="Toggle theme (⌘/)" aria-label="Toggle light/dark theme">
+          <svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/>
+            <line x1="6.5" y1="0.5" x2="6.5" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="6.5" y1="11" x2="6.5" y2="12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="0.5" y1="6.5" x2="2" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="11" y1="6.5" x2="12.5" y2="6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="9.6" y1="9.6" x2="10.6" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="10.6" y1="2.4" x2="9.6" y2="3.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="3.4" y1="9.6" x2="2.4" y2="10.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M11 7.5A5 5 0 1 1 5.5 2a3.5 3.5 0 0 0 5.5 5.5Z" fill="currentColor"/>
+          </svg>
+          <span class="kbd-hint-small">⌘/</span>
+        </button>
+        <div class="vertical-divider" aria-hidden="true"></div>
+        <button class="close-btn" id="close-btn" title="Close (Esc)" aria-label="Close">&#x2715;</button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-frame" id="search-frame">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+          <line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input type="text" class="search-input" id="search-input" placeholder="Search sounds…" autocomplete="off" spellcheck="false" />
+        <span class="search-kbd" aria-hidden="true">⌘K</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gradient-divider" aria-hidden="true"></div>
+
+  <div class="column-headers" aria-hidden="true">
+    <span class="col-name">NAME</span>
+    <span class="col-meta">CAT · TAG · DUR</span>
+  </div>
+
+  <div class="results-list" id="results-list" role="listbox" aria-label="Sound results">
+    <div class="results-empty" id="results-empty" style="display:none;">
+      <span>No sounds found</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-hints">
+      <span class="kbd-hint"><kbd>↵</kbd> play/stop</span>
+      <span class="kbd-hint"><kbd>↑↓</kbd> navigate</span>
+      <span class="kbd-hint"><kbd>⌘P</kbd> pin</span>
+      <span class="kbd-hint"><kbd>⌘/</kbd> theme</span>
+      <span class="kbd-hint"><kbd>⌘E</kbd> library</span>
+    </div>
+    <div class="footer-right">
+      <button type="button" class="footer-edit-btn" id="footer-edit-btn" title="Open library (⌘E)">Edit Library</button>
+    </div>
+    <div class="footer-playing" id="footer-playing" style="display:none;">
+      <div class="footer-waveform" aria-hidden="true">
+        <span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span>
+        <span class="wv-bar"></span><span class="wv-bar"></span>
+      </div>
+      <span class="footer-playing-name" id="footer-playing-name"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Embedded sounds data (sampled from sounds.json) ── */
+window.__SOUNDS_DATA__ = [{"id":"0001","filename":"30rock-ham.mp3","path":"Effects/30rock-ham.mp3","name":"Ham","source":"30rock","category":"30 Rock","tags":["30rock"],"format":"mp3","duration":"0:00"},{"id":"0002","filename":"at-unaccaptableCondition.mp3","path":"Effects/at-unaccaptableCondition.mp3","name":"Unaccaptable Condition","source":"at","category":"Adventure Time","tags":["at","Lemongrab"],"format":"mp3","duration":"0:03","userEdited":true},{"id":"0003","filename":"at-unacceptable.mp3","path":"Effects/at-unacceptable.mp3","name":"Unacceptable","source":"at","category":"Adventure Time","tags":["at","Lemongrab"],"format":"mp3","duration":"0:01","userEdited":true},{"id":"0004","filename":"ad-ainteasy.mp3","path":"Effects/hidden/ad-ainteasy.mp3","name":"Ainteasy","source":"ad","category":"Arrested Development","tags":["ad"],"format":"mp3","duration":"1:19"},{"id":"0005","filename":"ad-annyong.mp3","path":"Effects/ad-annyong.mp3","name":"Annyong","source":"ad","category":"Arrested Development","tags":["ad"],"format":"mp3","duration":"0:00"},{"id":"0006","filename":"ad-awwoohh.mp3","path":"Effects/ad-awwoohh.mp3","name":"Awwoohh","source":"ad","category":"Arrested Development","tags":["ad"],"format":"mp3","duration":"0:00"},{"id":"0029","filename":"bell-light.mp3","path":"Effects/bell-light.mp3","name":"Light","source":"bell","category":"Bell","tags":["bell"],"format":"mp3","duration":"0:03"},{"id":"0030","filename":"biggie-intro.mp3","path":"Effects/biggie-intro.mp3","name":"Intro","source":"biggie","category":"Biggie Smalls","tags":["biggie"],"format":"mp3","duration":"0:05"},{"id":"0031","filename":"bm-correct.mp3","path":"Effects/bm-correct.mp3","name":"Correct","source":"bm","category":"Billy Madison","tags":["bm"],"format":"mp3","duration":"0:01"},{"id":"0032","filename":"bm-everyoneDubmber.mp3","path":"Effects/bm-everyoneDubmber.mp3","name":"Everyone Dubmber","source":"bm","category":"Billy Madison","tags":["bm"],"format":"mp3","duration":"0:04"},{"id":"0033","filename":"bm-godMercy.mp3","path":"Effects/bm-godMercy.mp3","name":"God Mercy","source":"bm","category":"Billy Madison","tags":["bm"],"format":"mp3","duration":"0:02"},{"id":"0039","filename":"bk-whopper.mp3","path":"Effects/bk-whopper.mp3","name":"Whopper","source":"bk","category":"Burger King","tags":["bk"],"format":"mp3","duration":"0:02"},{"id":"0040","filename":"bale-censored.mp3","path":"Effects/hidden/bale-censored.mp3","name":"Censored","source":"bale","category":"Christian Bale","tags":["bale"],"format":"mp3","duration":"3:04"},{"id":"0041","filename":"bale-dadada.mp3","path":"Effects/bale-dadada.mp3","name":"Dadada","source":"bale","category":"Christian Bale","tags":["bale"],"format":"mp3","duration":"0:01"},{"id":"0042","filename":"bale-done.mp3","path":"Effects/bale-done.mp3","name":"Done","source":"bale","category":"Christian Bale","tags":["bale"],"format":"mp3","duration":"0:02"},{"id":"0048","filename":"#merika.mp3","path":"Effects/#merika.mp3","name":"#merika","source":null,"category":"Effects","tags":["effect"],"format":"mp3","duration":null},{"id":"0049","filename":"2meurhlikagola.mp3","path":"Effects/2meurhlikagola.mp3","name":"2meurhlikagola","source":null,"category":"Effects","tags":["effect"],"format":"mp3","duration":"0:02"},{"id":"0050","filename":"allByMyself.mp3","path":"Effects/allByMyself.mp3","name":"All By Myself","source":null,"category":"Effects","tags":["effect"],"format":"mp3","duration":"0:05"},{"id":"0051","filename":"alrighty.mp3","path":"Effects/alrighty.mp3","name":"Alrighty Then","source":null,"category":"Jim Carrey","tags":["Ace Ventura","Funny"],"format":"mp3","duration":"0:01","userEdited":true},{"id":"0662","filename":"bf-itsKarl.mp3","path":"Effects/bf-itsKarl.mp3","name":"Its Karl","source":"bf","category":"Karl","tags":["bf"],"format":"mp3","duration":"0:00"},{"id":"0663","filename":"bf-karl.mp3","path":"Effects/bf-karl.mp3","name":"Karl","source":"bf","category":"Karl","tags":["bf"],"format":"mp3","duration":"0:01"},{"id":"0664","filename":"bacon-bacon.mp3","path":"Effects/bacon-bacon.mp3","name":"Bacon","source":"bacon","category":"King Curtis","tags":["bacon"],"format":"mp3","duration":"0:00","userEdited":true},{"id":"0665","filename":"bacon-beenNiceComingEdge.mp3","path":"Effects/bacon-beenNiceComingEdge.mp3","name":"Been Nice Coming Edge","source":"bacon","category":"King Curtis","tags":["bacon"],"format":"mp3","duration":"0:03","userEdited":true},{"id":"0666","filename":"bacon-dontWantToMakeDeal.mp3","path":"Effects/bacon-dontWantToMakeDeal.mp3","name":"Dont Want To Make Deal","source":"bacon","category":"King Curtis","tags":["bacon"],"format":"mp3","duration":"0:02","userEdited":true},{"id":"0673","filename":"mario-1up.mp3","path":"Effects/mario-1up.mp3","name":"1up","source":"mario","category":"Mario","tags":["mario"],"format":"mp3","duration":"0:00"},{"id":"0674","filename":"mario-bigjump.mp3","path":"Effects/mario-bigjump.mp3","name":"Bigjump","source":"mario","category":"Mario","tags":["mario"],"format":"mp3","duration":"0:00"},{"id":"0675","filename":"mario-coin.mp3","path":"Effects/mario-coin.mp3","name":"Coin","source":"mario","category":"Mario","tags":["mario"],"format":"mp3","duration":"0:00"},{"id":"0689","filename":"fb-andThenSoup.mp3","path":"Effects/fb-andThenSoup.mp3","name":"And Then Soup","source":"fb","category":"Misc","tags":["fb"],"format":"mp3","duration":"0:01"},{"id":"0690","filename":"cb-anyone.mp3","path":"Effects/cb-anyone.mp3","name":"Anyone","source":"cb","category":"Misc","tags":["cb"],"format":"mp3","duration":"0:03"},{"id":"0691","filename":"fb-batter.wav","path":"Effects/fb-batter.wav","name":"Batter","source":"fb","category":"Misc","tags":["fb"],"format":"wav","duration":"0:11"},{"id":"0729","filename":"snl-davidPumpkins.mp3","path":"Effects/snl-davidPumpkins.mp3","name":"David Pumpkins","source":"snl","category":"SNL","tags":["snl"],"format":"mp3","duration":"0:02"},{"id":"0730","filename":"snl-davidPumpkinsBeatLoop.mp3","path":"Effects/snl-davidPumpkinsBeatLoop.mp3","name":"David Pumpkins Beat Loop","source":"snl","category":"SNL","tags":["snl"],"format":"mp3","duration":"0:04"},{"id":"0731","filename":"snl-davidPumpkinsHappyHalloween.mp3","path":"Effects/snl-davidPumpkinsHappyHalloween.mp3","name":"David Pumpkins Happy Halloween","source":"snl","category":"SNL","tags":["snl"],"format":"mp3","duration":"0:02"},{"id":"0734","filename":"shia-impossible.mp3","path":"Effects/shia-impossible.mp3","name":"Impossible","source":"shia","category":"Shia LaBeouf","tags":["shia"],"format":"mp3","duration":"0:01"},{"id":"0735","filename":"shia-justDoIt.mp3","path":"Effects/shia-justDoIt.mp3","name":"Just Do It","source":"shia","category":"Shia LaBeouf","tags":["shia"],"format":"mp3","duration":"0:01"},{"id":"0736","filename":"shia-waitingFor.mp3","path":"Effects/shia-waitingFor.mp3","name":"Waiting For","source":"shia","category":"Shia LaBeouf","tags":["shia"],"format":"mp3","duration":"0:02"},{"id":"0739","filename":"office-balloon.mp3","path":"Effects/office-balloon.mp3","name":"Balloon","source":"office","category":"The Office","tags":["office"],"format":"mp3","duration":"0:06"},{"id":"0740","filename":"office-beanMeanAngry.mp3","path":"Effects/office-beanMeanAngry.mp3","name":"Bean Mean Angry","source":"office","category":"The Office","tags":["office"],"format":"mp3","duration":"0:01"},{"id":"0741","filename":"office-beanMean1.mp3","path":"Effects/office-beanMean1.mp3","name":"Bean Mean1","source":"office","category":"The Office","tags":["office"],"format":"mp3","duration":"0:01"},{"id":"0763","filename":"blake-backDown.mp3","path":"Effects/blake-backDown.mp3","name":"Back Down","source":"blake","category":"Workaholics","tags":["blake"],"format":"mp3","duration":"0:02"},{"id":"0764","filename":"blake-guysers.mp3","path":"Effects/blake-guysers.mp3","name":"Guysers","source":"blake","category":"Workaholics","tags":["blake"],"format":"mp3","duration":"0:01"}];
+
+/* ── Electron shim (standalone: uses embedded data, no audio) ── */
+window.sndbts = {
+  getSoundsPath:  () => Promise.resolve('__embedded__'),
+  getEffectsPath: () => Promise.resolve('__browser__'),
+  hideWindow:     () => {},
+  onWindowShown:  (cb) => setTimeout(cb, 0),
+  saveSounds:     async () => {},
+  importSounds:   async () => ({ entries: [], paths: [] }),
+  importSoundsFromPaths: async () => ({ entries: [], paths: [] }),
+  deleteImportedFile: async () => {},
+  openLibraryWindow:  () => {},
+  onSoundsUpdated:    () => {},
+};
+</script>
+<script>
+/* ── App logic (inlined from app.js, modified for __embedded__) ── */
+'use strict';
+
+let sounds = [], filtered = [], selectedIndex = 0;
+let playingId = null, currentAudio = null, effectsPath = '', soundsPath = '', fuse = null;
+
+const searchInput       = document.getElementById('search-input');
+const resultsList       = document.getElementById('results-list');
+const resultsEmpty      = document.getElementById('results-empty');
+const liveCount         = document.getElementById('live-count');
+const themeToggle       = document.getElementById('theme-toggle');
+const footerPlaying     = document.getElementById('footer-playing');
+const footerPlayingName = document.getElementById('footer-playing-name');
+const footerEditBtn     = document.getElementById('footer-edit-btn');
+
+function fetchUrlForSoundsJson(sp) {
+  if (typeof sp === 'string' && (sp.startsWith('http://') || sp.startsWith('https://'))) return sp;
+  if (typeof sp === 'string' && sp.startsWith('/')) return `${window.location.origin}${sp}`;
+  return `file://${sp}`;
+}
+
+function audioSrcForSound(sound) {
+  const rel = sound.path.replace(/^Effects\//, '');
+  if (effectsPath === '__browser__') {
+    const parts = rel.split('/').map(encodeURIComponent).join('/');
+    return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+  }
+  return encodeURI(`file://${effectsPath}/${rel}`);
+}
+
+async function init() {
+  const savedTheme = localStorage.getItem('sndbts-theme');
+  if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+
+  const [sp, ep] = await Promise.all([window.sndbts.getSoundsPath(), window.sndbts.getEffectsPath()]);
+  soundsPath = sp;
+  effectsPath = ep;
+
+  if (sp === '__embedded__') {
+    sounds = window.__SOUNDS_DATA__;
+  } else {
+    try {
+      const resp = await fetch(fetchUrlForSoundsJson(soundsPath));
+      sounds = await resp.json();
+    } catch (err) {
+      console.error('Could not load sounds.json.', err);
+      resultsEmpty.style.display = '';
+      resultsEmpty.querySelector('span').textContent = 'Could not load sounds.';
+      return;
+    }
+  }
+
+  fuse = new Fuse(sounds, { keys: ['name', 'source', 'category', 'tags'], threshold: 0.4, minMatchCharLength: 1, includeScore: true });
+  window.sndbts.onSoundsUpdated(() => {});
+  filtered = sounds;
+  renderResults();
+  updateLiveBadge();
+}
+
+let searchDebounce = null;
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    const query = searchInput.value.trim();
+    filtered = query ? fuse.search(query).map(r => r.item) : sounds;
+    selectedIndex = 0;
+    renderResults();
+    updateLiveBadge();
+  }, 50);
+});
+
+document.addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowDown': e.preventDefault(); moveSelection(1); break;
+    case 'ArrowUp':   e.preventDefault(); moveSelection(-1); break;
+    case 'Enter':
+      e.preventDefault();
+      if (filtered.length > 0) { const s = filtered[selectedIndex]; if (s) togglePlay(s); }
+      break;
+    case 'Escape': e.preventDefault(); window.sndbts.hideWindow(); break;
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === '/') { e.preventDefault(); toggleTheme(); }
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E')) { e.preventDefault(); window.sndbts.openLibraryWindow(); }
+});
+
+function moveSelection(delta) {
+  if (!filtered.length) return;
+  selectedIndex = Math.max(0, Math.min(filtered.length - 1, selectedIndex + delta));
+  renderResults();
+  const rows = resultsList.querySelectorAll('.sound-row');
+  if (rows[selectedIndex]) rows[selectedIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function renderResults() {
+  resultsList.querySelectorAll('.sound-row').forEach(r => r.remove());
+  if (!filtered.length) { resultsEmpty.style.display = ''; return; }
+  resultsEmpty.style.display = 'none';
+  const frag = document.createDocumentFragment();
+  filtered.forEach((sound, idx) => frag.appendChild(buildSoundRow(sound, idx)));
+  resultsList.appendChild(frag);
+}
+
+function buildSoundRow(sound, idx) {
+  const row = document.createElement('div');
+  row.className = 'sound-row';
+  if (sound.userAdded) row.classList.add('sound-row--user-added');
+  row.dataset.id = sound.id;
+  row.setAttribute('role', 'option');
+  row.setAttribute('aria-label', sound.name);
+  if (idx === selectedIndex) row.classList.add('is-selected');
+  if (sound.id === playingId)  row.classList.add('is-playing');
+
+  const tags = (sound.tags && sound.tags.length)
+    ? sound.tags.map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('')
+    : (sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : '');
+
+  row.innerHTML = `
+    <div class="selected-bar" aria-hidden="true"></div>
+    <div class="play-indicator" aria-hidden="true">
+      <span class="pi-dot"></span>
+      <span class="pi-triangle"></span>
+      <div class="pi-waveform">
+        <span class="wv-bar"></span><span class="wv-bar"></span><span class="wv-bar"></span>
+        <span class="wv-bar"></span><span class="wv-bar"></span>
+      </div>
+    </div>
+    <span class="sound-name">${escapeHtml(sound.name)}</span>
+    <div class="sound-meta">
+      <span class="sound-category">${escapeHtml(sound.category || '')}</span>
+      ${tags}
+      ${sound.duration ? `<span class="sound-duration">${escapeHtml(sound.duration)}</span>` : ''}
+    </div>`;
+
+  row.addEventListener('click', () => { selectedIndex = idx; renderResults(); togglePlay(sound); });
+  row.addEventListener('mouseenter', () => {
+    selectedIndex = idx;
+    resultsList.querySelectorAll('.sound-row').forEach((r, i) => {
+      r.classList.toggle('is-selected', i === selectedIndex && r.dataset.id !== playingId);
+    });
+  });
+  return row;
+}
+
+function togglePlay(sound) {
+  if (playingId === sound.id) { stopPlayback(); return; }
+  playSound(sound);
+}
+
+function playSound(sound) {
+  stopPlayback();
+  const src = audioSrcForSound(sound);
+  const audio = new Audio(src);
+  audio.addEventListener('ended', () => { if (playingId === sound.id) stopPlayback(); });
+  audio.addEventListener('error', () => stopPlayback());
+  currentAudio = audio;
+  playingId = sound.id;
+  audio.play().catch(() => stopPlayback());
+  renderResults();
+  footerPlayingName.textContent = sound.name;
+  footerPlaying.style.display = 'flex';
+  document.querySelector('.footer').classList.add('is-playing');
+}
+
+function stopPlayback() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+  playingId = null;
+  renderResults();
+  footerPlaying.style.display = 'none';
+  document.querySelector('.footer').classList.remove('is-playing');
+}
+
+function updateLiveBadge() { liveCount.textContent = filtered.length; }
+
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) { document.documentElement.removeAttribute('data-theme'); localStorage.setItem('sndbts-theme', 'dark'); }
+  else          { document.documentElement.setAttribute('data-theme', 'light'); localStorage.setItem('sndbts-theme', 'light'); }
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+document.getElementById('close-btn').addEventListener('click', () => window.sndbts.hideWindow());
+footerEditBtn.addEventListener('click', () => window.sndbts.openLibraryWindow());
+window.sndbts.onWindowShown(() => { searchInput.focus(); searchInput.select(); });
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+init();
+</script>
+</body>
+</html>

@@ -2,6 +2,9 @@
 
 let sounds = [];
 let soundsPath = '';
+let effectsPath = '';
+let currentAudio = null;
+let playingId = null;
 let fuse = null;
 let filtered = [];
 let selectedIds = new Set();
@@ -27,6 +30,64 @@ const panelBatchRemoveTag = document.getElementById('panel-batch-remove-tag');
 const panelApplyBatch = document.getElementById('panel-apply-batch');
 const libStatus = document.getElementById('lib-status');
 const btnBrowse = document.getElementById('btn-browse-import');
+const btnThemeToggle = document.getElementById('lib-theme-toggle');
+
+function toggleTheme() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  if (isLight) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('sndbts-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('sndbts-theme', 'light');
+  }
+}
+
+btnThemeToggle.addEventListener('click', toggleTheme);
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+    e.preventDefault();
+    toggleTheme();
+  }
+});
+
+function audioSrcForSound(sound) {
+  const rel = sound.path.replace(/^Effects\//, '');
+  if (effectsPath === '__browser__') {
+    const parts = rel.split('/').map(encodeURIComponent).join('/');
+    return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+  }
+  return encodeURI(`file://${effectsPath}/${rel}`);
+}
+
+function syncPlayingClass() {
+  tbody.querySelectorAll('tr').forEach((tr) => {
+    tr.classList.toggle('is-playing', tr.dataset.id === playingId);
+  });
+}
+
+function stopPlayback() {
+  if (currentAudio) { currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
+  playingId = null;
+  syncPlayingClass();
+}
+
+function playSound(sound) {
+  stopPlayback();
+  const audio = new Audio(audioSrcForSound(sound));
+  audio.addEventListener('ended', () => { if (playingId === sound.id) stopPlayback(); });
+  audio.addEventListener('error', () => stopPlayback());
+  currentAudio = audio;
+  playingId = sound.id;
+  audio.play().catch(() => stopPlayback());
+  syncPlayingClass();
+}
+
+function togglePlay(sound) {
+  if (playingId === sound.id) { stopPlayback(); return; }
+  playSound(sound);
+}
 
 function fetchUrlForSoundsJson(sp) {
   if (typeof sp === 'string' && (sp.startsWith('http://') || sp.startsWith('https://'))) {
@@ -112,8 +173,15 @@ function renderTable() {
     tr.dataset.id = sound.id;
     tr.dataset.index = String(idx);
     if (selectedIds.has(sound.id)) tr.classList.add('is-selected');
+    if (sound.id === playingId) tr.classList.add('is-playing');
+    if (sound.userAdded) tr.classList.add('sound-row--user-added');
 
+    // Checkbox cell — also hosts the selected-bar
     const tdCheck = document.createElement('td');
+    tdCheck.className = 'col-check';
+    const selectedBar = document.createElement('div');
+    selectedBar.className = 'selected-bar';
+    selectedBar.setAttribute('aria-hidden', 'true');
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.checked = selectedIds.has(sound.id);
@@ -136,15 +204,33 @@ function renderTable() {
       updateSelectAllCheckbox();
       updatePanel();
     });
+    tdCheck.appendChild(selectedBar);
     tdCheck.appendChild(cb);
 
+    // Name cell — play indicator + name text (inner div to avoid flex-on-td misalignment)
     const tdName = document.createElement('td');
-    tdName.textContent = sound.name || '';
+    tdName.className = 'col-name';
+    tdName.innerHTML = `
+      <div class="lib-name-inner">
+        <div class="play-indicator" aria-hidden="true">
+          <span class="pi-dot"></span>
+          <span class="pi-triangle"></span>
+          <div class="pi-waveform">
+            <span class="wv-bar"></span><span class="wv-bar"></span>
+            <span class="wv-bar"></span><span class="wv-bar"></span>
+            <span class="wv-bar"></span>
+          </div>
+        </div>
+        <span class="lib-sound-name">${escapeHtml(sound.name || '')}</span>
+      </div>
+    `;
 
     const tdCat = document.createElement('td');
+    tdCat.className = 'col-cat';
     tdCat.textContent = sound.category || '';
 
     const tdTags = document.createElement('td');
+    tdTags.className = 'col-tags';
     const tags = Array.isArray(sound.tags) ? sound.tags : [];
     const tagList = document.createElement('div');
     tagList.className = 'tag-list';
@@ -157,6 +243,7 @@ function renderTable() {
     tdTags.appendChild(tagList);
 
     const tdDur = document.createElement('td');
+    tdDur.className = 'col-dur';
     tdDur.textContent = sound.duration || '';
 
     tr.appendChild(tdCheck);
@@ -167,7 +254,17 @@ function renderTable() {
 
     tr.addEventListener('click', (e) => {
       if (e.target.closest('input[type="checkbox"]')) return;
-      handleRowClick(idx, e);
+      if (e.shiftKey || e.metaKey || e.ctrlKey) {
+        handleRowClick(idx, e);
+        return;
+      }
+      selectedIds.clear();
+      selectedIds.add(sound.id);
+      lastAnchorIndex = idx;
+      syncRowClasses();
+      updateSelectAllCheckbox();
+      updatePanel();
+      togglePlay(sound);
     });
 
     tbody.appendChild(tr);
@@ -177,7 +274,7 @@ function renderTable() {
     document.querySelectorAll('.tag-list').forEach((list) => {
       const chips = [...list.querySelectorAll('.lib-tag-chip')];
       if (chips.length === 0) return;
-      const LINE_H = chips[0].offsetHeight + 2; // chip height + top+bottom margin
+      const LINE_H = chips[0].offsetHeight + 2;
       const MAX_TOP = LINE_H * 3;
       let cutIdx = -1;
       for (let i = 0; i < chips.length; i++) {
@@ -442,9 +539,50 @@ window.sndbts.onSoundsUpdated(() => {
   loadSounds().catch(console.error);
 });
 
+function formatDuration(secs) {
+  if (!isFinite(secs) || secs <= 0) return '';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function loadDurationForSound(sound) {
+  return new Promise((resolve) => {
+    if (sound.duration) { resolve(); return; }
+    const audio = new Audio(audioSrcForSound(sound));
+    audio.addEventListener('loadedmetadata', () => {
+      sound.duration = formatDuration(audio.duration);
+      const tr = tbody.querySelector(`tr[data-id="${sound.id}"]`);
+      if (tr) {
+        const td = tr.querySelector('.col-dur');
+        if (td) td.textContent = sound.duration;
+      }
+      audio.src = '';
+      resolve();
+    }, { once: true });
+    audio.addEventListener('error', () => { audio.src = ''; resolve(); }, { once: true });
+  });
+}
+
+async function loadAllDurations() {
+  const pending = sounds.filter(s => !s.duration);
+  const BATCH = 20;
+  for (let i = 0; i < pending.length; i += BATCH) {
+    await Promise.all(pending.slice(i, i + BATCH).map(loadDurationForSound));
+  }
+}
+
 async function init() {
-  soundsPath = await window.sndbts.getSoundsPath();
+  const savedTheme = localStorage.getItem('sndbts-theme');
+  if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+  [soundsPath, effectsPath] = await Promise.all([
+    window.sndbts.getSoundsPath(),
+    window.sndbts.getEffectsPath(),
+  ]);
   await loadSounds();
+  loadAllDurations().catch(console.error);
 }
 
 init().catch(console.error);

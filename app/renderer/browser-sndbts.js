@@ -6,8 +6,13 @@
 'use strict';
 
 window.sndbts = {
-  /** Same-origin /sounds.json (repo root when using `serve`) */
-  getSoundsPath: () => Promise.resolve('/sounds.json'),
+  /** Same-origin /sounds.json (repo root when using `serve`); resolved file URL when opening *.html from disk */
+  getSoundsPath: () => {
+    if (typeof location !== 'undefined' && location.protocol === 'file:') {
+      return Promise.resolve(new URL('../../sounds.json', location.href).href);
+    }
+    return Promise.resolve('/sounds.json');
+  },
 
   /** Magic value; app.js maps audio to /Effects/... */
   getEffectsPath: () => Promise.resolve('__browser__'),

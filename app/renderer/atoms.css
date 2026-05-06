@@ -1,0 +1,160 @@
+/* ============================================================
+   SNDBTS Atoms — Smallest indivisible UI elements
+   Depends on: tokens.css
+   ============================================================ */
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  color: var(--text-primary);
+}
+
+/* ── Noise texture overlay ──────────────────────────────────── */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 10;
+  mix-blend-mode: overlay;
+}
+
+/* ── Waveform bar (single element) ──────────────────────────── */
+.wv-bar {
+  display: block;
+  width: 2px;
+  background: var(--status-playing);
+  border-radius: 1px;
+  transform-origin: bottom;
+}
+
+@keyframes wv-dance {
+  0%, 100% { height: 4px; }
+  50%       { height: 14px; }
+}
+
+/* ── Live dot ───────────────────────────────────────────────── */
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-playing);
+  flex-shrink: 0;
+}
+
+/* ── Tag badge ──────────────────────────────────────────────── */
+.tag-badge {
+  font-family: var(--font-mono);
+  font-size: var(--text-tag-badge);
+  letter-spacing: var(--ls-tag-badge);
+  color: var(--text-muted);
+  background: var(--interactive-tag-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 1px 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Keyboard key ───────────────────────────────────────────── */
+kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-kbd-hint);
+  background: var(--interactive-kbd-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 0 4px;
+  color: var(--text-secondary);
+}
+
+/* ── Vertical divider ───────────────────────────────────────── */
+.vertical-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-light);
+  flex-shrink: 0;
+}
+
+/* ── Gradient divider ───────────────────────────────────────── */
+.gradient-divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--border-default) 20%,
+    var(--border-default) 80%,
+    transparent 100%
+  );
+  margin: 2px 0;
+  flex-shrink: 0;
+}
+
+/* ── Selected / accent left bar ─────────────────────────────── */
+.selected-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 55%;
+  background: var(--accent-default);
+  border-radius: 0 1px 1px 0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+/* ── Play indicator primitives ──────────────────────────────── */
+.pi-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: opacity 0.1s;
+}
+
+.pi-triangle {
+  width: 0;
+  height: 0;
+  border-left: 7px solid var(--accent-default);
+  border-top: 4.5px solid transparent;
+  border-bottom: 4.5px solid transparent;
+}
+
+/* ── Version label ──────────────────────────────────────────── */
+.version-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-kbd-hint);
+  color: var(--text-muted);
+  letter-spacing: var(--ls-kbd-hint);
+}
+
+/* ── Small kbd hint text ────────────────────────────────────── */
+.kbd-hint-small {
+  font-family: var(--font-mono);
+  font-size: var(--text-kbd-hint);
+  letter-spacing: var(--ls-kbd-hint);
+  color: var(--text-muted);
+}
+
+/* ── Theme icons ────────────────────────────────────────────── */
+.icon-sun,
+.icon-moon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+:root .icon-moon            { display: none; }
+:root .icon-sun             { display: block; }
+[data-theme="light"] .icon-moon { display: block; }
+[data-theme="light"] .icon-sun  { display: none; }

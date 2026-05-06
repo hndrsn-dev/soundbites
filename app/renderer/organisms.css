@@ -1,0 +1,149 @@
+/* ============================================================
+   SNDBTS Organisms — Launcher-window section-level components
+   Depends on: tokens.css, atoms.css, molecules.css
+   ============================================================ */
+
+/* ── Launcher window shell ──────────────────────────────────── */
+.launcher {
+  position: relative;
+  width: 560px;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  -webkit-app-region: drag;
+  background: var(--surface-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-launcher);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── No-drag zones ──────────────────────────────────────────── */
+.search-wrap,
+.search-frame,
+.search-input,
+.close-btn,
+.theme-toggle,
+.results-list,
+.sound-row,
+.footer,
+.footer-edit-btn {
+  -webkit-app-region: no-drag;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.header {
+  padding: 12px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Results list ───────────────────────────────────────────── */
+.results-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Inset list from launcher edge (~10–12px) + row gap */
+  padding: 8px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.results-list::-webkit-scrollbar       { width: 4px; }
+.results-list::-webkit-scrollbar-track { background: transparent; }
+.results-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 2px; }
+
+.results-empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ── Sound row ──────────────────────────────────────────────── */
+.sound-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 40px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: background 0.1s;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sound-row:hover {
+  background: var(--surface-row-hover);
+}
+
+.sound-row.is-selected {
+  background: var(--surface-row-selected);
+  border-color: var(--border-selected);
+}
+
+.sound-row.is-playing {
+  background: var(--surface-row-playing);
+  border-color: var(--border-playing);
+}
+
+.sound-row.is-selected .selected-bar {
+  opacity: 1;
+}
+
+.sound-row--user-added .selected-bar {
+  background: var(--status-playing);
+}
+
+.sound-name {
+  font-family: var(--font-mono);
+  font-size: var(--text-sound-name);
+  letter-spacing: var(--ls-sound-name);
+  color: var(--text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.sound-row.is-playing .sound-name {
+  color: var(--text-playing);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  height: 32px;
+  background: var(--surface-footer);
+  border-top: 1px solid var(--border-default);
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.footer.is-playing .footer-right {
+  display: none;
+}
