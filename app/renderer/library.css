@@ -280,18 +280,21 @@ input[type="checkbox"]:hover:not(:checked):not(:indeterminate) {
 .col-dur { width: 48px; text-align: right; color: var(--text-muted); }
 
 mark.search-highlight {
-  background: var(--accent-glow);
-  color: inherit;
+  background: var(--amber-alpha-30);
+  color: var(--text-accent);
   font: inherit;
   font-weight: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
-  padding: 0 1px;
+  padding: 0 2px;
   border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .lib-table tbody tr.is-selected mark.search-highlight {
-  background: var(--accent-border);
+  background: var(--amber-alpha-40);
+  color: var(--amber-200);
 }
 
 .tag-list {

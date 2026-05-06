@@ -98,6 +98,7 @@ async function loadSounds() {
 
 function renderTable() {
   const q = libSearch.value.trim();
+  const hl = typeof highlightSearchHtml === 'function' ? highlightSearchHtml : escapeHtml;
   tbody.innerHTML = '';
   if (filtered.length === 0) {
     libEmpty.hidden = false;
@@ -140,11 +141,11 @@ function renderTable() {
     tdCheck.appendChild(cb);
 
     const tdName = document.createElement('td');
-    if (q) tdName.innerHTML = highlightSearchHtml(sound.name || '', q);
+    if (q) tdName.innerHTML = hl(sound.name || '', q);
     else tdName.textContent = sound.name || '';
 
     const tdCat = document.createElement('td');
-    if (q) tdCat.innerHTML = highlightSearchHtml(sound.category || '', q);
+    if (q) tdCat.innerHTML = hl(sound.category || '', q);
     else tdCat.textContent = sound.category || '';
 
     const tdTags = document.createElement('td');
@@ -154,7 +155,7 @@ function renderTable() {
     tags.forEach((t) => {
       const chip = document.createElement('span');
       chip.className = 'lib-tag-chip';
-      if (q) chip.innerHTML = highlightSearchHtml(t, q);
+      if (q) chip.innerHTML = hl(t, q);
       else chip.textContent = t;
       tagList.appendChild(chip);
     });
