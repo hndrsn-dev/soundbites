@@ -215,6 +215,9 @@ function buildSoundRow(sound, idx) {
   if (idx === selectedIndex) row.classList.add('is-selected');
   if (sound.id === playingId) row.classList.add('is-playing');
 
+  const q = searchInput.value.trim();
+  const hl = typeof highlightSearchHtml === 'function' ? highlightSearchHtml : escapeHtml;
+
   row.innerHTML = `
     <div class="selected-bar" aria-hidden="true"></div>
     <div class="play-indicator" aria-hidden="true">
@@ -228,10 +231,10 @@ function buildSoundRow(sound, idx) {
         <span class="wv-bar"></span>
       </div>
     </div>
-    <span class="sound-name">${escapeHtml(sound.name)}</span>
+    <span class="sound-name">${hl(sound.name, q)}</span>
     <div class="sound-meta">
-      <span class="sound-category">${escapeHtml(sound.category || '')}</span>
-      ${(sound.tags && sound.tags.length) ? sound.tags.map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('') : (sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : '')}
+      <span class="sound-category">${hl(sound.category || '', q)}</span>
+      ${(sound.tags && sound.tags.length) ? sound.tags.map(t => `<span class="tag-badge">${hl(t, q)}</span>`).join('') : (sound.source ? `<span class="tag-badge">${hl(sound.source, q)}</span>` : '')}
       ${sound.duration ? `<span class="sound-duration">${escapeHtml(sound.duration)}</span>` : ''}
     </div>
   `;

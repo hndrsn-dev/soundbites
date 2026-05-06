@@ -158,6 +158,8 @@ async function loadSounds() {
 }
 
 function renderTable() {
+  const q = libSearch.value.trim();
+  const hl = typeof highlightSearchHtml === 'function' ? highlightSearchHtml : escapeHtml;
   tbody.innerHTML = '';
   if (filtered.length === 0) {
     libEmpty.hidden = false;
@@ -209,6 +211,7 @@ function renderTable() {
 
     // Name cell — play indicator + name text (inner div to avoid flex-on-td misalignment)
     const tdName = document.createElement('td');
+    const nameHtml = q ? hl(sound.name || '', q) : escapeHtml(sound.name || '');
     tdName.className = 'col-name';
     tdName.innerHTML = `
       <div class="lib-name-inner">
@@ -221,13 +224,14 @@ function renderTable() {
             <span class="wv-bar"></span>
           </div>
         </div>
-        <span class="lib-sound-name">${escapeHtml(sound.name || '')}</span>
+        <span class="lib-sound-name">${nameHtml}</span>
       </div>
     `;
 
     const tdCat = document.createElement('td');
     tdCat.className = 'col-cat';
-    tdCat.textContent = sound.category || '';
+    if (q) tdCat.innerHTML = hl(sound.category || '', q);
+    else tdCat.textContent = sound.category || '';
 
     const tdTags = document.createElement('td');
     tdTags.className = 'col-tags';
@@ -237,7 +241,8 @@ function renderTable() {
     tags.forEach((t) => {
       const chip = document.createElement('span');
       chip.className = 'lib-tag-chip';
-      chip.textContent = t;
+      if (q) chip.innerHTML = hl(t, q);
+      else chip.textContent = t;
       tagList.appendChild(chip);
     });
     tdTags.appendChild(tagList);
