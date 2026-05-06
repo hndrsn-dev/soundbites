@@ -293,14 +293,16 @@
     "id": "0023",
     "filename": "ad-nohair.mp3",
     "path": "Effects/ad-nohair.mp3",
-    "name": "Nohair",
+    "name": "No hair",
     "source": "ad",
     "category": "Arrested Development",
     "tags": [
-      "ad"
+      "ad",
+      "michael cera"
     ],
     "format": "mp3",
-    "duration": "0:02"
+    "duration": "0:02",
+    "userEdited": true
   },
   {
     "id": "0024",
@@ -371,27 +373,30 @@
     "id": "0029",
     "filename": "bell-light.mp3",
     "path": "Effects/bell-light.mp3",
-    "name": "Light",
+    "name": "Ding",
     "source": "bell",
-    "category": "Bell",
+    "category": "Effects",
     "tags": [
       "bell"
     ],
     "format": "mp3",
-    "duration": "0:03"
+    "duration": "0:03",
+    "userEdited": true
   },
   {
     "id": "0030",
     "filename": "biggie-intro.mp3",
     "path": "Effects/biggie-intro.mp3",
-    "name": "Intro",
+    "name": "Big Poppa Intro",
     "source": "biggie",
-    "category": "Biggie Smalls",
+    "category": "Music",
     "tags": [
-      "biggie"
+      "biggie",
+      "hiphop"
     ],
     "format": "mp3",
-    "duration": "0:05"
+    "duration": "0:05",
+    "userEdited": true
   },
   {
     "id": "0031",
@@ -466,10 +471,12 @@
     "source": "bm",
     "category": "Billy Madison",
     "tags": [
-      "bm"
+      "bm",
+      "Sandler"
     ],
     "format": "mp3",
-    "duration": "0:02"
+    "duration": "0:02",
+    "userEdited": true
   },
   {
     "id": "0037",
@@ -492,10 +499,12 @@
     "source": "bm",
     "category": "Billy Madison",
     "tags": [
-      "bm"
+      "bm",
+      "Sandler"
     ],
     "format": "mp3",
-    "duration": "0:04"
+    "duration": "0:04",
+    "userEdited": true
   },
   {
     "id": "0039",
@@ -553,14 +562,15 @@
     "id": "0043",
     "filename": "bale-nice.mp3",
     "path": "Effects/bale-nice.mp3",
-    "name": "Nice",
+    "name": "You're a nice guy",
     "source": "bale",
     "category": "Christian Bale",
     "tags": [
       "bale"
     ],
     "format": "mp3",
-    "duration": "0:02"
+    "duration": "0:02",
+    "userEdited": true
   },
   {
     "id": "0044",
@@ -605,14 +615,15 @@
     "id": "0047",
     "filename": "bale-telling.mp3",
     "path": "Effects/bale-telling.mp3",
-    "name": "Telling",
+    "name": "I'm Telling You",
     "source": "bale",
     "category": "Christian Bale",
     "tags": [
       "bale"
     ],
     "format": "mp3",
-    "duration": "0:04"
+    "duration": "0:04",
+    "userEdited": true
   },
   {
     "id": "0048",
@@ -672,14 +683,15 @@
     "id": "0052",
     "filename": "amazing.mp3",
     "path": "Effects/amazing.mp3",
-    "name": "Amazing",
+    "name": "Something Amazing",
     "source": null,
-    "category": "Effects",
+    "category": "Incredibles",
     "tags": [
-      "effect"
+      "Cute"
     ],
     "format": "mp3",
-    "duration": "0:03"
+    "duration": "0:03",
+    "userEdited": true
   },
   {
     "id": "0053",
@@ -700,12 +712,11 @@
     "path": "Effects/anyoneCare.mp3",
     "name": "Anyone Care",
     "source": null,
-    "category": "Effects",
-    "tags": [
-      "effect"
-    ],
+    "category": "Music",
+    "tags": [],
     "format": "mp3",
-    "duration": "0:01"
+    "duration": "0:01",
+    "userEdited": true
   },
   {
     "id": "0055",
@@ -713,7 +724,7 @@
     "path": "Effects/anythingPossible.mp3",
     "name": "Anything is Possible",
     "source": null,
-    "category": "Effects",
+    "category": "Clips",
     "tags": [
       "KG",
       "Kevin Garnet",
@@ -768,12 +779,11 @@
     "path": "Effects/awesome.mp3",
     "name": "Awesome",
     "source": null,
-    "category": "Effects",
-    "tags": [
-      "effect"
-    ],
+    "category": "Lego movie",
+    "tags": [],
     "format": "mp3",
-    "duration": "0:02"
+    "duration": "0:02",
+    "userEdited": true
   },
   {
     "id": "0060",
@@ -781,12 +791,13 @@
     "path": "Effects/awwyaww.mp3",
     "name": "Awwyaww",
     "source": null,
-    "category": "Effects",
+    "category": "Star Wars",
     "tags": [
-      "effect"
+      "Duel"
     ],
     "format": "mp3",
-    "duration": "0:01"
+    "duration": "0:01",
+    "userEdited": true
   },
   {
     "id": "0061",
@@ -911,12 +922,13 @@
     "path": "Effects/believe.mp3",
     "name": "Believe",
     "source": null,
-    "category": "Effects",
+    "category": "Cher",
     "tags": [
       "effect"
     ],
     "format": "mp3",
-    "duration": "0:01"
+    "duration": "0:01",
+    "userEdited": true
   },
   {
     "id": "0071",
@@ -926,10 +938,11 @@
     "source": null,
     "category": "Effects",
     "tags": [
-      "effect"
+      "Bell"
     ],
     "format": "mp3",
-    "duration": "0:05"
+    "duration": "0:05",
+    "userEdited": true
   },
   {
     "id": "0072",
@@ -978,10 +991,11 @@
     "source": null,
     "category": "Effects",
     "tags": [
-      "effect"
+      "Doorbell"
     ],
     "format": "mp3",
-    "duration": "0:04"
+    "duration": "0:04",
+    "userEdited": true
   },
   {
     "id": "0076",
@@ -1056,10 +1070,11 @@
     "source": null,
     "category": "Effects",
     "tags": [
-      "effect"
+      "Video Game"
     ],
     "format": "mp3",
-    "duration": "0:02"
+    "duration": "0:02",
+    "userEdited": true
   },
   {
     "id": "0082",
