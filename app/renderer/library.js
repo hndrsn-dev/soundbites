@@ -97,6 +97,7 @@ async function loadSounds() {
 }
 
 function renderTable() {
+  const q = libSearch.value.trim();
   tbody.innerHTML = '';
   if (filtered.length === 0) {
     libEmpty.hidden = false;
@@ -139,10 +140,12 @@ function renderTable() {
     tdCheck.appendChild(cb);
 
     const tdName = document.createElement('td');
-    tdName.textContent = sound.name || '';
+    if (q) tdName.innerHTML = highlightSearchHtml(sound.name || '', q);
+    else tdName.textContent = sound.name || '';
 
     const tdCat = document.createElement('td');
-    tdCat.textContent = sound.category || '';
+    if (q) tdCat.innerHTML = highlightSearchHtml(sound.category || '', q);
+    else tdCat.textContent = sound.category || '';
 
     const tdTags = document.createElement('td');
     const tags = Array.isArray(sound.tags) ? sound.tags : [];
@@ -151,7 +154,8 @@ function renderTable() {
     tags.forEach((t) => {
       const chip = document.createElement('span');
       chip.className = 'lib-tag-chip';
-      chip.textContent = t;
+      if (q) chip.innerHTML = highlightSearchHtml(t, q);
+      else chip.textContent = t;
       tagList.appendChild(chip);
     });
     tdTags.appendChild(tagList);

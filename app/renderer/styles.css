@@ -506,6 +506,22 @@ body {
   color: var(--text-playing);
 }
 
+mark.search-highlight {
+  background: var(--accent-glow);
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.sound-row.is-selected mark.search-highlight,
+.sound-row.is-playing mark.search-highlight {
+  background: var(--accent-border);
+}
+
 /* User-added row: sage accent bar (Phase 4) */
 .sound-row--user-added .selected-bar {
   background: var(--status-playing);

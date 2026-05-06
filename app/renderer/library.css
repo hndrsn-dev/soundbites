@@ -279,6 +279,21 @@ input[type="checkbox"]:hover:not(:checked):not(:indeterminate) {
 .col-tags { min-width: 120px; }
 .col-dur { width: 48px; text-align: right; color: var(--text-muted); }
 
+mark.search-highlight {
+  background: var(--accent-glow);
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.lib-table tbody tr.is-selected mark.search-highlight {
+  background: var(--accent-border);
+}
+
 .tag-list {
   display: block;
 }
