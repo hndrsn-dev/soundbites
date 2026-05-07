@@ -15,6 +15,8 @@ let currentAudio = null; // HTMLAudioElement
 let effectsPath = '';    // absolute path to Effects/ dir
 let soundsPath = '';     // path to sounds.json (for re-load)
 let fuse = null;         // Fuse.js instance
+/** When search is active, Fuse `matches` per sound id (for name highlighting). */
+let fuseMatchBySoundId = new Map();
 
 // ── DOM refs ───────────────────────────────────────────────
 const searchInput  = document.getElementById('search-input');
@@ -85,6 +87,7 @@ async function init() {
     threshold: 0.4,
     minMatchCharLength: 1,
     includeScore: true,
+    includeMatches: true,
   });
 
   window.sndbts.onSoundsUpdated(() => {
@@ -94,10 +97,10 @@ async function init() {
         sounds = data;
         if (fuse) {
           fuse.setCollection(sounds);
-          const query = searchInput.value.trim();
-          filtered = query ? fuse.search(query).map(r => r.item) : sounds;
+          applySearchFromQuery(searchInput.value);
         } else {
           filtered = sounds;
+          fuseMatchBySoundId = new Map();
         }
         renderResults();
         updateLiveBadge();
@@ -106,7 +109,7 @@ async function init() {
   });
 
   // Initial render (show all)
-  filtered = sounds;
+  applySearchFromQuery('');
   renderResults();
   updateLiveBadge();
 }
@@ -117,12 +120,7 @@ let searchDebounce = null;
 searchInput.addEventListener('input', () => {
   clearTimeout(searchDebounce);
   searchDebounce = setTimeout(() => {
-    const query = searchInput.value.trim();
-    if (!query) {
-      filtered = sounds;
-    } else {
-      filtered = fuse.search(query).map(r => r.item);
-    }
+    applySearchFromQuery(searchInput.value);
     selectedIndex = 0;
     renderResults();
     updateLiveBadge();
@@ -228,7 +226,7 @@ function buildSoundRow(sound, idx) {
         <span class="wv-bar"></span>
       </div>
     </div>
-    <span class="sound-name">${escapeHtml(sound.name)}</span>
+    <span class="sound-name">${soundNameHtml(sound)}</span>
     <div class="sound-meta">
       <span class="sound-category">${escapeHtml(sound.category || '')}</span>
       ${(sound.tags && sound.tags.length) ? sound.tags.map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('') : (sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : '')}
@@ -355,6 +353,65 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function applySearchFromQuery(rawQuery) {
+  const query = String(rawQuery || '').trim();
+  if (!query || !fuse) {
+    filtered = sounds;
+    fuseMatchBySoundId = new Map();
+    return;
+  }
+  const raw = fuse.search(query);
+  fuseMatchBySoundId = new Map(raw.map(r => [r.item.id, r.matches]));
+  filtered = raw.map(r => r.item);
+}
+
+/** Merge Fuse index ranges (inclusive) for highlighting. */
+function mergeInclusiveRanges(indices) {
+  if (!indices || !indices.length) return [];
+  const sorted = indices.slice().sort((a, b) => a[0] - b[0]);
+  const out = [];
+  let curS = sorted[0][0];
+  let curE = sorted[0][1];
+  for (let i = 1; i < sorted.length; i++) {
+    const s = sorted[i][0];
+    const e = sorted[i][1];
+    if (s <= curE + 1) {
+      curE = Math.max(curE, e);
+    } else {
+      out.push([curS, curE]);
+      curS = s;
+      curE = e;
+    }
+  }
+  out.push([curS, curE]);
+  return out;
+}
+
+/** HTML for sound title: Fuse name matches → <mark>, else escaped plain text. */
+function soundNameHtml(sound) {
+  const name = sound.name || '';
+  const matches = fuseMatchBySoundId.get(sound.id);
+  if (!matches || !matches.length) return escapeHtml(name);
+
+  const nameMatch = matches.find(m => m.key === 'name');
+  if (!nameMatch || !nameMatch.indices || !nameMatch.indices.length) {
+    return escapeHtml(name);
+  }
+
+  const ranges = mergeInclusiveRanges(nameMatch.indices);
+  let out = '';
+  let pos = 0;
+  for (let i = 0; i < ranges.length; i++) {
+    const s = ranges[i][0];
+    const e = ranges[i][1];
+    if (s > pos) out += escapeHtml(name.slice(pos, s));
+    out += '<mark class="search-hit">' + escapeHtml(name.slice(s, e + 1)) + '</mark>';
+    pos = e + 1;
+  }
+  if (pos < name.length) out += escapeHtml(name.slice(pos));
+  return out;
 }
 
 // ── Boot ───────────────────────────────────────────────────
