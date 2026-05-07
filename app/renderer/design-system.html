@@ -23,7 +23,7 @@
 
     /* ── Page layout ──────────────────────────────────────────── */
     .ds-page {
-      max-width: 1100px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 48px 40px 80px;
     }
@@ -281,6 +281,21 @@
     .ds-launcher-frame .launcher {
       height: 480px;
       max-height: 480px;
+    }
+
+    .ds-launcher-template-row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ds-launcher-template-row > .ds-launcher-template-cell {
+      flex: 0 0 auto;
     }
 
     /* ── Template: library frame ──────────────────────────────── */
@@ -1603,8 +1618,8 @@
     <!-- Launcher Window -->
     <div class="ds-row">
       <div class="ds-row-label">Launcher Window — Dark &amp; Light</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap">
-        <div>
+      <div class="ds-launcher-template-row">
+        <div class="ds-launcher-template-cell">
           <div class="ds-row-label" style="margin-bottom:8px">Dark</div>
           <div class="ds-launcher-frame">
             <div class="launcher" id="launcher-dark">
@@ -1649,7 +1664,7 @@
             </div>
           </div>
         </div>
-        <div data-theme="light">
+        <div class="ds-launcher-template-cell" data-theme="light">
           <div class="ds-row-label" style="margin-bottom:8px">Light</div>
           <div class="ds-launcher-frame">
             <div class="launcher">
