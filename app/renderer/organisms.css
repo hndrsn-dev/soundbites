@@ -131,11 +131,19 @@
   color: var(--text-playing);
 }
 
-.sound-name .search-hit {
+/* ── Search highlight (design system) ───────────────────────── */
+mark.search-hit {
   background: var(--accent-glow);
   color: var(--accent-text);
   border-radius: 2px;
   padding: 0 2px;
+  font-weight: 500;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Ensure highlight looks consistent in meta + tag pills */
+.sound-meta mark.search-hit {
   font-weight: 500;
 }
 

@@ -228,8 +228,10 @@ function buildSoundRow(sound, idx) {
     </div>
     <span class="sound-name">${soundNameHtml(sound)}</span>
     <div class="sound-meta">
-      <span class="sound-category">${escapeHtml(sound.category || '')}</span>
-      ${(sound.tags && sound.tags.length) ? sound.tags.map(t => `<span class="tag-badge">${escapeHtml(t)}</span>`).join('') : (sound.source ? `<span class="tag-badge">${escapeHtml(sound.source)}</span>` : '')}
+      <span class="sound-category">${soundFieldHtml(sound, 'category', sound.category || '')}</span>
+      ${(sound.tags && sound.tags.length)
+        ? sound.tags.map((t, i) => `<span class="tag-badge">${soundFieldHtml(sound, 'tags', t, i)}</span>`).join('')
+        : (sound.source ? `<span class="tag-badge">${soundFieldHtml(sound, 'source', sound.source)}</span>` : '')}
       ${sound.duration ? `<span class="sound-duration">${escapeHtml(sound.duration)}</span>` : ''}
     </div>
   `;
@@ -391,26 +393,39 @@ function mergeInclusiveRanges(indices) {
 
 /** HTML for sound title: Fuse name matches → <mark>, else escaped plain text. */
 function soundNameHtml(sound) {
-  const name = sound.name || '';
+  return soundFieldHtml(sound, 'name', sound.name || '');
+}
+
+/**
+ * Generic Fuse highlight helper for any field.
+ * - For scalar fields (name/category/source): match.key === fieldKey
+ * - For array fields (tags): match.key === 'tags' and match.refIndex matches the tag index
+ */
+function soundFieldHtml(sound, fieldKey, rawValue, refIndex = null) {
+  const value = String(rawValue || '');
   const matches = fuseMatchBySoundId.get(sound.id);
-  if (!matches || !matches.length) return escapeHtml(name);
+  if (!matches || !matches.length) return escapeHtml(value);
 
-  const nameMatch = matches.find(m => m.key === 'name');
-  if (!nameMatch || !nameMatch.indices || !nameMatch.indices.length) {
-    return escapeHtml(name);
-  }
+  const m = matches.find(match => {
+    if (match.key !== fieldKey) return false;
+    // Fuse adds refIndex for array matches (e.g. tags).
+    if (refIndex == null) return true;
+    return match.refIndex === refIndex;
+  });
 
-  const ranges = mergeInclusiveRanges(nameMatch.indices);
+  if (!m || !m.indices || !m.indices.length) return escapeHtml(value);
+
+  const ranges = mergeInclusiveRanges(m.indices);
   let out = '';
   let pos = 0;
   for (let i = 0; i < ranges.length; i++) {
     const s = ranges[i][0];
     const e = ranges[i][1];
-    if (s > pos) out += escapeHtml(name.slice(pos, s));
-    out += '<mark class="search-hit">' + escapeHtml(name.slice(s, e + 1)) + '</mark>';
+    if (s > pos) out += escapeHtml(value.slice(pos, s));
+    out += '<mark class="search-hit">' + escapeHtml(value.slice(s, e + 1)) + '</mark>';
     pos = e + 1;
   }
-  if (pos < name.length) out += escapeHtml(name.slice(pos));
+  if (pos < value.length) out += escapeHtml(value.slice(pos));
   return out;
 }
 
