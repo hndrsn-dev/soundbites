@@ -8,6 +8,7 @@
     "open": "open node_modules/electron/dist/Electron.app --args \"$PWD\"",
     "browser": "npx --yes serve . -p 3847",
     "generate": "node scripts/generate-metadata.js",
+    "build:web-demo": "node scripts/build-web-demo.js",
     "dist": "electron-builder --mac",
     "dist-dir": "electron-builder --mac --dir"
   },

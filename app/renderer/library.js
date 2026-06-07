@@ -52,11 +52,15 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-function audioSrcForSound(sound) {
+async function audioSrcForSound(sound) {
   const rel = sound.path.replace(/^Effects\//, '');
   if (effectsPath === '__browser__') {
     const parts = rel.split('/').map(encodeURIComponent).join('/');
     return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+  }
+  if (window.sndbts.resolveAudioPath) {
+    const resolved = await window.sndbts.resolveAudioPath(sound.path);
+    if (resolved) return resolved;
   }
   return encodeURI(`file://${effectsPath}/${rel}`);
 }
@@ -73,9 +77,9 @@ function stopPlayback() {
   syncPlayingClass();
 }
 
-function playSound(sound) {
+async function playSound(sound) {
   stopPlayback();
-  const audio = new Audio(audioSrcForSound(sound));
+  const audio = new Audio(await audioSrcForSound(sound));
   audio.addEventListener('ended', () => { if (playingId === sound.id) stopPlayback(); });
   audio.addEventListener('error', () => stopPlayback());
   currentAudio = audio;

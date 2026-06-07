@@ -3,6 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('sndbts', {
   getSoundsPath: () => ipcRenderer.invoke('get-sounds-path'),
   getEffectsPath: () => ipcRenderer.invoke('get-effects-path'),
+  getEffectsPaths: () => ipcRenderer.invoke('get-effects-paths'),
+  resolveAudioPath: (relPath) => ipcRenderer.invoke('resolve-audio-path', relPath),
   hideWindow: () => ipcRenderer.send('hide-window'),
   onWindowShown: (cb) => ipcRenderer.on('window-shown', cb),
   saveSounds: (sounds) => ipcRenderer.invoke('save-sounds', sounds),

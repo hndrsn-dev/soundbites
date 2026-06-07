@@ -40,7 +40,7 @@ function fetchUrlForSoundsJson(sp) {
 }
 
 /** Audio file URL: Electron disk path vs browser static /Effects/... */
-function audioSrcForSound(sound) {
+async function audioSrcForSound(sound) {
   const rel = sound.path.replace(/^Effects\//, '');
   if (effectsPath === '__browser__') {
     const parts = rel.split('/').map(encodeURIComponent).join('/');
@@ -48,6 +48,10 @@ function audioSrcForSound(sound) {
       return new URL(`../../Effects/${parts}`, window.location.href).href;
     }
     return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+  }
+  if (window.sndbts.resolveAudioPath) {
+    const resolved = await window.sndbts.resolveAudioPath(sound.path);
+    if (resolved) return resolved;
   }
   const filePath = `${effectsPath}/${rel}`;
   return encodeURI(`file://${filePath}`);
@@ -267,10 +271,10 @@ function togglePlay(sound) {
   playSound(sound);
 }
 
-function playSound(sound) {
+async function playSound(sound) {
   stopPlayback();
 
-  const src = audioSrcForSound(sound);
+  const src = await audioSrcForSound(sound);
   const audio = new Audio(src);
 
   audio.addEventListener('ended', () => {

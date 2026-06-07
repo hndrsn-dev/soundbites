@@ -194,11 +194,50 @@ The generator script maps known prefixes to human-readable category names. Unkno
 
 ---
 
-## Distribution
+## Sharing & Distribution
 
-Built with electron-builder. Produces unsigned `.dmg` files for arm64 (Apple Silicon) and x64 (Intel).
+### Downloadable macOS app
 
-**First-launch note:** macOS Gatekeeper blocks unsigned apps on first double-click. Right-click → Open to bypass on first run. Accessibility permissions may be required for the `Option+Space` global shortcut.
+Build unsigned DMGs for testers:
+
+```bash
+npm run dist          # Full DMG (arm64 + x64)
+npm run dist-dir      # Faster unpacked .app for local testing
+```
+
+Publish the `.dmg` files from `dist/` as assets on a [GitHub Release](https://github.com/hndrsn-dev/soundbites/releases) and share the release link. Binaries stay out of source control.
+
+```bash
+npm run dist
+./scripts/publish-release.sh   # or upload dist/*.dmg manually in GitHub Releases UI
+```
+
+**First launch (unsigned app):**
+
+1. Open the `.dmg` and drag SNDBTS to Applications.
+2. On first open, macOS Gatekeeper may block the app. Either **right-click → Open**, or run:
+   ```bash
+   xattr -cr /Applications/SNDBTS.app
+   ```
+3. Grant **Accessibility** permission (System Settings → Privacy & Security → Accessibility) so the `Option+Space` global shortcut works.
+
+### User data stays local
+
+Imports and library edits are stored in the app’s user data folder (`~/Library/Application Support/sndbts/`), not in the app bundle or this repo. Testers’ sound bites never sync back to GitHub.
+
+Bundled sounds ship read-only inside the app; user imports live in a writable overlay that survives app updates.
+
+### Web demo (portfolio / case study)
+
+A curated subset (~90 categorized sounds) can be hosted as a static interactive demo:
+
+```bash
+npm run build:web-demo   # writes web-demo/ (gitignored)
+```
+
+CI deploys `web-demo/` to GitHub Pages on push to `main`/`master` (see `.github/workflows/deploy-web-demo.yml`). Enable Pages under repo **Settings → Pages → Source: GitHub Actions**.
+
+Embed in Framer: add an Embed component pointing at `https://hndrsn-dev.github.io/soundbites/`. See [docs/framer-embed.md](docs/framer-embed.md).
 
 ---
 

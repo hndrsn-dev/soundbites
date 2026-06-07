@@ -3,6 +3,7 @@ dist/
 coverage
 /.next
 /out
+web-demo/
 
 /yarn-error.log
 
@@ -10,3 +11,4 @@ coverage
 *.key
 
 .DS_Store
+sounds.json.bak

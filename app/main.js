@@ -28,11 +28,33 @@ const path = require('path');
 const fs = require('fs');
 const { importAudioFilesFromSourcePaths } = require('./lib/import-audio');
 
-const REPO_ROOT = app.isPackaged
+const BUNDLED_ROOT = app.isPackaged
   ? process.resourcesPath
   : path.resolve(__dirname, '..');
-const SOUNDS_JSON = path.join(REPO_ROOT, 'sounds.json');
-const EFFECTS_DIR = path.join(REPO_ROOT, 'Effects');
+const BUNDLED_SOUNDS = path.join(BUNDLED_ROOT, 'sounds.json');
+const BUNDLED_EFFECTS = path.join(BUNDLED_ROOT, 'Effects');
+
+const USER_ROOT = app.getPath('userData');
+const USER_SOUNDS = path.join(USER_ROOT, 'sounds.json');
+const USER_EFFECTS = path.join(USER_ROOT, 'Effects');
+
+function ensureUserDataOverlay() {
+  fs.mkdirSync(USER_EFFECTS, { recursive: true });
+  if (!fs.existsSync(USER_SOUNDS) && fs.existsSync(BUNDLED_SOUNDS)) {
+    fs.copyFileSync(BUNDLED_SOUNDS, USER_SOUNDS);
+  }
+}
+
+/** Resolve audio file path: user imports override bundled library. */
+function resolveAudioFilePath(relPath) {
+  const rel = String(relPath || '').replace(/^Effects\//, '');
+  if (!rel || /[\\/]/.test(rel) || rel.includes('..')) return null;
+  const userPath = path.join(USER_EFFECTS, rel);
+  if (fs.existsSync(userPath)) return userPath;
+  const bundledPath = path.join(BUNDLED_EFFECTS, rel);
+  if (fs.existsSync(bundledPath)) return bundledPath;
+  return null;
+}
 
 let win = null;
 let libraryWin = null;
@@ -106,7 +128,7 @@ function createTray() {
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AEEBiMYSD1TVQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAAD0lEQVQ4y2NgGAWDEwAAAQQAAWbWDIMAAAAASUVORK5CYII='
   );
   tray = new Tray(icon);
-  tray.setTitle('◉');
+  tray.setTitle('SB♪');
   tray.setToolTip('SNDBTS');
 
   const contextMenu = Menu.buildFromTemplate([
@@ -119,7 +141,7 @@ function createTray() {
       label: 'Generate sounds.json',
       click: () => {
         const { execFile } = require('child_process');
-        execFile('node', [path.join(REPO_ROOT, 'scripts', 'generate-metadata.js')]);
+        execFile('node', [path.join(BUNDLED_ROOT, 'scripts', 'generate-metadata.js')]);
       },
     },
     { type: 'separator' },
@@ -162,6 +184,8 @@ function createLibraryWindow() {
 }
 
 app.whenReady().then(() => {
+  ensureUserDataOverlay();
+
   // Hide dock icon — menu bar app only
   if (app.dock) app.dock.hide();
 
@@ -181,19 +205,27 @@ app.on('window-all-closed', (e) => {
 });
 
 // IPC handlers
-ipcMain.handle('get-sounds-path', () => SOUNDS_JSON);
-ipcMain.handle('get-effects-path', () => EFFECTS_DIR);
+ipcMain.handle('get-sounds-path', () => USER_SOUNDS);
+ipcMain.handle('get-effects-path', () => USER_EFFECTS);
+ipcMain.handle('get-effects-paths', () => ({
+  user: USER_EFFECTS,
+  bundled: BUNDLED_EFFECTS,
+}));
+ipcMain.handle('resolve-audio-path', (_, relPath) => {
+  const filePath = resolveAudioFilePath(relPath);
+  return filePath ? encodeURI(`file://${filePath}`) : null;
+});
 ipcMain.on('hide-window', () => {
   if (win) win.hide();
 });
 
 ipcMain.handle('save-sounds', async (_, sounds) => {
-  const bakPath = SOUNDS_JSON + '.bak';
+  const bakPath = USER_SOUNDS + '.bak';
   try {
-    if (fs.existsSync(SOUNDS_JSON)) {
-      fs.copyFileSync(SOUNDS_JSON, bakPath);
+    if (fs.existsSync(USER_SOUNDS)) {
+      fs.copyFileSync(USER_SOUNDS, bakPath);
     }
-    fs.writeFileSync(SOUNDS_JSON, JSON.stringify(sounds, null, 2));
+    fs.writeFileSync(USER_SOUNDS, JSON.stringify(sounds, null, 2));
     sendSoundsUpdated();
   } catch (err) {
     console.error('save-sounds error:', err);
@@ -213,20 +245,20 @@ ipcMain.handle('import-sounds', async () => {
     filters: [{ name: 'Audio', extensions: ['mp3', 'wav'] }],
   });
   if (result.canceled || !result.filePaths.length) return { entries: [], paths: [] };
-  return importAudioFilesFromSourcePaths(result.filePaths, EFFECTS_DIR);
+  return importAudioFilesFromSourcePaths(result.filePaths, USER_EFFECTS);
 });
 
 ipcMain.handle('import-sounds-from-paths', async (_, paths) => {
   if (!Array.isArray(paths)) return { entries: [], paths: [] };
   const abs = paths.filter((p) => typeof p === 'string' && path.isAbsolute(p));
-  return importAudioFilesFromSourcePaths(abs, EFFECTS_DIR);
+  return importAudioFilesFromSourcePaths(abs, USER_EFFECTS);
 });
 
 ipcMain.handle('delete-imported-file', async (_, filename) => {
   if (!filename || /[\\/]/.test(filename)) {
     throw new Error('Invalid filename');
   }
-  const filePath = path.join(EFFECTS_DIR, filename);
+  const filePath = path.join(USER_EFFECTS, filename);
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
   }
