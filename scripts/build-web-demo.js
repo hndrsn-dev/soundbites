@@ -104,6 +104,11 @@ function buildIndexHtml(soundCount) {
       line-height: 1.45;
     }
     .demo-banner strong { color: var(--text-primary); font-weight: 500; }
+    .launcher {
+      height: 520px;
+      max-height: 520px;
+      flex-shrink: 0;
+    }
     .footer-edit-btn { display: none !important; }
     .footer-hints .kbd-hint:last-of-type { display: none; }
   </style>
