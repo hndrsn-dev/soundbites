@@ -47,7 +47,7 @@ async function audioSrcForSound(sound) {
     if (window.location.protocol === 'file:') {
       return new URL(`../../Effects/${parts}`, window.location.href).href;
     }
-    return new URL(`Effects/${parts}`, `${window.location.origin}/`).href;
+    return new URL(`Effects/${parts}`, window.location.href).href;
   }
   if (window.sndbts.resolveAudioPath) {
     const resolved = await window.sndbts.resolveAudioPath(sound.path);
