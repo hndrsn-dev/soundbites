@@ -249,9 +249,11 @@ Embed in Framer: add an Embed component pointing at `https://hndrsn-dev.github.i
 | 2 | ✅ Done | Visual polish — design tokens, theme toggle, waveform animation |
 | 3 | ✅ Done | Distribution — electron-builder DMG packaging |
 | 4 | ✅ Done | Library editor — import new sounds, edit tags/name/category in dedicated window |
-| 5 | Deferred | BlackHole virtual audio routing |
+| 5 | ✅ Done | Call mode — BlackHole virtual audio routing via `setSinkId` |
 
 See [docs/library-window.md](docs/library-window.md) for the library editor feature reference.
+
+**Call audio on Zoom/Teams:** enable **Call mode** from the launcher header (phone icon) or tray menu. See [docs/call-audio-setup.md](docs/call-audio-setup.md) for BlackHole and Aggregate Device setup.
 
 ---
 

@@ -51,4 +51,26 @@ window.sndbts = {
   onSoundsUpdated: () => {
     /* No main process in browser */
   },
+
+  getSettings: () => Promise.resolve({
+    callMode: { enabled: false, outputDeviceId: '' },
+  }),
+
+  saveSettings: async (settings) => settings,
+
+  openCallAudioGuide: () => {
+    console.log('[browser preview] openCallAudioGuide — see docs/call-audio-setup.md');
+  },
+
+  openAudioMidiSetup: () => {
+    console.log('[browser preview] openAudioMidiSetup — macOS only');
+  },
+
+  openBlackholeDownload: () => {
+    window.open('https://existential.audio/blackhole/', '_blank');
+  },
+
+  onShowCallSetup: () => {
+    /* No tray in browser */
+  },
 };
