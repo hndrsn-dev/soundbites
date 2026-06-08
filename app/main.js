@@ -27,6 +27,7 @@ const {
 const path = require('path');
 const fs = require('fs');
 const { importAudioFilesFromSourcePaths } = require('./lib/import-audio');
+const { loadSettings, saveSettings } = require('./lib/settings');
 
 const BUNDLED_ROOT = app.isPackaged
   ? process.resourcesPath
@@ -37,6 +38,10 @@ const BUNDLED_EFFECTS = path.join(BUNDLED_ROOT, 'Effects');
 const USER_ROOT = app.getPath('userData');
 const USER_SOUNDS = path.join(USER_ROOT, 'sounds.json');
 const USER_EFFECTS = path.join(USER_ROOT, 'Effects');
+const USER_SETTINGS = path.join(USER_ROOT, 'settings.json');
+const CALL_AUDIO_GUIDE = app.isPackaged
+  ? path.join(process.resourcesPath, 'docs', 'call-audio-setup.md')
+  : path.join(BUNDLED_ROOT, 'docs', 'call-audio-setup.md');
 
 function ensureUserDataOverlay() {
   fs.mkdirSync(USER_EFFECTS, { recursive: true });
@@ -135,6 +140,16 @@ function createTray() {
     {
       label: 'Show SNDBTS',
       click: toggleWindow,
+    },
+    {
+      label: 'Call Audio Setup…',
+      click: () => {
+        if (!win) return;
+        centerWindow();
+        win.show();
+        win.focus();
+        win.webContents.send('show-call-setup');
+      },
     },
     { type: 'separator' },
     {
@@ -262,5 +277,38 @@ ipcMain.handle('delete-imported-file', async (_, filename) => {
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
   }
+});
+
+ipcMain.handle('get-settings', () => loadSettings(USER_SETTINGS));
+
+ipcMain.handle('save-settings', async (_, settings) => {
+  try {
+    return saveSettings(USER_SETTINGS, settings);
+  } catch (err) {
+    console.error('save-settings error:', err);
+    throw err;
+  }
+});
+
+ipcMain.handle('open-call-audio-guide', async () => {
+  if (fs.existsSync(CALL_AUDIO_GUIDE)) {
+    await shell.openPath(CALL_AUDIO_GUIDE);
+    return true;
+  }
+  await shell.openExternal('https://github.com/hndrsn-dev/soundbites/blob/main/docs/call-audio-setup.md');
+  return false;
+});
+
+ipcMain.handle('open-audio-midi-setup', async () => {
+  const midiSetup = '/System/Applications/Utilities/Audio MIDI Setup.app';
+  if (fs.existsSync(midiSetup)) {
+    await shell.openPath(midiSetup);
+    return true;
+  }
+  return false;
+});
+
+ipcMain.handle('open-blackhole-download', async () => {
+  await shell.openExternal('https://existential.audio/blackhole/');
 });
 

@@ -18,6 +18,14 @@ let fuse = null;         // Fuse.js instance
 /** When search is active, Fuse `matches` per sound id (for name highlighting). */
 let fuseMatchBySoundId = new Map();
 
+// ── Call mode state ────────────────────────────────────────
+let callModeEnabled = false;
+let callOutputDeviceId = '';
+let outputDevices = [];
+let blackHoleDevice = null;
+let callSetupVisible = false;
+const audioRouting = window.sndbtsAudioRouting;
+
 // ── DOM refs ───────────────────────────────────────────────
 const searchInput  = document.getElementById('search-input');
 const resultsList  = document.getElementById('results-list');
@@ -27,6 +35,19 @@ const themeToggle  = document.getElementById('theme-toggle');
 const footerPlaying    = document.getElementById('footer-playing');
 const footerPlayingName = document.getElementById('footer-playing-name');
 const footerEditBtn    = document.getElementById('footer-edit-btn');
+const launcher         = document.getElementById('launcher');
+const callModeBtn      = document.getElementById('call-mode-btn');
+const callSetupPanel   = document.getElementById('call-setup-panel');
+const callSetupClose   = document.getElementById('call-setup-close');
+const callModeEnabledInput = document.getElementById('call-mode-enabled');
+const callOutputSelect = document.getElementById('call-output-device');
+const callSetupStatus  = document.getElementById('call-setup-status');
+const callSetupStatusText = document.getElementById('call-setup-status-text');
+const callSetupError   = document.getElementById('call-setup-error');
+const callSetupTestBtn = document.getElementById('call-setup-test-btn');
+const callSetupGuideBtn = document.getElementById('call-setup-guide-btn');
+const callSetupBlackholeLink = document.getElementById('call-setup-blackhole-link');
+const callSetupMidiLink = document.getElementById('call-setup-midi-link');
 
 /** Load sounds.json in Electron (file://) or browser (http same-origin). */
 function fetchUrlForSoundsJson(sp) {
@@ -116,6 +137,8 @@ async function init() {
   applySearchFromQuery('');
   renderResults();
   updateLiveBadge();
+
+  await initCallMode();
 }
 
 // ── Search ─────────────────────────────────────────────────
@@ -168,6 +191,13 @@ document.addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && (e.key === 'e' || e.key === 'E')) {
     e.preventDefault();
     window.sndbts.openLibraryWindow();
+  }
+
+  // ⌘K — focus search (return from list navigation)
+  if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
   }
 });
 
@@ -271,7 +301,28 @@ function togglePlay(sound) {
   playSound(sound);
 }
 
-async function playSound(sound) {
+async function applyCallModeSink(audio) {
+  if (!callModeEnabled || !callOutputDeviceId) return true;
+  if (typeof audio.setSinkId !== 'function') {
+    setCallSetupError('Call mode is not supported in this environment.');
+    return false;
+  }
+  if (!blackHoleDevice) {
+    setCallSetupError('BlackHole not found. Install BlackHole 2ch or turn off Call mode.');
+    return false;
+  }
+  try {
+    await audio.setSinkId(callOutputDeviceId);
+    clearCallSetupError();
+    return true;
+  } catch (err) {
+    console.error('setSinkId failed:', err);
+    setCallSetupError('Could not route audio to the selected device. Re-open Call Audio setup.');
+    return false;
+  }
+}
+
+async function playSound(sound, options = {}) {
   stopPlayback();
 
   const src = await audioSrcForSound(sound);
@@ -291,13 +342,27 @@ async function playSound(sound) {
   currentAudio = audio;
   playingId = sound.id;
 
-  audio.play().catch(err => {
-    console.error('Play failed:', err);
+  const routed = await applyCallModeSink(audio);
+  if (!routed && callModeEnabled) {
     stopPlayback();
-  });
+    return;
+  }
 
-  renderResults();
-  updateFooterPlaying(sound);
+  try {
+    await audio.play();
+  } catch (err) {
+    console.error('Play failed:', err);
+    if (callModeEnabled) {
+      setCallSetupError('Playback failed. Check your output device in Call Audio setup.');
+    }
+    stopPlayback();
+    return;
+  }
+
+  if (!options.silentUi) {
+    renderResults();
+    updateFooterPlaying(sound);
+  }
 }
 
 function stopPlayback() {
@@ -431,6 +496,209 @@ function soundFieldHtml(sound, fieldKey, rawValue, refIndex = null) {
   }
   if (pos < value.length) out += escapeHtml(value.slice(pos));
   return out;
+}
+
+// ── Call mode / setup panel ────────────────────────────────
+async function initCallMode() {
+  if (!window.sndbts.getSettings) return;
+
+  const settings = await window.sndbts.getSettings();
+  callModeEnabled = Boolean(settings.callMode && settings.callMode.enabled);
+  callOutputDeviceId = (settings.callMode && settings.callMode.outputDeviceId) || '';
+
+  await refreshOutputDevices();
+  bindCallSetupUi();
+
+  if (callModeEnabledInput) {
+    callModeEnabledInput.checked = callModeEnabled;
+  }
+  updateCallModeUi();
+  window.sndbts.onShowCallSetup(() => showCallSetupPanel(true));
+}
+
+async function refreshOutputDevices() {
+  if (!audioRouting) return;
+  outputDevices = await audioRouting.listAudioOutputDevices();
+  blackHoleDevice = audioRouting.findBlackHoleDevice(outputDevices);
+  populateOutputDeviceSelect();
+  updateBlackHoleStatus();
+}
+
+function populateOutputDeviceSelect() {
+  if (!callOutputSelect) return;
+
+  const previous = callOutputDeviceId;
+  callOutputSelect.innerHTML = '<option value="">System default</option>';
+
+  outputDevices.forEach((device) => {
+    const opt = document.createElement('option');
+    opt.value = device.deviceId;
+    opt.textContent = audioRouting.formatDeviceLabel(device);
+    callOutputSelect.appendChild(opt);
+  });
+
+  if (previous && outputDevices.some((d) => d.deviceId === previous)) {
+    callOutputDeviceId = previous;
+  } else if (callModeEnabled && blackHoleDevice) {
+    callOutputDeviceId = blackHoleDevice.deviceId;
+  } else if (!callModeEnabled) {
+    callOutputDeviceId = '';
+  }
+
+  callOutputSelect.value = callOutputDeviceId;
+  callOutputSelect.disabled = !callModeEnabled;
+}
+
+function updateBlackHoleStatus() {
+  if (!callSetupStatus || !callSetupStatusText) return;
+
+  callSetupStatus.classList.remove('is-ok', 'is-warn');
+  if (blackHoleDevice) {
+    callSetupStatus.classList.add('is-ok');
+    callSetupStatusText.textContent = `BlackHole detected — ${audioRouting.formatDeviceLabel(blackHoleDevice)}`;
+    if (callModeEnabled && !callOutputDeviceId) {
+      callOutputDeviceId = blackHoleDevice.deviceId;
+      if (callOutputSelect) callOutputSelect.value = callOutputDeviceId;
+      persistCallSettings();
+    }
+  } else {
+    callSetupStatus.classList.add('is-warn');
+    callSetupStatusText.textContent = 'BlackHole not found — install BlackHole 2ch to use Call mode';
+  }
+}
+
+function updateCallModeUi() {
+  if (callModeBtn) {
+    callModeBtn.classList.toggle('is-active', callModeEnabled);
+    callModeBtn.title = callModeEnabled
+      ? 'Call mode on — soundbites route to virtual audio'
+      : 'Call audio setup';
+  }
+  if (callOutputSelect) {
+    callOutputSelect.disabled = !callModeEnabled;
+  }
+  if (callModeEnabled && !blackHoleDevice) {
+    setCallSetupError('BlackHole not found. Install BlackHole 2ch before using Call mode on a call.');
+  } else if (!callModeEnabled) {
+    clearCallSetupError();
+  }
+}
+
+function setCallSetupError(message) {
+  if (!callSetupError) return;
+  if (!message) {
+    callSetupError.hidden = true;
+    callSetupError.textContent = '';
+    return;
+  }
+  callSetupError.hidden = false;
+  callSetupError.textContent = message;
+}
+
+function clearCallSetupError() {
+  setCallSetupError('');
+}
+
+async function persistCallSettings() {
+  if (!window.sndbts.saveSettings) return;
+  await window.sndbts.saveSettings({
+    callMode: {
+      enabled: callModeEnabled,
+      outputDeviceId: callOutputDeviceId,
+    },
+  });
+}
+
+function showCallSetupPanel(show) {
+  callSetupVisible = show;
+  if (!callSetupPanel || !launcher) return;
+  callSetupPanel.hidden = !show;
+  launcher.classList.toggle('is-call-setup', show);
+  if (show) {
+    refreshOutputDevices();
+  }
+}
+
+function bindCallSetupUi() {
+  if (callModeBtn) {
+    callModeBtn.addEventListener('click', () => {
+      showCallSetupPanel(!callSetupVisible);
+    });
+  }
+  if (callSetupClose) {
+    callSetupClose.addEventListener('click', () => showCallSetupPanel(false));
+  }
+  if (callModeEnabledInput) {
+    callModeEnabledInput.addEventListener('change', async () => {
+      callModeEnabled = callModeEnabledInput.checked;
+      if (callModeEnabled && blackHoleDevice && !callOutputDeviceId) {
+        callOutputDeviceId = blackHoleDevice.deviceId;
+      }
+      if (!callModeEnabled) {
+        callOutputDeviceId = '';
+      }
+      populateOutputDeviceSelect();
+      updateCallModeUi();
+      await persistCallSettings();
+    });
+  }
+  if (callOutputSelect) {
+    callOutputSelect.addEventListener('change', async () => {
+      callOutputDeviceId = callOutputSelect.value;
+      if (callOutputDeviceId && !audioRouting.isBlackHoleLabel(
+        audioRouting.formatDeviceLabel(outputDevices.find((d) => d.deviceId === callOutputDeviceId))
+      )) {
+        setCallSetupError('For calls, choose BlackHole 2ch so Zoom/Teams can receive soundbites.');
+      } else {
+        clearCallSetupError();
+      }
+      await persistCallSettings();
+    });
+  }
+  if (callSetupTestBtn) {
+    callSetupTestBtn.addEventListener('click', () => playCallModeTestSound());
+  }
+  if (callSetupGuideBtn) {
+    callSetupGuideBtn.addEventListener('click', () => {
+      if (window.sndbts.openCallAudioGuide) window.sndbts.openCallAudioGuide();
+    });
+  }
+  if (callSetupBlackholeLink) {
+    callSetupBlackholeLink.addEventListener('click', () => {
+      if (window.sndbts.openBlackholeDownload) window.sndbts.openBlackholeDownload();
+    });
+  }
+  if (callSetupMidiLink) {
+    callSetupMidiLink.addEventListener('click', () => {
+      if (window.sndbts.openAudioMidiSetup) window.sndbts.openAudioMidiSetup();
+    });
+  }
+
+  if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+    navigator.mediaDevices.addEventListener('devicechange', () => {
+      refreshOutputDevices();
+    });
+  }
+}
+
+function findTestSound() {
+  const preferred = sounds.find((s) => s.path && s.path.includes('zoom-rec.mp3'));
+  if (preferred) return preferred;
+  return sounds.find((s) => s.path && /\.(mp3|wav)$/i.test(s.path));
+}
+
+async function playCallModeTestSound() {
+  const testSound = findTestSound();
+  if (!testSound) {
+    setCallSetupError('No sounds loaded to test. Run npm run generate first.');
+    return;
+  }
+  if (callModeEnabled && !blackHoleDevice) {
+    setCallSetupError('Install BlackHole 2ch before testing Call mode.');
+    return;
+  }
+  clearCallSetupError();
+  await playSound(testSound, { silentUi: true });
 }
 
 // ── Boot ───────────────────────────────────────────────────

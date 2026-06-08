@@ -28,7 +28,8 @@
     ],
     "extraResources": [
       { "from": "Effects/", "to": "Effects/" },
-      { "from": "sounds.json", "to": "sounds.json" }
+      { "from": "sounds.json", "to": "sounds.json" },
+      { "from": "docs/call-audio-setup.md", "to": "docs/call-audio-setup.md" }
     ],
     "mac": {
       "category": "public.app-category.music",

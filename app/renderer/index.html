@@ -50,6 +50,13 @@
 
         <div class="vertical-divider" aria-hidden="true"></div>
 
+        <button class="call-mode-btn" id="call-mode-btn" title="Call audio setup" aria-label="Call audio setup">
+          <svg class="icon-call" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2.5 2.5h2.2l1.1 2.6-1.4 1c.7 1.4 1.9 2.6 3.3 3.3l1-1.4 2.6 1.1v2.2c0 .6-.5 1.1-1.1 1.1C5.8 12.2 1.8 8.2 1.4 3.6c0-.6.5-1.1 1.1-1.1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/>
+          </svg>
+          <span class="call-mode-dot" id="call-mode-dot" aria-hidden="true"></span>
+        </button>
+
         <button class="theme-toggle" id="theme-toggle" title="Toggle theme (⌘/)" aria-label="Toggle light/dark theme">
           <!-- Sun icon (shown in dark mode) -->
           <svg class="icon-sun" width="13" height="13" viewBox="0 0 13 13" fill="none">
@@ -109,6 +116,47 @@
     <span class="col-meta">CAT · TAG · DUR</span>
   </div>
 
+  <!-- ── Call Audio Setup Panel ───────────────── -->
+  <div class="call-setup-panel" id="call-setup-panel" hidden>
+    <div class="call-setup-header">
+      <h2 class="call-setup-title">Call Audio</h2>
+      <button type="button" class="call-setup-close" id="call-setup-close" aria-label="Close call audio setup">&#x2715;</button>
+    </div>
+
+    <p class="call-setup-lead">Route soundbites into Zoom/Teams via BlackHole — no screen share needed.</p>
+
+    <div class="call-setup-status" id="call-setup-status">
+      <span class="call-setup-status-dot" id="call-setup-status-dot" aria-hidden="true"></span>
+      <span class="call-setup-status-text" id="call-setup-status-text">Checking for BlackHole…</span>
+    </div>
+
+    <label class="call-setup-toggle">
+      <input type="checkbox" id="call-mode-enabled" />
+      <span>Call mode — route playback to virtual audio</span>
+    </label>
+
+    <label class="call-setup-field">
+      <span class="call-setup-label">Output device</span>
+      <select class="call-setup-select" id="call-output-device" disabled>
+        <option value="">System default</option>
+      </select>
+    </label>
+
+    <p class="call-setup-error" id="call-setup-error" hidden></p>
+
+    <ol class="call-setup-steps">
+      <li>Install <button type="button" class="call-setup-link" id="call-setup-blackhole-link">BlackHole 2ch</button></li>
+      <li>Open <button type="button" class="call-setup-link" id="call-setup-midi-link">Audio MIDI Setup</button> → Aggregate Device (mic + BlackHole)</li>
+      <li>Set Zoom/Teams microphone to that Aggregate Device</li>
+      <li>Enable Call mode above and test below</li>
+    </ol>
+
+    <div class="call-setup-actions">
+      <button type="button" class="call-setup-btn" id="call-setup-test-btn">Test soundbite</button>
+      <button type="button" class="call-setup-btn call-setup-btn--secondary" id="call-setup-guide-btn">Full guide</button>
+    </div>
+  </div>
+
   <!-- ── Results List ─────────────────────────── -->
   <div class="results-list" id="results-list" role="listbox" aria-label="Sound results">
     <!-- SoundRows rendered by app.js -->
@@ -146,6 +194,7 @@
 
 <!-- Fuse.js via local copy loaded by app.js -->
 <script src="../../node_modules/fuse.js/dist/fuse.min.js"></script>
+<script src="audio-routing.js"></script>
 <script src="app.js"></script>
 
 </body>

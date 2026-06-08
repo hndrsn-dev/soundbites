@@ -13,4 +13,10 @@ contextBridge.exposeInMainWorld('sndbts', {
   deleteImportedFile: (filename) => ipcRenderer.invoke('delete-imported-file', filename),
   openLibraryWindow: () => ipcRenderer.invoke('open-library-window'),
   onSoundsUpdated: (cb) => ipcRenderer.on('sounds-updated', cb),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+  openCallAudioGuide: () => ipcRenderer.invoke('open-call-audio-guide'),
+  openAudioMidiSetup: () => ipcRenderer.invoke('open-audio-midi-setup'),
+  openBlackholeDownload: () => ipcRenderer.invoke('open-blackhole-download'),
+  onShowCallSetup: (cb) => ipcRenderer.on('show-call-setup', cb),
 });

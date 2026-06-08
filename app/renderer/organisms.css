@@ -26,6 +26,9 @@
 .search-input,
 .close-btn,
 .theme-toggle,
+.call-mode-btn,
+.call-setup-panel,
+.call-setup-panel *,
 .results-list,
 .sound-row,
 .footer,
@@ -161,5 +164,236 @@ mark.search-hit {
 }
 
 .footer.is-playing .footer-right {
+  display: none;
+}
+
+/* ── Call mode header button ────────────────────────────────── */
+.call-mode-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+
+.call-mode-btn:hover {
+  background: var(--surface-row-hover);
+  color: var(--text-primary);
+}
+
+.call-mode-btn.is-active {
+  color: var(--accent-text);
+}
+
+.call-mode-dot {
+  display: none;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-playing);
+}
+
+.call-mode-btn.is-active .call-mode-dot {
+  display: block;
+}
+
+/* ── Call audio setup panel ─────────────────────────────────── */
+.call-setup-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.call-setup-panel[hidden] {
+  display: none !important;
+}
+
+.call-setup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.call-setup-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.call-setup-close {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.call-setup-close:hover {
+  background: var(--surface-row-hover);
+  color: var(--text-primary);
+}
+
+.call-setup-lead {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.call-setup-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface-row-hover);
+  border: 1px solid var(--border-default);
+}
+
+.call-setup-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.call-setup-status.is-ok .call-setup-status-dot {
+  background: var(--status-playing);
+}
+
+.call-setup-status.is-warn .call-setup-status-dot {
+  background: var(--amber-400);
+}
+
+.call-setup-status-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.call-setup-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.call-setup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.call-setup-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.call-setup-select {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  background: var(--surface-row-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.call-setup-select:disabled {
+  opacity: 0.5;
+}
+
+.call-setup-error {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--amber-400);
+}
+
+.call-setup-steps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.call-setup-link {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--accent-text);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.call-setup-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.call-setup-btn {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-selected);
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.call-setup-btn:hover {
+  background: var(--amber-alpha-20);
+}
+
+.call-setup-btn--secondary {
+  background: transparent;
+  border-color: var(--border-default);
+  color: var(--text-secondary);
+}
+
+.call-setup-btn--secondary:hover {
+  background: var(--surface-row-hover);
+  color: var(--text-primary);
+}
+
+.launcher.is-call-setup .column-headers,
+.launcher.is-call-setup .results-list,
+.launcher.is-call-setup .gradient-divider {
   display: none;
 }
